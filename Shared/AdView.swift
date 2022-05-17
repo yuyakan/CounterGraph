@@ -15,7 +15,7 @@ struct AdView: UIViewRepresentable {
         let windowScenes = scenes.first as? UIWindowScene
         let rootVC = windowScenes?.keyWindow?.rootViewController
         
-        banner.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        banner.adUnitID = ""
         banner.rootViewController = rootVC
         banner.load(GADRequest())
         return banner
