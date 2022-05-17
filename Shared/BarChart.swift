@@ -7,13 +7,14 @@
 
 import SwiftUI
 
+
 struct BarChartView: View {
     @Binding var title: String
-    @Binding var titlecolor: Color
-    @Binding var textcolor: Color
-    @Binding var graphcolor: Color
-    @Binding var backcolor: Color
-    @Binding var buttoncolor: Color
+    @Binding var titleColor: Color
+    @Binding var textColor: Color
+    @Binding var graphColor: Color
+    @Binding var backColor: Color
+    @Binding var buttonColor: Color
 
     @State var pickerSelection = 0
     @State var barValues : [CGFloat] = [80,230,500,320,120]
@@ -28,65 +29,66 @@ struct BarChartView: View {
         let bounds = UIScreen.main.bounds
         let height = Double(bounds.height)
         let width = Double(bounds.width)
-        let height_mod = height * 0.5
-        let width_mod = width * 0.8
+        let fixedHeight = height * 0.5
+        let fixedWidth = width * 0.8
         let max = barValues.max()!
-        let nums = barValues.count
+        let bars = barValues.count
         
         
         ZStack{
             VStack{
                 Spacer()
-                Text(title).foregroundColor(titlecolor)
+                Text(title).foregroundColor(titleColor)
                     .font(.largeTitle)
-
-                HStack(alignment: .center, spacing: (width_mod/Double(nums))/8)
+                    .padding()
+                HStack(alignment: .center, spacing: (fixedWidth/Double(bars))/8)
                 {
-                    ForEach(0..<nums, id: \.self){
+                    ForEach(0..<bars, id: \.self){
                         index in
-                        VStack{
+                        VStack(spacing: 0){
                             ZStack (alignment: .bottom) {
                                 RoundedRectangle(cornerRadius: CGFloat(integerLiteral: 0))
-                                    .frame(width: (width_mod/Double(nums))/2 , height: height_mod * 0.65).foregroundColor(.white.opacity(0))
-                                VStack {
+                                    .frame(width: (fixedWidth/Double(bars))/2 , height: fixedHeight * 0.6).foregroundColor(.white.opacity(0))
+                                VStack(spacing:0) {
                                     Text("\(Int(barValues[index]))")
-                                        .frame(width: (width_mod/Double(nums)))
-                                        .foregroundColor(textcolor)
-                                    RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0)).fill(LinearGradient(gradient: Gradient(colors: [graphcolor, graphcolor.opacity(0.7), graphcolor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
-                                        .frame(width: (width_mod/Double(nums))/2, height: (barValues[index]/max)*height_mod*0.5)
+                                        .frame(width: (fixedWidth/Double(bars)))
+                                        .foregroundColor(textColor)
+                                        .padding(.bottom, fixedHeight * 0.02)
+                                    RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0)).fill(LinearGradient(gradient: Gradient(colors: [graphColor, graphColor.opacity(0.7), graphColor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
+                                        .frame(width: (fixedWidth/Double(bars))/2, height: (barValues[index]/max)*fixedHeight*0.5)
                                     }
                                 }
                             Text("\(barName[index])")
-                                .frame(height: height_mod/7)
-                                .frame(maxWidth: (width_mod/Double(nums)))
-                                .foregroundColor(textcolor)
-                            Text("")
-                                .frame(maxWidth: (width_mod/Double(nums)))
+                                .frame(height: fixedHeight/8)
+                                .frame(maxWidth: (fixedWidth/Double(bars)))
+                                .foregroundColor(textColor)
+                                .padding(.top, height * 0.015)
+                                .padding(.bottom, height * 0.01)
                             
-                            VStack{
+                            VStack(spacing: 0){
                                 Button(action: {
                                     barValues[index] = barValues[index] + CGFloat(unit)
                                 }) {
                                     if(flag){
                                         Text("＋")
-                                            .font(.largeTitle)
+                                            .font(.system(size: height * 0.043, design: .default))
                                             .multilineTextAlignment(.center)
                                     }
                                 }
                                     .accentColor(Color.white)
-                                    .background(buttoncolor)
+                                    .background(buttonColor)
                                     .clipShape(Circle())
                                 Button(action: {
                                     barValues[index] = barValues[index] - CGFloat(unit)
                                 }) {
                                     if(flag){
                                         Text("ー")
-                                            .font(.largeTitle)
+                                            .font(.system(size: height * 0.043, design: .default))
                                             .multilineTextAlignment(.center)
                                     }
                                 }
                                     .accentColor(Color.white)
-                                    .background(buttoncolor)
+                                    .background(buttonColor)
                                     .clipShape(Circle())
                             }
                         }
@@ -100,20 +102,20 @@ struct BarChartView: View {
                         TextField("", value: $unit, formatter: NumberFormatter())
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .keyboardType(.default)
-                                    .frame(width: width_mod * 0.2)
+                                    .frame(width: fixedWidth * 0.2)
                         Text("/1unit")
                     }
-                }.padding()
+                }.padding([.leading, .bottom, .trailing], height * 0.02)
                 HStack(spacing: 0){
                     Spacer()
                     TextField("Jack", text: $name)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: width_mod * 0.3)
+                        .frame(width: fixedWidth * 0.3)
                     Spacer()
                     TextField("", value: $balance, formatter: NumberFormatter())
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .keyboardType(.default)
-                                .frame(width: width_mod * 0.3)
+                                .frame(width: fixedWidth * 0.3)
                     Spacer()
                     Button(action: {
                         if(barName.allSatisfy({ $0 != name })){
@@ -124,25 +126,25 @@ struct BarChartView: View {
                         }
                     }, label: {
                         Text("＋")
+                            .font(.system(size: height * 0.045, design: .default))
                             .frame(width: width * 0.2, alignment: .center)
-                            .font(.largeTitle)
                     })
                         .accentColor(Color.white)
-                        .background(buttoncolor)
+                        .background(buttonColor)
                         .clipShape(Circle())
                     Button(action: {
                         barValues.removeLast()
                         barName.removeLast()
                     }, label: {
                         Text("ー")
+                            .font(.system(size: height * 0.045, design: .default))
                             .frame(width: width * 0.2, alignment: .center)
-                            .font(.largeTitle)
                     })
                         .accentColor(Color.white)
-                        .background(buttoncolor)
+                        .background(buttonColor)
                         .clipShape(Circle())
                     Spacer()
-                }.padding(.bottom, height_mod * 0.1).opacity(flag ? 1:0)
+                }.opacity(flag ? 1:0).padding(.bottom, fixedHeight * 0.05)
                     .alert(isPresented: $alert) {
                                 Alert(title: Text("The name is already used"),
                                       message: Text("Please give it a different name"),
@@ -150,6 +152,6 @@ struct BarChartView: View {
                                                               action: {alert = false}))
                             }
             }
-        }.background(backcolor)
+        }.background(backColor)
     }
 }
