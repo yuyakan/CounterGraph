@@ -10,7 +10,7 @@ import GoogleMobileAds
 
 struct ContentView: View {
     
-    @State var title: String = "Bar Chart"
+    @State var title: String = String(localized: "Result")
     @State var titleColor: Color = Color.purple
     @State var textColor: Color = Color.black
     @State var graphColor = Color.purple

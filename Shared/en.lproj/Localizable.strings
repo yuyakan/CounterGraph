@@ -1,0 +1,24 @@
+/* 
+  Localizable.strings
+  CounterGraph
+
+  Created by 上別縄祐也 on 2023/11/09.
+  
+*/
+"Ann" = "Ann";
+"Tom" = "Tom";
+"Bob" = "Bob";
+"Casey" = "Casey";
+"Brian" = "Brian";
+"Jack" = "Jack";
+
+"Result" = "Result";
+"title" = "Title";
+"color" = "Color";
+"Text" = "Text";
+"Graph" = "Graph";
+"Background" = "Background";
+"Button" = "Button";
+
+"AlertText" = "The name is already used";
+"AlertMessage" = "Please give it a different name";

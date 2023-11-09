@@ -24,54 +24,57 @@ struct SettingView: View {
             VStack(spacing: height * 0.03){
                 Text("Setting").font(.largeTitle).foregroundColor(titleColor).padding(.top)
                 HStack{
-                    Text("Title").font(.largeTitle).foregroundColor(titleColor).padding(.leading)
+                    Text("Title")
+                        .font(.largeTitle)
+                        .foregroundColor(titleColor)
+                        .padding(.leading)
                     Spacer()
-                    TextField("Bar Chart", text: $title)
+                    TextField("Result", text: $title)
                         .frame(width: width * 0.5,alignment: .center)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
                 }.padding(.leading)
+                
                 VStack(spacing: 2){
                     HStack{
                         Text("Color").font(.largeTitle).foregroundColor(titleColor).padding(.leading)
                         Spacer()
-                    }.padding([.leading, .bottom])
+                    }.padding(.leading)
+                    
                     HStack(spacing: 0){
-                        Circle()
-                                        .foregroundColor(titleColor)
-                                        .frame(width:width * 0.35,height: height * 0.035)
-                                        .padding()
-                        ColorPicker("Title color", selection: $titleColor).foregroundColor(textColor).padding(.trailing, width*0.2)
-                    }.background(Color(red: 0.831, green: 0.831, blue: 0.831).opacity(0.5))
+                        ColorPicker(String(localized: "title"), selection: $titleColor).foregroundColor(textColor).padding(.horizontal, width*0.2)
+                    }.frame(height: height*0.07)
+                    Divider()
+                        .frame(width: width * 0.8)
+                    
                     HStack(spacing: 0){
-                        Circle()
-                                        .foregroundColor(textColor)
-                                        .frame(width:width * 0.35,height: height * 0.035)
-                                        .padding()
-                        ColorPicker("Text color", selection: $textColor).foregroundColor(textColor).padding(.trailing, width*0.2)
-                    }.background(Color(hue: 0.0, saturation: 0.0, brightness: 0.918).opacity(0.5))
+                        ColorPicker(String(localized: "Text"), selection: $textColor).foregroundColor(textColor).padding(.horizontal, width*0.2)
+                    }
+                    .frame(height: height*0.07)
+                    Divider()
+                        .frame(width: width * 0.8)
+                    
                     HStack(spacing: 0){
-                        Circle()
-                                        .foregroundColor(graphColor)
-                                        .frame(width:width * 0.35, height: height * 0.035)
-                                        .padding()
-                        ColorPicker("Graph color", selection: $graphColor).foregroundColor(textColor).padding(.trailing, width*0.2)
-                    }.background(Color(red: 0.831, green: 0.831, blue: 0.831).opacity(0.5))
+                        ColorPicker(String(localized: "Graph"), selection: $graphColor).foregroundColor(textColor).padding(.horizontal, width*0.2)
+                    }
+                    .frame(height: height*0.07)
+                    Divider()
+                        .frame(width: width * 0.8)
+                    
                     HStack(spacing: 0){
-                        Circle()
-                                        .foregroundColor(backColor)
-                                        .frame(width:width * 0.35,height: height * 0.035)
-                                        .padding()
-                        ColorPicker("Background color", selection: $backColor).foregroundColor(textColor).padding(.trailing, width*0.2)
-                    }.background(Color(hue: 0.0, saturation: 0.0, brightness: 0.918).opacity(0.5))
+                        ColorPicker(String(localized: "Background"), selection: $backColor).foregroundColor(textColor).padding(.horizontal, width*0.2)
+                    }
+                    .frame(height: height*0.07)
+                    Divider()
+                        .frame(width: width * 0.8)
+                    
                     HStack(spacing: 0){
-                        Circle()
-                                        .foregroundColor(buttonColor)
-                                        .frame(width:width * 0.35,height: height * 0.035)
-                                        .padding()
-                        ColorPicker("Button color", selection: $buttonColor).foregroundColor(textColor).padding(.trailing, width*0.2)
-                    }.background(Color(red: 0.831, green: 0.831, blue: 0.831).opacity(0.5))
-                    .padding(.bottom, height*0.01)
+                        ColorPicker(String(localized: "Button"), selection: $buttonColor).foregroundColor(textColor).padding(.horizontal, width*0.2)
+                    }
+                    .frame(height: height*0.07)
+                    Divider()
+                        .frame(width: width * 0.8)
+                        .padding(.bottom, height*0.01)
                 }
             }
         }

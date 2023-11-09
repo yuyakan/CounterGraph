@@ -18,8 +18,8 @@ struct BarChartView: View {
 
     @State var pickerSelection = 0
     @State var barValues : [CGFloat] = [80,230,500,320,120]
-    @State var barName : [String] = ["Ann","Tom","Bob","Casey","Brian"]
-    @State var name : String = "Jack"
+    @State var barName : [String] = [String(localized: "Ann"),String(localized: "Tom"),String(localized:"Bob"),String(localized: "Casey"),String(localized: "Brian")]
+    @State var name : String = String(localized: "Jack")
     @State var balance: Double = 100
     @State var unit: Double = 10
     @State var alert : Bool = false
@@ -41,59 +41,58 @@ struct BarChartView: View {
                 Text(title).foregroundColor(titleColor)
                     .font(.largeTitle)
                     .padding()
-                HStack(alignment: .center, spacing: (fixedWidth/Double(bars))/8)
-                {
-                    
+                HStack(alignment: .center, spacing: (fixedWidth/Double(bars))/8){
                     ForEach(0..<bars, id: \.self){
-                        index in
-                        VStack(spacing: 0){
-                            ZStack (alignment: .bottom) {
-                                RoundedRectangle(cornerRadius: CGFloat(integerLiteral: 0))
-                                    .frame(width: (fixedWidth/Double(bars))/2 , height: fixedHeight * 0.6).foregroundColor(.white.opacity(0))
-                                VStack(spacing:0) {
-                                    Text("\(Int(barValues[index]))")
-                                        .frame(width: (fixedWidth/Double(bars)))
-                                        .foregroundColor(textColor)
-                                        .padding(.bottom, fixedHeight * 0.02)
-                                    RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0)).fill(LinearGradient(gradient: Gradient(colors: [graphColor, graphColor.opacity(0.7), graphColor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
-                                        .frame(width: (fixedWidth/Double(bars))/2, height: (barValues[index]/max)*fixedHeight*0.5)
-                                    }
+                    index in
+                    VStack(spacing: 0){
+                        ZStack (alignment: .bottom) {
+                            RoundedRectangle(cornerRadius: CGFloat(integerLiteral: 0))
+                                .frame(width: (fixedWidth/Double(bars))/2 , height: fixedHeight * 0.6).foregroundColor(.white.opacity(0))
+                            VStack(spacing:0) {
+                                Text("\(Int(barValues[index]))")
+                                    .frame(width: (fixedWidth/Double(bars)))
+                                    .foregroundColor(textColor)
+                                    .padding(.bottom, fixedHeight * 0.02)
+                                RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0))
+                                    .fill(LinearGradient(gradient: Gradient(colors: [graphColor, graphColor.opacity(0.7), graphColor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
+                                    .frame(width: (fixedWidth/Double(bars))/2, height: barValues[index] <= CGFloat(0) ? 0 :  (barValues[index]/max)*fixedHeight*0.5)
                                 }
-                            Text("\(barName[index])")
-                                .frame(height: fixedHeight/8)
-                                .frame(maxWidth: (fixedWidth/Double(bars)))
-                                .foregroundColor(textColor)
-                                .padding(.top, height * 0.015)
-                                .padding(.bottom, height * 0.01)
-                            
-                            VStack(spacing: 0){
-                                Button(action: {
-                                    barValues[index] = barValues[index] + CGFloat(unit)
-                                }) {
-                                    if(flag){
-                                        Text("＋")
-                                            .font(.system(size: height * 0.043, design: .default))
-                                            .multilineTextAlignment(.center)
-                                    }
-                                }
-                                    .accentColor(Color.white)
-                                    .background(buttonColor)
-                                    .clipShape(Circle())
-                                Button(action: {
-                                    barValues[index] = barValues[index] - CGFloat(unit)
-                                }) {
-                                    if(flag){
-                                        Text("ー")
-                                            .font(.system(size: height * 0.043, design: .default))
-                                            .multilineTextAlignment(.center)
-                                    }
-                                }
-                                    .accentColor(Color.white)
-                                    .background(buttonColor)
-                                    .clipShape(Circle())
                             }
+                        Text("\(barName[index])")
+                            .frame(height: fixedHeight/8)
+                            .frame(maxWidth: (fixedWidth/Double(bars)))
+                            .foregroundColor(textColor)
+                            .padding(.top, height * 0.015)
+                            .padding(.bottom, height * 0.01)
+                        
+                        VStack(spacing: 0){
+                            Button(action: {
+                                barValues[index] = barValues[index] + CGFloat(unit)
+                            }) {
+                                if(flag){
+                                    Text("＋")
+                                        .font(.system(size: height * 0.043, design: .default))
+                                        .multilineTextAlignment(.center)
+                                }
+                            }
+                                .accentColor(Color.white)
+                                .background(buttonColor)
+                                .clipShape(Circle())
+                            Button(action: {
+                                barValues[index] = barValues[index] - CGFloat(unit)
+                            }) {
+                                if(flag){
+                                    Text("ー")
+                                        .font(.system(size: height * 0.043, design: .default))
+                                        .multilineTextAlignment(.center)
+                                }
+                            }
+                                .accentColor(Color.white)
+                                .background(buttonColor)
+                                .clipShape(Circle())
                         }
                     }
+                }
                 }
                 
                 HStack{
@@ -106,7 +105,9 @@ struct BarChartView: View {
                                     .frame(width: fixedWidth * 0.2)
                         Text("/1unit")
                     }
-                }.padding([.leading, .bottom, .trailing], height * 0.02)
+                }
+                    .padding([.leading, .bottom, .trailing], height * 0.02)
+                
                 HStack(spacing: 0){
                     Spacer()
                     TextField("Jack", text: $name)
@@ -147,10 +148,11 @@ struct BarChartView: View {
                         .background(buttonColor)
                         .clipShape(Circle())
                     Spacer()
-                }.opacity(flag ? 1:0).padding(.bottom, fixedHeight * 0.05)
+                }
+                    .opacity(flag ? 1:0).padding(.bottom, fixedHeight * 0.05)
                     .alert(isPresented: $alert) {
-                                Alert(title: Text("The name is already used"),
-                                      message: Text("Please give it a different name"),
+                                Alert(title: Text(LocalizedStringKey("AlertText")),
+                                      message: Text(LocalizedStringKey("AlertMessage")),
                                       dismissButton: .default(Text("OK"),
                                                               action: {alert = false}))
                             }

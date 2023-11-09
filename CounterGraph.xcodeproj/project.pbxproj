@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B1A83C52AFCC536002F1BFE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B1A83C82AFCC536002F1BFE /* Localizable.strings */; };
+		4B1A83C62AFCC536002F1BFE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B1A83C82AFCC536002F1BFE /* Localizable.strings */; };
 		4B8782A827C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
 		4B8782A927C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
 		4B93F91F2833DBA90076288F /* AdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B93F91E2833DBA90076288F /* AdView.swift */; };
@@ -48,10 +50,12 @@
 
 /* Begin PBXFileReference section */
 		11B77147DA0BCD41B3AD524B /* Pods_CounterGraph__iOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CounterGraph__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B1A83C72AFCC536002F1BFE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4B1A83C92AFCC538002F1BFE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4B8782A627C60EA60057DF32 /* CounterGraph--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CounterGraph--iOS--Info.plist"; sourceTree = "<group>"; };
 		4B8782A727C633340057DF32 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4B93F91E2833DBA90076288F /* AdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdView.swift; sourceTree = "<group>"; };
-		4BBFC61927C37BB700A05720 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
+		4BBFC61927C37BB700A05720 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; tabWidth = 4; };
 		4BD213B427C0E483004280DA /* CounterGraphApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterGraphApp.swift; sourceTree = "<group>"; };
 		4BD213B527C0E483004280DA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4BD213B627C0E484004280DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -115,6 +119,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		4B1A83CA2AFCE230002F1BFE /* BarChart */ = {
+			isa = PBXGroup;
+			children = (
+				4BD213FC27C1307B004280DA /* BarChartView.swift */,
+			);
+			path = BarChart;
+			sourceTree = "<group>";
+		};
 		4BD213AE27C0E482004280DA = {
 			isa = PBXGroup;
 			children = (
@@ -136,8 +148,9 @@
 				4BD213B427C0E483004280DA /* CounterGraphApp.swift */,
 				4BD213B527C0E483004280DA /* ContentView.swift */,
 				4B93F91E2833DBA90076288F /* AdView.swift */,
-				4BD213FC27C1307B004280DA /* BarChartView.swift */,
+				4B1A83CA2AFCE230002F1BFE /* BarChart */,
 				4BBFC61927C37BB700A05720 /* SettingView.swift */,
+				4B1A83C82AFCC536002F1BFE /* Localizable.strings */,
 				4BD213B627C0E484004280DA /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -301,6 +314,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ja,
 				Base,
 			);
 			mainGroup = 4BD213AE27C0E482004280DA;
@@ -324,6 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BD213E027C0E484004280DA /* Assets.xcassets in Resources */,
+				4B1A83C52AFCC536002F1BFE /* Localizable.strings in Resources */,
 				4B8782A827C633340057DF32 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,6 +348,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BD213E127C0E484004280DA /* Assets.xcassets in Resources */,
+				4B1A83C62AFCC536002F1BFE /* Localizable.strings in Resources */,
 				4B8782A927C633340057DF32 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -474,6 +490,18 @@
 			targetProxy = 4BD213D527C0E484004280DA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		4B1A83C82AFCC536002F1BFE /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4B1A83C72AFCC536002F1BFE /* en */,
+				4B1A83C92AFCC538002F1BFE /* ja */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		4BD213E227C0E484004280DA /* Debug */ = {
