@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>992415908433-80dknt9ig3n67ve3vnsk3ac40ceil11d.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.992415908433-80dknt9ig3n67ve3vnsk3ac40ceil11d</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCjs2p3MwC5uCK4Uhk0Dl2PxOZwvizOqLY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>992415908433</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>kanbe1365.CounterGraph</string>
+	<key>PROJECT_ID</key>
+	<string>airpodsaccelerationsensor</string>
+	<key>STORAGE_BUCKET</key>
+	<string>airpodsaccelerationsensor.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:992415908433:ios:d72381cb5f8e00f9e56e70</string>
+</dict>
+</plist>
