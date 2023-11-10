@@ -20,5 +20,7 @@
 "Background" = "背景";
 "Button" = "ボタン";
 
+"1unit:" = "1単位:";
+
 "AlertText" = "その名前はすでに使われています";
 "AlertMessage" = "違う名前を入力してください";

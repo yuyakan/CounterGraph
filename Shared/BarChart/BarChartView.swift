@@ -9,154 +9,146 @@ import SwiftUI
 
 
 struct BarChartView: View {
-    @Binding var title: String
-    @Binding var titleColor: Color
-    @Binding var textColor: Color
-    @Binding var graphColor: Color
-    @Binding var backColor: Color
-    @Binding var buttonColor: Color
-
-    @State var pickerSelection = 0
-    @State var barValues : [CGFloat] = [80,230,500,320,120]
-    @State var barName : [String] = [String(localized: "Ann"),String(localized: "Tom"),String(localized:"Bob"),String(localized: "Casey"),String(localized: "Brian")]
-    @State var name : String = String(localized: "Jack")
-    @State var balance: Double = 100
-    @State var unit: Double = 10
-    @State var alert : Bool = false
-    @State var flag : Bool = false
+    @ObservedObject var barChart = BarChartViewModel()
+    @EnvironmentObject var setting: Setting
     
+    @State var unit: Int = 10
+    @State var isVisibleSetting : Bool = false
     var body: some View {
+        let bars = barChart.count()
         let bounds = UIScreen.main.bounds
         let height = Double(bounds.height)
         let width = Double(bounds.width)
         let fixedHeight = height * 0.5
         let fixedWidth = width * 0.8
-        let max = barValues.max() ?? 1
-        let bars = barValues.count
-        
+        let baseframeWidth = fixedWidth / Double(bars)
         
         ZStack{
             VStack{
+                HStack {
+                    Button(action: {
+                        isVisibleSetting.toggle()
+                    }, label: {
+                        Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
+                            .accentColor(setting.buttonColor)
+                            .font(.system(size: 30))
+                            .padding()
+                    })
+                    Spacer()
+                }
+                
+                if isVisibleSetting {
+                    HStack{
+                        Text(LocalizedStringKey("1unit:"))
+                        TextField("", value: $unit, formatter: NumberFormatter())
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .keyboardType(.default)
+                            .frame(width: fixedWidth * 0.2)
+                        Spacer()
+                    }.padding(.horizontal)
+                }
+                
                 Spacer()
-                Text(title).foregroundColor(titleColor)
-                    .font(.largeTitle)
-                    .padding()
-                HStack(alignment: .center, spacing: (fixedWidth/Double(bars))/8){
-                    ForEach(0..<bars, id: \.self){
-                    index in
-                    VStack(spacing: 0){
+                
+                if(!isVisibleSetting){
+                    Text(setting.title).foregroundColor(setting.titleColor)
+                        .font(.largeTitle)
+                        .padding()
+                        .padding(.bottom)
+                }
+
+                HStack(alignment: .bottom, spacing: baseframeWidth/8){
+                    ForEach(0..<bars, id: \.self){ index in
                         ZStack (alignment: .bottom) {
-                            RoundedRectangle(cornerRadius: CGFloat(integerLiteral: 0))
-                                .frame(width: (fixedWidth/Double(bars))/2 , height: fixedHeight * 0.6).foregroundColor(.white.opacity(0))
                             VStack(spacing:0) {
-                                Text("\(Int(barValues[index]))")
-                                    .frame(width: (fixedWidth/Double(bars)))
-                                    .foregroundColor(textColor)
+                                Button(action: {
+                                    barChart.removeData(index: index)
+                                }) {
+                                    if(isVisibleSetting){
+                                        Image(systemName: "trash")
+                                            .accentColor(Color.red)
+                                            .padding(.bottom)
+                                    }
+                                }
+                                Text("\(Int(barChart.value(index: index)))")
+                                    .frame(width: baseframeWidth)
+                                    .foregroundColor(setting.textColor)
                                     .padding(.bottom, fixedHeight * 0.02)
                                 RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0))
-                                    .fill(LinearGradient(gradient: Gradient(colors: [graphColor, graphColor.opacity(0.7), graphColor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
-                                    .frame(width: (fixedWidth/Double(bars))/2, height: barValues[index] <= CGFloat(0) ? 0 :  (barValues[index]/max)*fixedHeight*0.5)
-                                }
+                                    .fill(LinearGradient(gradient: Gradient(colors: [setting.graphColor, setting.graphColor.opacity(0.7), setting.graphColor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
+                                    .frame(width: baseframeWidth/2, height: barChart.value(index: index) <= CGFloat(0) ? 0 :  (barChart.value(index: index)/barChart.maxValue())*fixedHeight*0.5)
                             }
-                        Text("\(barName[index])")
-                            .frame(height: fixedHeight/8)
-                            .frame(maxWidth: (fixedWidth/Double(bars)))
-                            .foregroundColor(textColor)
-                            .padding(.top, height * 0.015)
-                            .padding(.bottom, height * 0.01)
-                        
-                        VStack(spacing: 0){
-                            Button(action: {
-                                barValues[index] = barValues[index] + CGFloat(unit)
-                            }) {
-                                if(flag){
-                                    Text("＋")
-                                        .font(.system(size: height * 0.043, design: .default))
-                                        .multilineTextAlignment(.center)
-                                }
-                            }
-                                .accentColor(Color.white)
-                                .background(buttonColor)
-                                .clipShape(Circle())
-                            Button(action: {
-                                barValues[index] = barValues[index] - CGFloat(unit)
-                            }) {
-                                if(flag){
-                                    Text("ー")
-                                        .font(.system(size: height * 0.043, design: .default))
-                                        .multilineTextAlignment(.center)
-                                }
-                            }
-                                .accentColor(Color.white)
-                                .background(buttonColor)
-                                .clipShape(Circle())
                         }
                     }
                 }
-                }
                 
-                HStack{
-                    Toggle("",isOn: $flag).labelsHidden().padding(.leading, 10.0)
-                    Spacer()
-                    if flag {
-                        TextField("", value: $unit, formatter: NumberFormatter())
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .keyboardType(.default)
-                                    .frame(width: fixedWidth * 0.2)
-                        Text("/1unit")
+                HStack(alignment: .center, spacing: baseframeWidth/8){
+                    ForEach(0..<bars, id: \.self){ index in
+                        VStack {
+                            Text("\(barChart.name(index: index))")
+                                .frame(height: fixedHeight/8)
+                                .frame(maxWidth: baseframeWidth)
+                                .foregroundColor(setting.textColor)
+                                .padding(.top, height * 0.015)
+                                .padding(.bottom, height * 0.01)
+                            VStack(spacing: 0){
+                                Button(action: {
+                                    barChart.plus(index: index, value: unit)
+                                }) {
+                                    if(isVisibleSetting){
+                                        Image(systemName: "plus.circle")
+                                            .accentColor(setting.buttonColor)
+                                            .font(.system(size: 30))
+                                    }
+                                }
+                                
+                                Button(action: {
+                                    barChart.minus(index: index, value: unit)
+                                }) {
+                                    if(isVisibleSetting){
+                                        Image(systemName: "minus.circle")
+                                            .accentColor(setting.buttonColor)
+                                            .font(.system(size: 30))
+                                            .padding(.vertical, 10)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                    .padding([.leading, .bottom, .trailing], height * 0.02)
+                
+                Divider()
+                    .opacity(isVisibleSetting ? 1:0).frame(width: width*0.85)
                 
                 HStack(spacing: 0){
                     Spacer()
-                    TextField("Jack", text: $name)
+                    TextField("Jack", text: $barChart.name)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .frame(width: fixedWidth * 0.3)
-                    Spacer()
-                    TextField("", value: $balance, formatter: NumberFormatter())
+                        .padding(.trailing)
+                    TextField("", value: $barChart.value, formatter: NumberFormatter())
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .keyboardType(.default)
                                 .frame(width: fixedWidth * 0.3)
                     Spacer()
                     Button(action: {
-                        if(barName.allSatisfy({ $0 != name })){
-                            barValues.append(CGFloat(balance))
-                            barName.append("\(name)")
-                        }else{
-                            alert = true
-                        }
+                        barChart.addData()
                     }, label: {
-                        Text("＋")
-                            .font(.system(size: height * 0.045, design: .default))
-                            .frame(width: width * 0.2, alignment: .center)
+                        Image(systemName: "plus.square.on.square")
+                            .accentColor(setting.buttonColor)
+                            .font(.system(size: 30))
                     })
-                        .accentColor(Color.white)
-                        .background(buttonColor)
-                        .clipShape(Circle())
-                    Button(action: {
-                        if barValues.count != 0 {
-                            barValues.removeLast()
-                            barName.removeLast()
-                        }
-                    }, label: {
-                        Text("ー")
-                            .font(.system(size: height * 0.045, design: .default))
-                            .frame(width: width * 0.2, alignment: .center)
-                    })
-                        .accentColor(Color.white)
-                        .background(buttonColor)
-                        .clipShape(Circle())
                     Spacer()
-                }
-                    .opacity(flag ? 1:0).padding(.bottom, fixedHeight * 0.05)
-                    .alert(isPresented: $alert) {
+                }.padding(.top, 10)
+                    .opacity(isVisibleSetting ? 1:0).padding(.bottom, fixedHeight * 0.05)
+                    .alert(isPresented: $barChart.alert) {
                                 Alert(title: Text(LocalizedStringKey("AlertText")),
                                       message: Text(LocalizedStringKey("AlertMessage")),
                                       dismissButton: .default(Text("OK"),
-                                                              action: {alert = false}))
+                                                              action: {barChart.alert = false}))
                             }
+                Spacer()
             }
-        }.background(backColor)
+        }.background(setting.backColor)
     }
 }
