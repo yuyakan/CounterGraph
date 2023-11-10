@@ -7,8 +7,7 @@
 
 import Foundation
 
-class personalData: Identifiable {
-    let id = UUID()
+class PersonalData: Identifiable, Codable {
     let value: Int
     let name: String
     

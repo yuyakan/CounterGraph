@@ -20,8 +20,12 @@ struct ContentView: View {
                 BarChartView()
                     .environmentObject(setting)
                     .tabItem { Group{
-                                Image(systemName: "light.panel.fill")
-                                Text("Charts")
+                        if #available(iOS 16.0, *) {
+                            Image(systemName: "light.panel.fill")
+                        } else {
+                            Image(systemName: "display")
+                        }
+                        Text("Charts")
                     }
                 }.tag(0)
                 SettingView()

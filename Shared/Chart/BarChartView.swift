@@ -11,9 +11,9 @@ import SwiftUI
 struct BarChartView: View {
     @ObservedObject var barChart = BarChartViewModel()
     @EnvironmentObject var setting: Setting
-    
     @State var unit: Int = 10
     @State var isVisibleSetting : Bool = false
+    
     var body: some View {
         let bars = barChart.count()
         let bounds = UIScreen.main.bounds
@@ -29,10 +29,17 @@ struct BarChartView: View {
                     Button(action: {
                         isVisibleSetting.toggle()
                     }, label: {
-                        Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding()
+                        if #available(iOS 16.0, *) {
+                            Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
+                                .accentColor(setting.buttonColor)
+                                .font(.system(size: 30))
+                                .padding()
+                        } else {
+                            Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
+                                .accentColor(setting.buttonColor)
+                                .font(.system(size: 30))
+                                .padding()
+                        }
                     })
                     Spacer()
                     NavigationLink(destination: PieChartView(dataList: barChart.dataList).environmentObject(setting)) {
@@ -58,7 +65,7 @@ struct BarChartView: View {
                     Text(setting.title).foregroundColor(setting.titleColor)
                         .font(.largeTitle)
                         .padding(.top, height*0.05)
-                        .padding(.bottom, height*0.05)
+                        .padding(.bottom, height*0.075)
                 }
 
                 HStack(alignment: .bottom, spacing: baseframeWidth/8){
@@ -71,7 +78,7 @@ struct BarChartView: View {
                                     if(isVisibleSetting){
                                         Image(systemName: "trash")
                                             .accentColor(Color.red)
-                                            .padding(.bottom)
+                                            .padding(.bottom, 6)
                                     }
                                 }
                                 Text("\(Int(barChart.value(index: index)))")
@@ -147,7 +154,9 @@ struct BarChartView: View {
                     .opacity(isVisibleSetting ? 1:0).padding(.bottom, fixedHeight * 0.05)
                     .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
                 Spacer()
-            }.background(setting.backColor)
+            }
+            .background(setting.backColor)
+            .navigationBarHidden(true)
         }
     }
 }
