@@ -15,7 +15,6 @@ class BarChartViewModel: ObservableObject {
     @Published var dataList: DataList
     
     enum AlertType {
-        case sameName
         case maxData
     }
     
@@ -23,9 +22,8 @@ class BarChartViewModel: ObservableObject {
     
     init() {
         self.dataList = DataList()
-        self.alertType = .sameName
+        self.alertType = .maxData
     }
-    
     
     func maxValue() -> CGFloat{
         return CGFloat(dataList.max())
@@ -56,20 +54,11 @@ class BarChartViewModel: ObservableObject {
     }
     
     func addData() {
-        if dataList.contains(name: name) {
-            sameNameAlert()
-            return
-        }
         if dataList.count() > 9 {
             maxDataAlert()
             return
         }
         dataList.add(value: value, name: name)
-    }
-    
-    private func sameNameAlert() {
-        alertType = .sameName
-        isShowAlert = true
     }
     
     private func maxDataAlert() {
@@ -79,10 +68,6 @@ class BarChartViewModel: ObservableObject {
     
     func alert() -> Alert {
         switch alertType {
-        case .sameName :
-            return Alert(title: Text(LocalizedStringKey("sameAlertText")),
-                         message: Text(LocalizedStringKey("sameAlertMessage")),
-                         dismissButton: .default(Text("OK"),action: {self.isShowAlert = false}))
         case .maxData :
             return Alert(title: Text(LocalizedStringKey("maxAlertText")),
                          message: Text(LocalizedStringKey("maxAlertMessage")),

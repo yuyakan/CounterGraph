@@ -67,7 +67,9 @@ struct SettingView: View {
                 
                 Spacer()
             }
-        }
+        }.onDisappear(perform: {
+            setting.save()
+        })
     }
 }
 

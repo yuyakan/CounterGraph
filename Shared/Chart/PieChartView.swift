@@ -52,10 +52,17 @@ struct PieChartView: View {
                 Button(action: {
                     isVisibleSetting.toggle()
                 }, label: {
-                    Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
-                        .accentColor(setting.buttonColor)
-                        .font(.system(size: 30))
-                        .padding()
+                    if #available(iOS 16.0, *) {
+                        Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
+                            .accentColor(setting.buttonColor)
+                            .font(.system(size: 30))
+                            .padding()
+                    } else {
+                        Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
+                            .accentColor(setting.buttonColor)
+                            .font(.system(size: 30))
+                            .padding()
+                    }
                 })
             }
             
@@ -122,6 +129,7 @@ struct PieChartView: View {
             Spacer()
         }
         .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
         .background(setting.backColor)
     }
 }
