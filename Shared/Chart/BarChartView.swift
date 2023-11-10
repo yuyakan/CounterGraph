@@ -23,7 +23,7 @@ struct BarChartView: View {
         let fixedWidth = width * 0.8
         let baseframeWidth = fixedWidth / Double(bars)
         
-        ZStack{
+        NavigationView{
             VStack{
                 HStack {
                     Button(action: {
@@ -35,6 +35,12 @@ struct BarChartView: View {
                             .padding()
                     })
                     Spacer()
+                    NavigationLink(destination: PieChartView(dataList: barChart.dataList).environmentObject(setting)) {
+                        Image(systemName: "chart.pie.fill")
+                            .accentColor(setting.buttonColor)
+                            .font(.system(size: 30))
+                            .padding()
+                    }
                 }
                 
                 if isVisibleSetting {
@@ -48,13 +54,11 @@ struct BarChartView: View {
                     }.padding(.horizontal)
                 }
                 
-                Spacer()
-                
                 if(!isVisibleSetting){
                     Text(setting.title).foregroundColor(setting.titleColor)
                         .font(.largeTitle)
-                        .padding()
-                        .padding(.bottom)
+                        .padding(.top, height*0.05)
+                        .padding(.bottom, height*0.05)
                 }
 
                 HStack(alignment: .bottom, spacing: baseframeWidth/8){
@@ -141,14 +145,9 @@ struct BarChartView: View {
                     Spacer()
                 }.padding(.top, 10)
                     .opacity(isVisibleSetting ? 1:0).padding(.bottom, fixedHeight * 0.05)
-                    .alert(isPresented: $barChart.alert) {
-                                Alert(title: Text(LocalizedStringKey("AlertText")),
-                                      message: Text(LocalizedStringKey("AlertMessage")),
-                                      dismissButton: .default(Text("OK"),
-                                                              action: {barChart.alert = false}))
-                            }
+                    .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
                 Spacer()
-            }
-        }.background(setting.backColor)
+            }.background(setting.backColor)
+        }
     }
 }

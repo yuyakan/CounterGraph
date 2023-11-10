@@ -17,6 +17,10 @@
 		4B1A83D42AFCF3AE002F1BFE /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A83D22AFCF3AE002F1BFE /* Data.swift */; };
 		4B7D4B842AFD31CF00858ED9 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B832AFD31CF00858ED9 /* Setting.swift */; };
 		4B7D4B852AFD31CF00858ED9 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B832AFD31CF00858ED9 /* Setting.swift */; };
+		4B7D4B8A2AFDF84900858ED9 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B892AFDF84900858ED9 /* PieChartView.swift */; };
+		4B7D4B8B2AFDF84900858ED9 /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B892AFDF84900858ED9 /* PieChartView.swift */; };
+		4B7D4B8E2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */; };
+		4B7D4B8F2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */; };
 		4B8782A827C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
 		4B8782A927C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
 		4B93F91F2833DBA90076288F /* AdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B93F91E2833DBA90076288F /* AdView.swift */; };
@@ -64,6 +68,8 @@
 		4B1A83CE2AFCE54A002F1BFE /* BarChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartViewModel.swift; sourceTree = "<group>"; };
 		4B1A83D22AFCF3AE002F1BFE /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		4B7D4B832AFD31CF00858ED9 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
+		4B7D4B892AFDF84900858ED9 /* PieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartView.swift; sourceTree = "<group>"; };
+		4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartViewModel.swift; sourceTree = "<group>"; };
 		4B8782A627C60EA60057DF32 /* CounterGraph--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CounterGraph--iOS--Info.plist"; sourceTree = "<group>"; };
 		4B8782A727C633340057DF32 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4B93F91E2833DBA90076288F /* AdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdView.swift; sourceTree = "<group>"; };
@@ -131,13 +137,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4B1A83CA2AFCE230002F1BFE /* BarChart */ = {
+		4B1A83CA2AFCE230002F1BFE /* Chart */ = {
 			isa = PBXGroup;
 			children = (
 				4BD213FC27C1307B004280DA /* BarChartView.swift */,
 				4B1A83CE2AFCE54A002F1BFE /* BarChartViewModel.swift */,
+				4B7D4B892AFDF84900858ED9 /* PieChartView.swift */,
+				4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */,
 			);
-			path = BarChart;
+			path = Chart;
 			sourceTree = "<group>";
 		};
 		4B1A83D12AFCF387002F1BFE /* Data */ = {
@@ -147,6 +155,15 @@
 				4B1A83D22AFCF3AE002F1BFE /* Data.swift */,
 			);
 			path = Data;
+			sourceTree = "<group>";
+		};
+		4B7D4B8C2AFDF87800858ED9 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				4BBFC61927C37BB700A05720 /* SettingView.swift */,
+				4B7D4B832AFD31CF00858ED9 /* Setting.swift */,
+			);
+			path = Setting;
 			sourceTree = "<group>";
 		};
 		4BD213AE27C0E482004280DA = {
@@ -169,11 +186,10 @@
 				4B8782A727C633340057DF32 /* GoogleService-Info.plist */,
 				4BD213B427C0E483004280DA /* CounterGraphApp.swift */,
 				4BD213B527C0E483004280DA /* ContentView.swift */,
-				4BBFC61927C37BB700A05720 /* SettingView.swift */,
-				4B7D4B832AFD31CF00858ED9 /* Setting.swift */,
-				4B1A83CA2AFCE230002F1BFE /* BarChart */,
-				4B1A83D12AFCF387002F1BFE /* Data */,
 				4B93F91E2833DBA90076288F /* AdView.swift */,
+				4B7D4B8C2AFDF87800858ED9 /* Setting */,
+				4B1A83CA2AFCE230002F1BFE /* Chart */,
+				4B1A83D12AFCF387002F1BFE /* Data */,
 				4B1A83C82AFCC536002F1BFE /* Localizable.strings */,
 				4BD213B627C0E484004280DA /* Assets.xcassets */,
 			);
@@ -463,6 +479,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B93F91F2833DBA90076288F /* AdView.swift in Sources */,
+				4B7D4B8E2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */,
 				4B1A83CC2AFCE30F002F1BFE /* DataList.swift in Sources */,
 				4BBFC61A27C37BB700A05720 /* SettingView.swift in Sources */,
 				4B1A83CF2AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
@@ -471,6 +488,7 @@
 				4BD213DC27C0E484004280DA /* CounterGraphApp.swift in Sources */,
 				4B1A83D32AFCF3AE002F1BFE /* Data.swift in Sources */,
 				4B7D4B842AFD31CF00858ED9 /* Setting.swift in Sources */,
+				4B7D4B8A2AFDF84900858ED9 /* PieChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -479,6 +497,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B93F9202833DBA90076288F /* AdView.swift in Sources */,
+				4B7D4B8F2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */,
 				4B1A83CD2AFCE30F002F1BFE /* DataList.swift in Sources */,
 				4BBFC61B27C37BB700A05720 /* SettingView.swift in Sources */,
 				4B1A83D02AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
@@ -487,6 +506,7 @@
 				4BD213DD27C0E484004280DA /* CounterGraphApp.swift in Sources */,
 				4B1A83D42AFCF3AE002F1BFE /* Data.swift in Sources */,
 				4B7D4B852AFD31CF00858ED9 /* Setting.swift in Sources */,
+				4B7D4B8B2AFDF84900858ED9 /* PieChartView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
