@@ -11,8 +11,8 @@ import SwiftUI
 class Setting: ObservableObject{
     @Published var title: String = String(localized: "Result")
     @Published var titleColor: Color = Color.purple
-    @Published var textColor: Color = Color.black
+    @Published var textColor: Color = UITraitCollection.current.userInterfaceStyle == .dark ? Color.white : Color.black
     @Published var graphColor = Color.purple
-    @Published var backColor = Color.white
+    @Published var backColor = UITraitCollection.current.userInterfaceStyle == .dark ? Color.black : Color.white
     @Published var buttonColor = Color.purple
 }

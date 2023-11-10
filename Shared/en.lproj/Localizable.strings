@@ -22,5 +22,8 @@
 
 "1unit:" = "1unit:";
 
-"AlertText" = "The name is already used";
-"AlertMessage" = "Please give it a different name";
+"sameAlertText" = "The name is already used";
+"sameAlertMessage" = "Please give it a different name";
+
+"maxAlertText" = "Too many data";
+"maxAlertMessage" = "Please limit the number of data to 10 or less.";

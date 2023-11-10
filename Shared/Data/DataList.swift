@@ -41,6 +41,23 @@ struct DataList {
         return dataList[index].name
     }
     
+    func names() -> [String] {
+        return dataList.map { $0.name }
+    }
+    
+    func contains(name: String) -> Bool {
+        return dataList.contains { $0.name == name }
+    }
+    
+    func getRatio() -> [Double] {
+        let sum = sum()
+        return dataList.map {Double($0.value) / sum}
+    }
+    
+    private func sum() -> Double {
+        return Double(dataList.reduce(0, {sum, data in sum + data.value}))
+    }
+    
     mutating func plus(index: Int, value: Int) {
         let newValue = dataList[index].value + value
         let newName = dataList[index].name
@@ -51,10 +68,6 @@ struct DataList {
         let newValue = dataList[index].value - value
         let newName = dataList[index].name
         dataList[index] = personalData(value: newValue, name: newName)
-    }
-    
-    func contains(name: String) -> Bool {
-        return dataList.contains { $0.name == name }
     }
     
     mutating func add(value: Int, name: String) {

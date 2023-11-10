@@ -20,9 +20,9 @@ struct ContentView: View {
                 BarChartView()
                     .environmentObject(setting)
                     .tabItem { Group{
-                                Image(systemName: "chart.bar")
+                                Image(systemName: "light.panel.fill")
                                 Text("Charts")
-                            }
+                    }
                 }.tag(0)
                 SettingView()
                     .environmentObject(setting)
@@ -30,7 +30,7 @@ struct ContentView: View {
                                 Image(systemName: "gearshape")
                                 Text("Setting")
                             }}.tag(1)
-            }.accentColor(Color.blue)
+            }.accentColor(setting.buttonColor)
             AdView().frame(width: 320, height: 50)
                 .padding(.top, height * 0.005)
         }

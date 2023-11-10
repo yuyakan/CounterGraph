@@ -22,5 +22,8 @@
 
 "1unit:" = "1単位:";
 
-"AlertText" = "その名前はすでに使われています";
-"AlertMessage" = "違う名前を入力してください";
+"sameAlertText" = "その名前はすでに使われています";
+"sameAlertMessage" = "違う名前を入力してください";
+
+"maxAlertText" = "データ数が多すぎます";
+"maxAlertMessage" = "データ数は10個以下にして下さい";
