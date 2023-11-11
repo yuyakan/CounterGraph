@@ -16,15 +16,15 @@ class PieChartViewModel: ObservableObject {
         self.dataList = dataList
         
         let jsonDecoder = JSONDecoder()
-        guard let pieColors = UserDefaults.standard.object(forKey: "pieColors") as? Data,
-              let pieColors = try? jsonDecoder.decode([Color].self, from: pieColors)else { return }
+        guard let pieColors = UserDefaults.standard.object(forKey: "pieColors_file\(dataList.fileId)") as? Data,
+              let pieColors = try? jsonDecoder.decode([Color].self, from: pieColors) else { return }
         self.colors = pieColors
     }
     
     func save() {
         let jsonEncoder = JSONEncoder()
         guard let colors = try? jsonEncoder.encode(colors) else { return }
-        UserDefaults.standard.set(colors, forKey: "pieColors")
+        UserDefaults.standard.set(colors, forKey: "pieColors_file\(dataList.fileId)")
     }
     
     func angles() -> [Double] {

@@ -10,14 +10,14 @@ import SwiftUI
 struct PieChartView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var setting: Setting
-    @ObservedObject var pieChart: PieChartViewModel
+    @StateObject var pieChart: PieChartViewModel
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     let centerX: Double
     let centerY: Double
     
     init (dataList: DataList){
-        pieChart = PieChartViewModel(dataList: dataList)
+        _pieChart = StateObject(wrappedValue: PieChartViewModel(dataList: dataList))
         self.centerX = width/2
         self.centerY = height/4
     }
@@ -59,11 +59,11 @@ struct PieChartView: View {
                     }
                 })
             }
-//            
+            
             if(!isVisibleSetting){
                 Text(setting.title).foregroundColor(setting.titleColor)
                     .font(.largeTitle)
-                    .padding(.top, height*0.05)
+                    .padding(.top, height*0.07)
             }
             
             ZStack {
@@ -130,6 +130,6 @@ struct PieChartView: View {
 
 struct PieChartView_Previews: PreviewProvider {
     static var previews: some View {
-        PieChartView(dataList: DataList())
+        PieChartView(dataList: DataList(fileId: 0))
     }
 }

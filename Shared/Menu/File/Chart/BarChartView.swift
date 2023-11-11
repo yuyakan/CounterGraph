@@ -9,10 +9,16 @@ import SwiftUI
 
 
 struct BarChartView: View {
-    @ObservedObject var barChart = BarChartViewModel()
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var menu: MenuViewModel
     @EnvironmentObject var setting: Setting
+    @StateObject var barChart: BarChartViewModel
     @State var unit: Int = 10
     @State var isVisibleSetting : Bool = false
+    
+    init(fileId: Int) {
+        _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
+    }
     
     var body: some View {
         let bars = barChart.count()
@@ -25,7 +31,17 @@ struct BarChartView: View {
         
         NavigationView{
             VStack{
-                HStack {
+                HStack(spacing: 0) {
+                    Button(action: {
+                        dismiss()
+                        menu.refresh.toggle()
+                    }, label: {
+                        Image(systemName: "list.bullet")
+                            .accentColor(setting.buttonColor)
+                            .font(.system(size: 30))
+                            .padding()
+                    })
+                    Spacer()
                     Button(action: {
                         isVisibleSetting.toggle()
                     }, label: {
@@ -33,15 +49,14 @@ struct BarChartView: View {
                             Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
                                 .accentColor(setting.buttonColor)
                                 .font(.system(size: 30))
-                                .padding()
+                                .padding(.vertical)
                         } else {
                             Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
                                 .accentColor(setting.buttonColor)
                                 .font(.system(size: 30))
-                                .padding()
+                                .padding(.vertical)
                         }
                     })
-                    Spacer()
                     NavigationLink(destination: PieChartView(dataList: barChart.dataList).environmentObject(setting)) {
                         Image(systemName: "chart.pie.fill")
                             .accentColor(setting.buttonColor)
@@ -64,7 +79,7 @@ struct BarChartView: View {
                 if(!isVisibleSetting){
                     Text(setting.title).foregroundColor(setting.titleColor)
                         .font(.largeTitle)
-                        .padding(.top, height*0.05)
+                        .padding(.top, height*0.07)
                         .padding(.bottom, height*0.075)
                 }
 

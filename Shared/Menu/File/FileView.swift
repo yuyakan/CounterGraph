@@ -8,16 +8,21 @@
 import SwiftUI
 import GoogleMobileAds
 
-struct ContentView: View {
-    @ObservedObject var setting = Setting()
+struct FileView: View {
+    @StateObject var setting: Setting
     @State var tabIndex:Int = 0
+    let fileId: Int
+    init(fileId: Int) {
+        self.fileId = fileId
+        _setting = StateObject(wrappedValue: Setting(fileId: fileId))
+    }
     
     var body: some View {
         let bounds = UIScreen.main.bounds
         let height = Double(bounds.height)
         VStack{
             TabView(selection: $tabIndex) {
-                BarChartView()
+                BarChartView(fileId: fileId)
                     .environmentObject(setting)
                     .tabItem { Group{
                         if #available(iOS 16.0, *) {
@@ -38,12 +43,17 @@ struct ContentView: View {
             AdView().frame(width: 320, height: 50)
                 .padding(.top, height * 0.005)
         }
+        .onAppear(perform: {
+            setting.save()
+        })
+        .navigationBarBackButtonHidden(true)
+        .navigationBarHidden(true)
     }
 }
 
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        FileView(fileId: 0)
     }
 }

@@ -17,11 +17,10 @@ class BarChartViewModel: ObservableObject {
     enum AlertType {
         case maxData
     }
-    
     private var alertType: AlertType
     
-    init() {
-        self.dataList = DataList()
+    init(fileId: Int) {
+        self.dataList = DataList(fileId: fileId)
         self.alertType = .maxData
     }
     

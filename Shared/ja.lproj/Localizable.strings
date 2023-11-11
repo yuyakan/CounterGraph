@@ -27,3 +27,5 @@
 
 "maxAlertText" = "データ数が多すぎます";
 "maxAlertMessage" = "データ数は10個以下にして下さい";
+
+"newData" = "新しいグラフを作成";

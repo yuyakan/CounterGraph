@@ -27,3 +27,5 @@
 
 "maxAlertText" = "Too many data";
 "maxAlertMessage" = "Please limit the number of data to 10 or less.";
+
+"newData" = "Create a new graph";
