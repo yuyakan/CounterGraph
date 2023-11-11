@@ -10,12 +10,7 @@ import SwiftUI
 struct PieChartView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var setting: Setting
-    let pieChart: PieChartViewModel
-    let angles: [Double]
-    let names: [String]
-    let namePositions: [CGPoint]
-    let percents: [String]
-    let percentPositions: [CGPoint]
+    @ObservedObject var pieChart: PieChartViewModel
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     let centerX: Double
@@ -25,18 +20,16 @@ struct PieChartView: View {
         pieChart = PieChartViewModel(dataList: dataList)
         self.centerX = width/2
         self.centerY = height/4
-        self.angles = pieChart.angles()
-        self.names = pieChart.names()
-        self.namePositions = pieChart.labelPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
-        self.percents = pieChart.percents()
-        self.percentPositions = pieChart.percentPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
     }
     
     @State var isVisibleSetting = false
-    @State var colors: [Color] = [Color.orange, Color.green, Color.blue, Color.red, Color.yellow, Color.pink, Color.purple, Color.mint, Color.indigo, Color.cyan]
-    
     var body: some View {
         let radius: CGFloat = CGFloat(width/2.9)
+        let names = pieChart.names()
+        let angles = pieChart.angles()
+        let namePositions: [CGPoint] = pieChart.labelPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
+        let percents: [String] = pieChart.percents()
+        let percentPositions: [CGPoint] = pieChart.percentPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
         
         VStack {
             HStack {
@@ -51,6 +44,7 @@ struct PieChartView: View {
                 Spacer()
                 Button(action: {
                     isVisibleSetting.toggle()
+                    pieChart.save()
                 }, label: {
                     if #available(iOS 16.0, *) {
                         Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
@@ -65,7 +59,7 @@ struct PieChartView: View {
                     }
                 })
             }
-            
+//            
             if(!isVisibleSetting){
                 Text(setting.title).foregroundColor(setting.titleColor)
                     .font(.largeTitle)
@@ -82,7 +76,7 @@ struct PieChartView: View {
                                     endAngle: Angle(degrees: angles[index+1]),
                                     clockwise: false)
                     }
-                    .fill(colors[index])
+                    .fill(pieChart.colors[index])
                     
                     if !isVisibleSetting {
                         Canvas { context, size in
@@ -109,20 +103,20 @@ struct PieChartView: View {
                     ForEach(0..<min(names.count, 5), id: \.self){ index in
                         VStack {
                             Text("\(names[index])")
-                            ColorPicker("",selection:$colors[index]).frame(height: 10)
+                            ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
                         }.frame(height: height * 0.063)
                             .frame(maxWidth: width * 0.8 / 5)
-                            .foregroundColor(colors[index])
+                            .foregroundColor(pieChart.colors[index])
                     }
                 }.opacity(isVisibleSetting ? 1:0)
                 HStack(alignment: .bottom, spacing: width * 0.1 / 5){
                     ForEach(5..<min(names.count, 10), id: \.self){ index in
                         VStack {
                             Text("\(names[index])")
-                            ColorPicker("",selection:$colors[index]).frame(height: 10)
+                            ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
                         }.frame(height: height * 0.063)
                             .frame(maxWidth: width * 0.8 / 5)
-                            .foregroundColor(colors[index])
+                            .foregroundColor(pieChart.colors[index])
                     }
                 }.padding(.bottom, names.count>5 ? height*0.05 : height*0.1)
             }
