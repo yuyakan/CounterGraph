@@ -13,11 +13,13 @@ struct BarChartView: View {
     @EnvironmentObject var menu: MenuViewModel
     @EnvironmentObject var setting: Setting
     @StateObject var barChart: BarChartViewModel
+    @Binding var chartType: ChartType
     @State var unit: Int = 10
     @State var isVisibleSetting : Bool = false
     
-    init(fileId: Int) {
+    init(fileId: Int, chartType:  Binding<ChartType>) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
+        _chartType = chartType
     }
     
     var body: some View {
@@ -28,61 +30,83 @@ struct BarChartView: View {
         let fixedHeight = height * 0.5
         let fixedWidth = width * 0.8
         let baseframeWidth = fixedWidth / Double(bars)
+        let blankList = [
+            PersonalData(value: 80, name: String(localized: "Ann")),
+            PersonalData(value: 230, name: String(localized: "Tom")),
+            PersonalData(value: 500, name: String(localized: "Bob")),
+            PersonalData(value: 320, name: String(localized: "Casey")),
+            PersonalData(value: 120, name: String(localized: "Brian"))
+        ]
         
-        NavigationView{
-            VStack{
-                HStack(spacing: 0) {
+        VStack{
+            HStack(alignment: .top , spacing: 0) {
+                Button(action: {
+                    dismiss()
+                    menu.refresh.toggle()
+                }, label: {
+                    Image(systemName: "list.bullet")
+                        .accentColor(setting.buttonColor)
+                        .font(.system(size: 30))
+                        .padding()
+                })
+                Spacer()
+                VStack(spacing: 0) {
                     Button(action: {
-                        dismiss()
-                        menu.refresh.toggle()
+                        chartType = .pie
                     }, label: {
-                        Image(systemName: "list.bullet")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding()
-                    })
-                    Spacer()
-                    Button(action: {
-                        isVisibleSetting.toggle()
-                    }, label: {
-                        if #available(iOS 16.0, *) {
-                            Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
-                                .accentColor(setting.buttonColor)
-                                .font(.system(size: 30))
-                                .padding(.vertical)
-                        } else {
-                            Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
-                                .accentColor(setting.buttonColor)
-                                .font(.system(size: 30))
-                                .padding(.vertical)
-                        }
-                    })
-                    NavigationLink(destination: PieChartView(dataList: barChart.dataList).environmentObject(setting)) {
                         Image(systemName: "chart.pie.fill")
                             .accentColor(setting.buttonColor)
                             .font(.system(size: 30))
-                            .padding()
+                            .padding(.top, 13)
+                            .padding(.bottom, 7)
+                            .padding(.trailing, 8)
+                    })
+                    Button(action: {
+                        isVisibleSetting.toggle()
+                    }, label: {
+                        Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
+                            .accentColor(setting.buttonColor)
+                            .font(.system(size: 30))
+                            .padding(.trailing, 8)
+                    })
+                }
+            }
+            
+            if isVisibleSetting {
+                HStack{
+                    Text(LocalizedStringKey("1unit:"))
+                    TextField("", value: $unit, formatter: NumberFormatter())
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.default)
+                        .frame(width: fixedWidth * 0.2)
+                    Spacer()
+                }.padding(.horizontal)
+            }
+            
+            if(!isVisibleSetting){
+                Text(setting.title).foregroundColor(setting.titleColor)
+                    .font(.largeTitle)
+                    .padding(.top, height*0.03)
+                    .padding(.bottom, height*0.075)
+            }
+            
+            if bars == 0 {
+                HStack(alignment: .bottom, spacing: fixedWidth/40){
+                    ForEach(0..<5, id: \.self){ index in
+                        ZStack (alignment: .bottom) {
+                            VStack(spacing:0) {
+                                Text("\(Int(blankList[index].value))")
+                                    .frame(width: fixedWidth/5)
+                                    .foregroundColor(Color.gray.opacity(0.4))
+                                    .padding(.bottom, fixedHeight * 0.02)
+                                RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0))
+                                    .fill(Color.gray.opacity(0.3))
+                                    .frame(width: fixedWidth/10, height: (Double(blankList[index].value) / 500)*fixedHeight*0.5)
+                            }
+                        }
                     }
                 }
-                
-                if isVisibleSetting {
-                    HStack{
-                        Text(LocalizedStringKey("1unit:"))
-                        TextField("", value: $unit, formatter: NumberFormatter())
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .keyboardType(.default)
-                            .frame(width: fixedWidth * 0.2)
-                        Spacer()
-                    }.padding(.horizontal)
-                }
-                
-                if(!isVisibleSetting){
-                    Text(setting.title).foregroundColor(setting.titleColor)
-                        .font(.largeTitle)
-                        .padding(.top, height*0.07)
-                        .padding(.bottom, height*0.075)
-                }
-
+            } else {
                 HStack(alignment: .bottom, spacing: baseframeWidth/8){
                     ForEach(0..<bars, id: \.self){ index in
                         ZStack (alignment: .bottom) {
@@ -107,7 +131,37 @@ struct BarChartView: View {
                         }
                     }
                 }
+            }
+            
+            if bars == 0 {
+                HStack(alignment: .center, spacing: fixedWidth/40){
+                    ForEach(0..<5, id: \.self){ index in
+                        VStack {
+                            Text("\(blankList[index].name)")
+                                .frame(height: fixedHeight/8)
+                                .frame(maxWidth: fixedWidth/5)
+                                .foregroundColor(Color.gray.opacity(0.4))
+                                .padding(.top, height * 0.015)
+                                .padding(.bottom, height * 0.01)
+                        }
+                    }
+                }
                 
+                if(isVisibleSetting){
+                    ZStack {
+                        VStack(spacing: 0){
+                            Image(systemName: "minus.circle")
+                                .font(.system(size: 30))
+                                .padding(.vertical, 10)
+                            Image(systemName: "minus.circle")
+                                .font(.system(size: 30))
+                                .padding(.vertical, 10)
+                        }.opacity(0)
+                        Text(LocalizedStringKey("blankBar"))
+                            .padding(.bottom)
+                    }
+                }
+            } else {
                 HStack(alignment: .center, spacing: baseframeWidth/8){
                     ForEach(0..<bars, id: \.self){ index in
                         VStack {
@@ -142,36 +196,35 @@ struct BarChartView: View {
                         }
                     }
                 }
-                
-                Divider()
-                    .opacity(isVisibleSetting ? 1:0).frame(width: width*0.85)
-                
-                HStack(spacing: 0){
-                    Spacer()
-                    TextField("Jack", text: $barChart.name)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: fixedWidth * 0.3)
-                        .padding(.trailing)
-                    TextField("", value: $barChart.value, formatter: NumberFormatter())
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .keyboardType(.default)
-                                .frame(width: fixedWidth * 0.3)
-                    Spacer()
-                    Button(action: {
-                        barChart.addData()
-                    }, label: {
-                        Image(systemName: "plus.square.on.square")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                    })
-                    Spacer()
-                }.padding(.top, 10)
-                    .opacity(isVisibleSetting ? 1:0).padding(.bottom, fixedHeight * 0.05)
-                    .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
-                Spacer()
             }
-            .background(setting.backColor)
-            .navigationBarHidden(true)
+            
+            Divider()
+                .opacity(isVisibleSetting ? 1:0).frame(width: width*0.85)
+            
+            HStack(spacing: 0){
+                Spacer()
+                TextField("Jack", text: $barChart.name)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .frame(width: fixedWidth * 0.3)
+                    .padding(.trailing)
+                TextField("", value: $barChart.value, formatter: NumberFormatter())
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .keyboardType(.default)
+                            .frame(width: fixedWidth * 0.3)
+                Spacer()
+                Button(action: {
+                    barChart.addData()
+                }, label: {
+                    Image(systemName: "plus.square.on.square")
+                        .accentColor(setting.buttonColor)
+                        .font(.system(size: 30))
+                })
+                Spacer()
+            }.padding(.top, 10)
+                .opacity(isVisibleSetting ? 1:0)
+                .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
+            Spacer()
         }
+        .background(setting.backColor)
     }
 }

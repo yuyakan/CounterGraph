@@ -9,15 +9,18 @@ import SwiftUI
 
 struct PieChartView: View {
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var menu: MenuViewModel
     @EnvironmentObject var setting: Setting
     @StateObject var pieChart: PieChartViewModel
+    @Binding var chartType: ChartType
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     let centerX: Double
     let centerY: Double
     
-    init (dataList: DataList){
-        _pieChart = StateObject(wrappedValue: PieChartViewModel(dataList: dataList))
+    init (fileId: Int, chartType:  Binding<ChartType>){
+        _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
+        _chartType = chartType
         self.centerX = width/2
         self.centerY = height/4
     }
@@ -30,43 +33,102 @@ struct PieChartView: View {
         let namePositions: [CGPoint] = pieChart.labelPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
         let percents: [String] = pieChart.percents()
         let percentPositions: [CGPoint] = pieChart.percentPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
+        let blankList = [
+            PersonalData(value: 80, name: String(localized: "Ann")),
+            PersonalData(value: 230, name: String(localized: "Tom")),
+            PersonalData(value: 500, name: String(localized: "Bob")),
+            PersonalData(value: 320, name: String(localized: "Casey")),
+            PersonalData(value: 120, name: String(localized: "Brian"))
+        ]
+        let blankAngles = [0.0, 23.04, 89.28, 233.28, 325.44, 360.0]
+        let blankNamesPositions = [
+            CGPoint(x: 350.53641346137726, y: 259.3787081945006),
+            CGPoint(x: 284.10571720738767, y: 358.5261594952491),
+            CGPoint(x: 47.68829439385735, y: 278.66474390136324),
+            CGPoint(x: 221.68309135075444, y: 72.83024808288326),
+            CGPoint(x: 346.462418199441, y: 180.85009938742232)
+        ]
+        let blankPercents = ["6.4%", "18.4%", "40.0%", "25.6%", "9.6%"]
+        let blankPercentPositions = [
+            CGPoint(x: 289.8554020978044, y: 244.01739890575791),
+            CGPoint(x: 249.59437406508343, y: 304.106763330454),
+            CGPoint(x: 106.3110875114287, y: 255.7059053947656),
+            CGPoint(x: 211.76247960651784, y: 130.95772611083834),
+            CGPoint(x: 287.3863140602673, y: 196.42430265904383)
+        ]
         
         VStack {
-            HStack {
+            HStack(alignment: .top, spacing: 0) {
                 Button(action: {
                     dismiss()
+                    menu.refresh.toggle()
                 }, label: {
-                    Image(systemName: "chart.bar.xaxis")
+                    Image(systemName: "list.bullet")
                         .accentColor(setting.buttonColor)
                         .font(.system(size: 30))
                         .padding()
                 })
                 Spacer()
-                Button(action: {
-                    isVisibleSetting.toggle()
-                    pieChart.save()
-                }, label: {
-                    if #available(iOS 16.0, *) {
-                        Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
+                VStack(spacing: 0) {
+                    Button(action: {
+                        chartType = .bar
+                    }, label: {
+                        Image(systemName: "chart.bar.xaxis")
                             .accentColor(setting.buttonColor)
                             .font(.system(size: 30))
-                            .padding()
-                    } else {
-                        Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
+                            .padding(.top, 14)
+                            .padding(.bottom, 6)
+                            .padding(.trailing, 8)
+                    })
+                    Button(action: {
+                        isVisibleSetting.toggle()
+                    }, label: {
+                        Image(systemName: isVisibleSetting ? "paintbrush.fill" : "paintbrush")
                             .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding()
-                    }
-                })
+                            .font(.system(size: 26))
+                            .padding(.trailing, 8)
+                    })
+                }
             }
             
             if(!isVisibleSetting){
                 Text(setting.title).foregroundColor(setting.titleColor)
                     .font(.largeTitle)
-                    .padding(.top, height*0.07)
+                    .padding(.top, height*0.03)
             }
             
             ZStack {
+                if names.count == 0 {
+                    ForEach(0..<(blankAngles.count - 1), id: \.self) { index in
+                        Path { path in
+                            path.move(to: CGPoint(x: centerX, y: centerY))
+                            path.addArc(center: .init(x: centerX, y: centerY),
+                                        radius: radius,
+                                        startAngle: Angle(degrees: blankAngles[index]),
+                                        endAngle: Angle(degrees: blankAngles[index+1]),
+                                        clockwise: false)
+                        }
+                        .fill(Color.gray.opacity(0.2))
+                        if !isVisibleSetting {
+                            Canvas { context, size in
+                                context.draw(Text(LocalizedStringKey(blankList[index].name))
+                                    .font(.title2)
+                                    .foregroundColor(Color.gray.opacity(0.2)),
+                                             at: blankNamesPositions[index],
+                                             anchor: .bottom)
+                            }
+                            
+                            Canvas { context, size in
+                                context.draw(Text(blankPercents[index])
+                                    .font(.title2)
+                                    .foregroundColor(.white),
+                                             at: blankPercentPositions[index],
+                                             anchor: .bottom)
+                            }
+                        }
+                    }
+                }
+                
                 ForEach(0..<(angles.count - 1), id: \.self) { index in
                     Path { path in
                         path.move(to: CGPoint(x: centerX, y: centerY))
@@ -99,6 +161,9 @@ struct PieChartView: View {
             }
             
             if(isVisibleSetting){
+                if names.count == 0 {
+                    Text(LocalizedStringKey("blank"))
+                }
                 HStack(alignment: .bottom, spacing: width * 0.1 / 5){
                     ForEach(0..<min(names.count, 5), id: \.self){ index in
                         VStack {
@@ -110,7 +175,7 @@ struct PieChartView: View {
                     }
                 }.opacity(isVisibleSetting ? 1:0)
                 HStack(alignment: .bottom, spacing: width * 0.1 / 5){
-                    ForEach(5..<min(names.count, 10), id: \.self){ index in
+                    ForEach(5..<min(max(names.count,5), 10), id: \.self){ index in
                         VStack {
                             Text("\(names[index])")
                             ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
@@ -122,14 +187,9 @@ struct PieChartView: View {
             }
             Spacer()
         }
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .onDisappear(perform: {
+            pieChart.save()
+        })
         .background(setting.backColor)
-    }
-}
-
-struct PieChartView_Previews: PreviewProvider {
-    static var previews: some View {
-        PieChartView(dataList: DataList(fileId: 0))
     }
 }

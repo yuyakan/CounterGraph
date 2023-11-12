@@ -17,7 +17,8 @@ struct DataList {
         if (UserDefaults.standard.object(forKey: "data0_file\(String(fileId))") != nil) {
             createDataList(fileId: fileId)
         } else {
-            if fileId == 0 {
+            if (fileId == 0) && !UserDefaults.standard.bool(forKey: "isSecondLaunched") {
+                UserDefaults.standard.set(true, forKey: "isSecondLaunched")
                 self.dataList = [
                     PersonalData(value: 80, name: String(localized: "Ann")),
                     PersonalData(value: 230, name: String(localized: "Tom")),

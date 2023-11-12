@@ -10,11 +10,12 @@ import GoogleMobileAds
 
 struct FileView: View {
     @StateObject var setting: Setting
+    @State var chartType: ChartType = .bar
     @State var tabIndex:Int = 0
     let fileId: Int
     init(fileId: Int) {
-        self.fileId = fileId
         _setting = StateObject(wrappedValue: Setting(fileId: fileId))
+        self.fileId = fileId
     }
     
     var body: some View {
@@ -22,17 +23,31 @@ struct FileView: View {
         let height = Double(bounds.height)
         VStack{
             TabView(selection: $tabIndex) {
-                BarChartView(fileId: fileId)
-                    .environmentObject(setting)
-                    .tabItem { Group{
-                        if #available(iOS 16.0, *) {
-                            Image(systemName: "light.panel.fill")
-                        } else {
-                            Image(systemName: "display")
+                if chartType.isBar() {
+                    BarChartView(fileId: fileId, chartType: $chartType)
+                        .environmentObject(setting)
+                        .tabItem { Group{
+                            if #available(iOS 16.0, *) {
+                                Image(systemName: "light.panel.fill")
+                            } else {
+                                Image(systemName: "display")
+                            }
+                            Text("Charts")
                         }
-                        Text("Charts")
-                    }
-                }.tag(0)
+                    }.tag(0)
+                } else {
+                    PieChartView(fileId: fileId, chartType: $chartType)
+                        .environmentObject(setting)
+                        .tabItem { Group{
+                            if #available(iOS 16.0, *) {
+                                Image(systemName: "light.panel.fill")
+                            } else {
+                                Image(systemName: "display")
+                            }
+                            Text("Charts")
+                        }
+                    }.tag(0)
+                }
                 SettingView()
                     .environmentObject(setting)
                     .tabItem { Group{
@@ -46,7 +61,6 @@ struct FileView: View {
         .onAppear(perform: {
             setting.save()
         })
-        .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
     }
 }
