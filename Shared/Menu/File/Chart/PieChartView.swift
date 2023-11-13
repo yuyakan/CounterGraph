@@ -9,7 +9,6 @@ import SwiftUI
 
 struct PieChartView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var menu: MenuViewModel
     @EnvironmentObject var setting: Setting
     @StateObject var pieChart: PieChartViewModel
     @Binding var chartType: ChartType
@@ -61,7 +60,6 @@ struct PieChartView: View {
             HStack(alignment: .top, spacing: 0) {
                 Button(action: {
                     dismiss()
-                    menu.refresh.toggle()
                 }, label: {
                     Image(systemName: "list.bullet")
                         .accentColor(setting.buttonColor)
@@ -73,11 +71,11 @@ struct PieChartView: View {
                     Button(action: {
                         chartType = .bar
                     }, label: {
-                        Image(systemName: "chart.bar.xaxis")
+                        Image(systemName: "chart.pie.fill")
                             .accentColor(setting.buttonColor)
                             .font(.system(size: 30))
-                            .padding(.top, 14)
-                            .padding(.bottom, 6)
+                            .padding(.top, 13)
+                            .padding(.bottom, 7)
                             .padding(.trailing, 8)
                     })
                     Button(action: {
@@ -85,7 +83,7 @@ struct PieChartView: View {
                     }, label: {
                         Image(systemName: isVisibleSetting ? "paintbrush.fill" : "paintbrush")
                             .accentColor(setting.buttonColor)
-                            .font(.system(size: 26))
+                            .font(.system(size: 24))
                             .padding(.trailing, 8)
                     })
                 }

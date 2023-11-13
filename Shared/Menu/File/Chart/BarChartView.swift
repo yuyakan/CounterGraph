@@ -10,7 +10,6 @@ import SwiftUI
 
 struct BarChartView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var menu: MenuViewModel
     @EnvironmentObject var setting: Setting
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
@@ -42,7 +41,6 @@ struct BarChartView: View {
             HStack(alignment: .top , spacing: 0) {
                 Button(action: {
                     dismiss()
-                    menu.refresh.toggle()
                 }, label: {
                     Image(systemName: "list.bullet")
                         .accentColor(setting.buttonColor)
@@ -54,7 +52,7 @@ struct BarChartView: View {
                     Button(action: {
                         chartType = .pie
                     }, label: {
-                        Image(systemName: "chart.pie.fill")
+                        Image(systemName: "chart.pie")
                             .accentColor(setting.buttonColor)
                             .font(.system(size: 30))
                             .padding(.top, 13)

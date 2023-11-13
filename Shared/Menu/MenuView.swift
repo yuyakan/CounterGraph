@@ -11,19 +11,31 @@ struct MenuView: View {
     @StateObject var menu = MenuViewModel()
 
     var body: some View {
-        var titleList = menu.titleList()
         NavigationView {
             List {
-                ForEach(0..<titleList.count, id:\.self) { index in
-                    NavigationLink(destination: FileView(fileId: index).environmentObject(menu), label: {
-                        Text(titleList[index])
+                ForEach(menu.files, id:\.self) { file in
+                    NavigationLink(destination: FileView(fileId: file.id).environmentObject(menu), label: {
+                        Text(file.title)
+                            .frame(height: 42)
                     })
                 }
+                .onMove(perform: menu.moveRow)
+                .onDelete(perform: menu.removeRow)
+                Button(action: {
+                    menu.add()
+                }, label: {
+                    Image(systemName: "plus.square.on.square")
+                        .font(.system(size: 20))
+                        .frame(height: 42)
+                        .foregroundColor(Color.blue)
+                        .padding(.leading)
+                })
+        
                 Spacer(minLength: 300)
             }
-            .navigationBarHidden(true)
-        }.onAppear(perform: {
-            titleList = menu.titleList()
-        })
+            .navigationBarItems(trailing: EditButton().padding())
+        }.onChange(of: menu.refresh) { _ in
+            menu.rebuildFiles()
+        }
     }
 }

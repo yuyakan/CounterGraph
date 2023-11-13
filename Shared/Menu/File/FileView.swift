@@ -9,6 +9,7 @@ import SwiftUI
 import GoogleMobileAds
 
 struct FileView: View {
+    @EnvironmentObject var menu: MenuViewModel
     @StateObject var setting: Setting
     @State var chartType: ChartType = .bar
     @State var tabIndex:Int = 0
@@ -58,6 +59,9 @@ struct FileView: View {
             AdView().frame(width: 320, height: 50)
                 .padding(.top, height * 0.005)
         }
+        .onDisappear(perform: {
+            menu.refresh.toggle()
+        })
         .onAppear(perform: {
             setting.save()
         })
