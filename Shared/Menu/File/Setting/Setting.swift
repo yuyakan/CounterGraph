@@ -15,15 +15,15 @@ class Setting: ObservableObject{
     @Published var graphColor = Color.purple
     @Published var backColor = UITraitCollection.current.userInterfaceStyle == .dark ? Color.black : Color.white
     @Published var buttonColor = Color.purple
-    let fileId: Int
+    let fileId: String
     
-    init(fileId: Int) {
+    init(fileId: String) {
         self.fileId = fileId
         
         if let title = UserDefaults.standard.string(forKey: "Title_file\(fileId)"){
             self.title = title
         } else {
-            if fileId == 0 {
+            if fileId == "0" {
                 self.title = String(localized: "Result")
             }
         }

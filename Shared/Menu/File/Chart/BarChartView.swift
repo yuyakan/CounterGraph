@@ -16,7 +16,7 @@ struct BarChartView: View {
     @State var unit: Int = 10
     @State var isVisibleSetting : Bool = false
     
-    init(fileId: Int, chartType:  Binding<ChartType>) {
+    init(fileId: String, chartType:  Binding<ChartType>) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
         _chartType = chartType
     }
@@ -59,14 +59,25 @@ struct BarChartView: View {
                             .padding(.bottom, 7)
                             .padding(.trailing, 8)
                     })
-                    Button(action: {
-                        isVisibleSetting.toggle()
-                    }, label: {
-                        Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding(.trailing, 8)
-                    })
+                    if #available(iOS 16.0, *) {
+                        Button(action: {
+                            isVisibleSetting.toggle()
+                        }, label: {
+                            Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
+                                .accentColor(setting.buttonColor)
+                                .font(.system(size: 30))
+                                .padding(.trailing, 8)
+                        })
+                    } else {
+                        Button(action: {
+                            isVisibleSetting.toggle()
+                        }, label: {
+                            Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
+                                .accentColor(setting.buttonColor)
+                                .font(.system(size: 30))
+                                .padding(.trailing, 8)
+                        })
+                    }
                 }
             }
             
@@ -82,10 +93,17 @@ struct BarChartView: View {
             }
             
             if(!isVisibleSetting){
-                Text(setting.title).foregroundColor(setting.titleColor)
-                    .font(.largeTitle)
-                    .padding(.top, height*0.03)
-                    .padding(.bottom, height*0.075)
+                if height > 800 {
+                    Text(setting.title).foregroundColor(setting.titleColor)
+                        .font(.largeTitle)
+                        .padding(.top, height*0.03)
+                        .padding(.bottom, height*0.075)
+                } else {
+                    Text(setting.title).foregroundColor(setting.titleColor)
+                        .font(.largeTitle)
+                        .padding(.top, height*0.01)
+                        .padding(.bottom, height*0.075)
+                }
             }
             
             if bars == 0 {
@@ -167,8 +185,8 @@ struct BarChartView: View {
                                 .frame(height: fixedHeight/8)
                                 .frame(maxWidth: baseframeWidth)
                                 .foregroundColor(setting.textColor)
-                                .padding(.top, height * 0.015)
-                                .padding(.bottom, height * 0.01)
+                                .padding(.top, height * 0.005)
+                                .padding(.bottom, height * 0.005)
                             VStack(spacing: 0){
                                 Button(action: {
                                     barChart.plus(index: index, value: unit)

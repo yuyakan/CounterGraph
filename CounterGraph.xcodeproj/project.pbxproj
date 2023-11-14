@@ -23,8 +23,6 @@
 		4B7D4B8F2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */; };
 		4B8782A827C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
 		4B8782A927C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
-		4B93F91F2833DBA90076288F /* AdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B93F91E2833DBA90076288F /* AdView.swift */; };
-		4B93F9202833DBA90076288F /* AdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B93F91E2833DBA90076288F /* AdView.swift */; };
 		4BBFC61A27C37BB700A05720 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBFC61927C37BB700A05720 /* SettingView.swift */; };
 		4BBFC61B27C37BB700A05720 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBFC61927C37BB700A05720 /* SettingView.swift */; };
 		4BD17D772AFF910200120E96 /* extensionColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D762AFF910200120E96 /* extensionColor.swift */; };
@@ -37,6 +35,10 @@
 		4BD17D862B00826900120E96 /* ChartType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D842B00826900120E96 /* ChartType.swift */; };
 		4BD17D882B0220F700120E96 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D872B0220F700120E96 /* File.swift */; };
 		4BD17D892B0220F700120E96 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D872B0220F700120E96 /* File.swift */; };
+		4BD17D8C2B0260B700120E96 /* BannerAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8B2B0260B700120E96 /* BannerAd.swift */; };
+		4BD17D8D2B0260B700120E96 /* BannerAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8B2B0260B700120E96 /* BannerAd.swift */; };
+		4BD17D8F2B02612000120E96 /* InterstitialAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8E2B02612000120E96 /* InterstitialAd.swift */; };
+		4BD17D902B02612000120E96 /* InterstitialAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8E2B02612000120E96 /* InterstitialAd.swift */; };
 		4BD213CD27C0E484004280DA /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213CC27C0E484004280DA /* Tests_iOS.swift */; };
 		4BD213CF27C0E484004280DA /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213CE27C0E484004280DA /* Tests_iOSLaunchTests.swift */; };
 		4BD213D927C0E484004280DA /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213D827C0E484004280DA /* Tests_macOS.swift */; };
@@ -82,13 +84,14 @@
 		4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartViewModel.swift; sourceTree = "<group>"; };
 		4B8782A627C60EA60057DF32 /* CounterGraph--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CounterGraph--iOS--Info.plist"; sourceTree = "<group>"; };
 		4B8782A727C633340057DF32 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		4B93F91E2833DBA90076288F /* AdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdView.swift; sourceTree = "<group>"; };
 		4BBFC61927C37BB700A05720 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; tabWidth = 4; };
 		4BD17D762AFF910200120E96 /* extensionColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensionColor.swift; sourceTree = "<group>"; };
 		4BD17D792AFFB4BF00120E96 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		4BD17D7D2AFFBED900120E96 /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
 		4BD17D842B00826900120E96 /* ChartType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartType.swift; sourceTree = "<group>"; };
 		4BD17D872B0220F700120E96 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		4BD17D8B2B0260B700120E96 /* BannerAd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerAd.swift; sourceTree = "<group>"; };
+		4BD17D8E2B02612000120E96 /* InterstitialAd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialAd.swift; sourceTree = "<group>"; };
 		4BD213B427C0E483004280DA /* CounterGraphApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterGraphApp.swift; sourceTree = "<group>"; };
 		4BD213B527C0E483004280DA /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
 		4BD213B627C0E484004280DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -177,6 +180,7 @@
 			children = (
 				4BBFC61927C37BB700A05720 /* SettingView.swift */,
 				4B7D4B832AFD31CF00858ED9 /* Setting.swift */,
+				4BD17D762AFF910200120E96 /* extensionColor.swift */,
 			);
 			path = Setting;
 			sourceTree = "<group>";
@@ -204,6 +208,15 @@
 			path = File;
 			sourceTree = "<group>";
 		};
+		4BD17D8A2B025DE500120E96 /* Ad */ = {
+			isa = PBXGroup;
+			children = (
+				4BD17D8E2B02612000120E96 /* InterstitialAd.swift */,
+				4BD17D8B2B0260B700120E96 /* BannerAd.swift */,
+			);
+			path = Ad;
+			sourceTree = "<group>";
+		};
 		4BD213AE27C0E482004280DA = {
 			isa = PBXGroup;
 			children = (
@@ -223,9 +236,8 @@
 			children = (
 				4B8782A727C633340057DF32 /* GoogleService-Info.plist */,
 				4BD213B427C0E483004280DA /* CounterGraphApp.swift */,
-				4B93F91E2833DBA90076288F /* AdView.swift */,
-				4BD17D762AFF910200120E96 /* extensionColor.swift */,
 				4BD17D7C2AFFBEC000120E96 /* Menu */,
+				4BD17D8A2B025DE500120E96 /* Ad */,
 				4B1A83C82AFCC536002F1BFE /* Localizable.strings */,
 				4BD213B627C0E484004280DA /* Assets.xcassets */,
 			);
@@ -514,7 +526,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B93F91F2833DBA90076288F /* AdView.swift in Sources */,
 				4BD17D7E2AFFBED900120E96 /* MenuViewModel.swift in Sources */,
 				4B7D4B8E2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */,
 				4B1A83CC2AFCE30F002F1BFE /* DataList.swift in Sources */,
@@ -522,8 +533,10 @@
 				4BD17D882B0220F700120E96 /* File.swift in Sources */,
 				4B1A83CF2AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
 				4BD213FD27C1307B004280DA /* BarChartView.swift in Sources */,
+				4BD17D8F2B02612000120E96 /* InterstitialAd.swift in Sources */,
 				4BD213DE27C0E484004280DA /* FileView.swift in Sources */,
 				4BD17D7A2AFFB4BF00120E96 /* MenuView.swift in Sources */,
+				4BD17D8C2B0260B700120E96 /* BannerAd.swift in Sources */,
 				4BD213DC27C0E484004280DA /* CounterGraphApp.swift in Sources */,
 				4B1A83D32AFCF3AE002F1BFE /* Data.swift in Sources */,
 				4B7D4B842AFD31CF00858ED9 /* Setting.swift in Sources */,
@@ -537,7 +550,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B93F9202833DBA90076288F /* AdView.swift in Sources */,
 				4BD17D7F2AFFBED900120E96 /* MenuViewModel.swift in Sources */,
 				4B7D4B8F2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */,
 				4B1A83CD2AFCE30F002F1BFE /* DataList.swift in Sources */,
@@ -545,8 +557,10 @@
 				4BD17D892B0220F700120E96 /* File.swift in Sources */,
 				4B1A83D02AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
 				4BD213FE27C1307B004280DA /* BarChartView.swift in Sources */,
+				4BD17D902B02612000120E96 /* InterstitialAd.swift in Sources */,
 				4BD213DF27C0E484004280DA /* FileView.swift in Sources */,
 				4BD17D7B2AFFB4BF00120E96 /* MenuView.swift in Sources */,
+				4BD17D8D2B0260B700120E96 /* BannerAd.swift in Sources */,
 				4BD213DD27C0E484004280DA /* CounterGraphApp.swift in Sources */,
 				4B1A83D42AFCF3AE002F1BFE /* Data.swift in Sources */,
 				4B7D4B852AFD31CF00858ED9 /* Setting.swift in Sources */,

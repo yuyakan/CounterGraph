@@ -9,19 +9,19 @@ import SwiftUI
 import GoogleMobileAds
 
 struct FileView: View {
+    @ObservedObject var interstitial = Interstitial()
+    @Environment(\.dismiss) var dismiss //iOS15
     @EnvironmentObject var menu: MenuViewModel
     @StateObject var setting: Setting
     @State var chartType: ChartType = .bar
     @State var tabIndex:Int = 0
-    let fileId: Int
-    init(fileId: Int) {
+    let fileId: String
+    init(fileId: String) {
         _setting = StateObject(wrappedValue: Setting(fileId: fileId))
         self.fileId = fileId
     }
     
     var body: some View {
-        let bounds = UIScreen.main.bounds
-        let height = Double(bounds.height)
         VStack{
             TabView(selection: $tabIndex) {
                 if chartType.isBar() {
@@ -37,7 +37,7 @@ struct FileView: View {
                         }
                     }.tag(0)
                 } else {
-                    PieChartView(fileId: fileId, chartType: $chartType)
+                    PieChartView(fileId: fileId, chartType: $chartType, interstitial: interstitial)
                         .environmentObject(setting)
                         .tabItem { Group{
                             if #available(iOS 16.0, *) {
@@ -56,15 +56,19 @@ struct FileView: View {
                                 Text("Setting")
                             }}.tag(1)
             }.accentColor(setting.buttonColor)
-            AdView().frame(width: 320, height: 50)
-                .padding(.top, height * 0.005)
+            BannerView()
+                .frame(height: 60)
         }
         .onDisappear(perform: {
             menu.refresh.toggle()
+            interstitial.interstitialAdLoaded.toggle()
         })
         .onAppear(perform: {
+            interstitial.loadInterstitial()
             setting.save()
         })
+        .navigationTitle(String(localized: "Main"))
+        .navigationBarBackButtonHidden(true)
         .navigationBarHidden(true)
     }
 }
@@ -72,6 +76,6 @@ struct FileView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        FileView(fileId: 0)
+        FileView(fileId: "0")
     }
 }

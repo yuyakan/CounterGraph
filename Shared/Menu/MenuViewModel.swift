@@ -9,7 +9,7 @@ import Foundation
 
 class MenuViewModel: ObservableObject {
     @Published var refresh = false
-    @Published var files: [File] = [File(fileId: 0), File(fileId: 1), File(fileId: 2), File(fileId: 3), File(fileId: 4)]
+    @Published var files: [File] = [File(fileId: "0"), File(fileId: UUID().uuidString), File(fileId: UUID().uuidString), File(fileId: UUID().uuidString), File(fileId: UUID().uuidString)]
     
     init() {
         if !UserDefaults.standard.bool(forKey: "isSecondLaunched") {
@@ -18,7 +18,7 @@ class MenuViewModel: ObservableObject {
         }
         
         var files: [File] = []
-        guard let fileIds: [Int] = UserDefaults.standard.array(forKey: "fileIds") as? [Int] else { return }
+        guard let fileIds: [String] = UserDefaults.standard.array(forKey: "fileIds") as? [String] else { return }
         for fileId in fileIds {
             files.append(File(fileId: fileId))
         }
@@ -27,7 +27,7 @@ class MenuViewModel: ObservableObject {
     
     func rebuildFiles() {
         var files: [File] = []
-        guard let fileIds: [Int] = UserDefaults.standard.array(forKey: "fileIds") as? [Int] else { return }
+        guard let fileIds: [String] = UserDefaults.standard.array(forKey: "fileIds") as? [String] else { return }
         for fileId in fileIds {
             files.append(File(fileId: fileId))
         }
@@ -40,7 +40,8 @@ class MenuViewModel: ObservableObject {
     }
     
     func add() {
-//        files.append(File(fileId: <#T##Int#>))
+        files.append(File(fileId: UUID().uuidString))
+        save()
     }
      
     func moveRow(from source: IndexSet, to destination: Int) {

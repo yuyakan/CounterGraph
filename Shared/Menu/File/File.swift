@@ -8,13 +8,13 @@
 import Foundation
 
 struct File: Hashable {
-    let id: Int
+    let id: String
     let title: String
     
-    init(fileId: Int) {
+    init(fileId: String) {
         self.id = fileId
         
-        if let title = UserDefaults.standard.string(forKey: "Title_file\(String(fileId))") {
+        if let title = UserDefaults.standard.string(forKey: "Title_file\(fileId)") {
             self.title = title
         } else {
             title = String(localized: "newData")

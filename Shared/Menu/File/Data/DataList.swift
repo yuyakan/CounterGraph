@@ -8,16 +8,16 @@
 import Foundation
 
 struct DataList {
-    let fileId: Int
+    let fileId: String
     private var dataList: [PersonalData] = []
     
-    init(fileId: Int) {
+    init(fileId: String) {
         self.fileId = fileId
         
         if (UserDefaults.standard.object(forKey: "data0_file\(String(fileId))") != nil) {
             createDataList(fileId: fileId)
         } else {
-            if (fileId == 0) && !UserDefaults.standard.bool(forKey: "isSecondLaunched") {
+            if (fileId == "0") && !UserDefaults.standard.bool(forKey: "isSecondLaunched") {
                 UserDefaults.standard.set(true, forKey: "isSecondLaunched")
                 self.dataList = [
                     PersonalData(value: 80, name: String(localized: "Ann")),
@@ -31,9 +31,9 @@ struct DataList {
         }
     }
     
-    private mutating func createDataList(fileId: Int) {
+    private mutating func createDataList(fileId: String) {
         for index in 0..<10 {
-            guard let personalData = UserDefaults.standard.object(forKey: "data\(String(index))_file\(String(fileId))") as? Data else {
+            guard let personalData = UserDefaults.standard.object(forKey: "data\(String(index))_file\(fileId)") as? Data else {
                 break
             }
             appendData(personalData: personalData)
@@ -51,7 +51,7 @@ struct DataList {
         let encoder =  JSONEncoder ()
         for index in 0..<dataList.count {
             guard let encodedData = try? encoder.encode(dataList[index]) else { break }
-            UserDefaults.standard.set(encodedData, forKey: "data\(String(index))_file\(String(fileId))" )
+            UserDefaults.standard.set(encodedData, forKey: "data\(String(index))_file\(fileId)" )
         }
     }
     
@@ -106,7 +106,7 @@ struct DataList {
     mutating func removeData(index: Int) {
         dataList.remove(at: index)
         for index in dataList.count..<10 {
-            UserDefaults.standard.removeObject(forKey: "data\(index)_file\(String(fileId))")
+            UserDefaults.standard.removeObject(forKey: "data\(index)_file\(fileId)")
         }
         save(dataList: dataList)
     }

@@ -12,14 +12,16 @@ struct PieChartView: View {
     @EnvironmentObject var setting: Setting
     @StateObject var pieChart: PieChartViewModel
     @Binding var chartType: ChartType
+    @ObservedObject var interstitial: Interstitial
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     let centerX: Double
     let centerY: Double
     
-    init (fileId: Int, chartType:  Binding<ChartType>){
+    init (fileId: String, chartType:  Binding<ChartType>, interstitial: Interstitial){
         _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
         _chartType = chartType
+        self.interstitial = interstitial
         self.centerX = width/2
         self.centerY = height/4
     }
@@ -32,6 +34,7 @@ struct PieChartView: View {
         let namePositions: [CGPoint] = pieChart.labelPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
         let percents: [String] = pieChart.percents()
         let percentPositions: [CGPoint] = pieChart.percentPositions(radius: width/2.5, centerX: centerX, centerY: centerY)
+        
         let blankList = [
             PersonalData(value: 80, name: String(localized: "Ann")),
             PersonalData(value: 230, name: String(localized: "Tom")),
@@ -90,9 +93,15 @@ struct PieChartView: View {
             }
             
             if(!isVisibleSetting){
-                Text(setting.title).foregroundColor(setting.titleColor)
-                    .font(.largeTitle)
-                    .padding(.top, height*0.03)
+                if height > 800 {
+                    Text(setting.title).foregroundColor(setting.titleColor)
+                        .font(.largeTitle)
+                        .padding(.top, height*0.03)
+                } else {
+                    Text(setting.title).foregroundColor(setting.titleColor)
+                        .font(.largeTitle)
+                        .padding(.top, height*0.01)
+                }
             }
             
             ZStack {
@@ -185,9 +194,13 @@ struct PieChartView: View {
             }
             Spacer()
         }
+        .onAppear(){
+            interstitial.presentInterstitial()
+        }
         .onDisappear(perform: {
             pieChart.save()
         })
         .background(setting.backColor)
     }
 }
+

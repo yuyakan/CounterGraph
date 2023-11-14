@@ -19,7 +19,7 @@ class BarChartViewModel: ObservableObject {
     }
     private var alertType: AlertType
     
-    init(fileId: Int) {
+    init(fileId: String) {
         self.dataList = DataList(fileId: fileId)
         self.alertType = .maxData
     }

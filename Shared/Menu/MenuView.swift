@@ -28,12 +28,13 @@ struct MenuView: View {
                         .font(.system(size: 20))
                         .frame(height: 42)
                         .foregroundColor(Color.blue)
-                        .padding(.leading)
                 })
         
                 Spacer(minLength: 300)
             }
-            .navigationBarItems(trailing: EditButton().padding())
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(String(localized: "Menu"))
+            .navigationBarItems(trailing: EditButton())
         }.onChange(of: menu.refresh) { _ in
             menu.rebuildFiles()
         }

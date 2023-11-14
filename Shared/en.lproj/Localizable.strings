@@ -32,3 +32,6 @@
 
 "blank" = "Add data in bar graph";
 "blankBar" = "Please add your data";
+
+"Menu" = "Menu";
+"Main" = "Chart";

@@ -12,7 +12,7 @@ class PieChartViewModel: ObservableObject {
     @Published var colors: [Color]
     private let dataList: DataList
     
-    init(fileId: Int) {
+    init(fileId: String) {
         self.dataList = DataList(fileId: fileId)
         
         let jsonDecoder = JSONDecoder()
