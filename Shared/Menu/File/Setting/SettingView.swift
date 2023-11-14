@@ -18,7 +18,7 @@ struct SettingView: View {
             setting.backColor.edgesIgnoringSafeArea(.all)
             VStack(spacing: height * 0.03){
                 Spacer()
-                    Text("Title")
+                Text(LocalizedStringKey("title"))
                         .font(.largeTitle)
                         .foregroundColor(setting.titleColor)
                         .padding(.leading)
@@ -27,7 +27,7 @@ struct SettingView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 
                 Spacer()
-                Text("Color").font(.largeTitle).foregroundColor(setting.titleColor).padding(.leading)
+                Text(LocalizedStringKey("color")).font(.largeTitle).foregroundColor(setting.titleColor).padding(.leading)
                 VStack(spacing: 2){
                     HStack(spacing: 0){
                         ColorPicker(String(localized: "title"), selection: $setting.titleColor).foregroundColor(setting.textColor).padding(.horizontal, width*0.2)

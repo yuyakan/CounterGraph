@@ -45,6 +45,8 @@ class Setting: ObservableObject{
         self.graphColor = graphColor
         self.backColor = backColor
         self.buttonColor = buttonColor
+        
+        save()
     }
     
     func save() {
