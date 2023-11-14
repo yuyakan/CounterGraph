@@ -1,0 +1,37 @@
+/* 
+  Localizable.strings
+  CounterGraph
+
+  Created by 上別縄祐也 on 2023/11/09.
+  
+*/
+"Ann" = "Alina";
+"Tom" = "Igor";
+"Bob" = "Andrei";
+"Casey" = "Anya";
+"Brian" = "Eva";
+"Jack" = "Alexei";
+
+"Result" = "Результат";
+"title" = "Название";
+"color" = "Цвет";
+"Text" = "Текст";
+"Graph" = "График";
+"Background" = "Фон";
+"Button" = "Кнопка";
+
+"1unit:" = "1блок:";
+
+"sameAlertText" = "Имя уже используется";
+"sameAlertMessage" = "Пожалуйста, дайте ему другое имя";
+
+"maxAlertText" = "Слишком много данных";
+"maxAlertMessage" = "Пожалуйста, ограничьте количество данных до 10 или меньше.";
+
+"newData" = "Создать новый график";
+
+"blank" = "Добавить данные в гистограмму";
+"blankBar" = "Пожалуйста, добавьте свои данные";
+
+"Menu" = "Меню";
+"Main" = "График";
