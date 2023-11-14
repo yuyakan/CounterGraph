@@ -18,8 +18,12 @@ class Interstitial: NSObject, GADFullScreenContentDelegate, ObservableObject {
 
     // 読み込み
     func loadInterstitial() {
-        GADInterstitialAd.load(withAdUnitID: "ca-app-pub-3940256099942544/4411468910", request: GADRequest(), completionHandler: { [self] ad, error in
+        let request = GADRequest()
+        request.scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        let id = "ca-app-pub-3940256099942544/4411468910"//テスト
+        GADInterstitialAd.load(withAdUnitID: id, request: request, completionHandler: { [self] ad, error in
             if let error = error {
+                print(error)
                 self.interstitialAdLoaded = false
                 return
             }

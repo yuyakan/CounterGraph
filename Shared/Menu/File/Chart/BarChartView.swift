@@ -90,19 +90,17 @@ struct BarChartView: View {
                         .frame(width: fixedWidth * 0.2)
                     Spacer()
                 }.padding(.horizontal)
+                Spacer()
             }
             
             if(!isVisibleSetting){
-                if height > 800 {
-                    Text(setting.title).foregroundColor(setting.titleColor)
-                        .font(.largeTitle)
-                        .padding(.top, height*0.03)
-                        .padding(.bottom, height*0.075)
-                } else {
-                    Text(setting.title).foregroundColor(setting.titleColor)
-                        .font(.largeTitle)
-                        .padding(.top, height*0.01)
-                        .padding(.bottom, height*0.075)
+                Text(setting.title).foregroundColor(setting.titleColor)
+                    .font(.largeTitle)
+                    .padding(.top, height*0.03)
+                    .padding(.bottom, height*0.075)
+                
+                if height > 1000 {
+                    Spacer()
                 }
             }
             
@@ -181,12 +179,12 @@ struct BarChartView: View {
                 HStack(alignment: .center, spacing: baseframeWidth/8){
                     ForEach(0..<bars, id: \.self){ index in
                         VStack {
-                            Text("\(barChart.name(index: index))")
+                            Text(LocalizedStringKey(barChart.name(index: index)))
                                 .frame(height: fixedHeight/8)
                                 .frame(maxWidth: baseframeWidth)
                                 .foregroundColor(setting.textColor)
-                                .padding(.top, height * 0.005)
-                                .padding(.bottom, height * 0.005)
+                                .padding(.top, height > 800 ? height * 0.005 : 0)
+                                .padding(.bottom, height > 800 ? height * 0.005 : 0)
                             VStack(spacing: 0){
                                 Button(action: {
                                     barChart.plus(index: index, value: unit)
@@ -205,7 +203,7 @@ struct BarChartView: View {
                                         Image(systemName: "minus.circle")
                                             .accentColor(setting.buttonColor)
                                             .font(.system(size: 30))
-                                            .padding(.vertical, 10)
+                                            .padding(.vertical, height > 800 ? 10 : 6)
                                     }
                                 }
                             }
@@ -214,8 +212,11 @@ struct BarChartView: View {
                 }
             }
             
-            Divider()
-                .opacity(isVisibleSetting ? 1:0).frame(width: width*0.85)
+            Spacer()
+            if height > 800 {
+                Divider()
+                    .opacity(isVisibleSetting ? 1:0).frame(width: width*0.85)
+            }
             
             HStack(spacing: 0){
                 Spacer()
@@ -236,7 +237,7 @@ struct BarChartView: View {
                         .font(.system(size: 30))
                 })
                 Spacer()
-            }.padding(.top, 10)
+            }.padding(.top, height > 800 ? 10 : 0)
                 .opacity(isVisibleSetting ? 1:0)
                 .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
             Spacer()

@@ -1,0 +1,37 @@
+/* 
+  Localizable.strings
+  CounterGraph
+
+  Created by 上別縄祐也 on 2023/11/09.
+  
+*/
+"Ann" = "Ann";
+"Tom" = "Tom";
+"Bob" = "Bob";
+"Casey" = "Casey";
+"Brian" = "Brian";
+"Jack" = "Jack";
+
+"Result" = "Result";
+"title" = "Title";
+"color" = "Color";
+"Text" = "Text";
+"Graph" = "Graph";
+"Background" = "Background";
+"Button" = "Button";
+
+"1unit:" = "1unit:";
+
+"sameAlertText" = "The name is already used";
+"sameAlertMessage" = "Please give it a different name";
+
+"maxAlertText" = "Too many data";
+"maxAlertMessage" = "Please limit the number of data to 10 or less.";
+
+"newData" = "Create a new graph";
+
+"blank" = "Add data in bar graph";
+"blankBar" = "Please add your data";
+
+"Menu" = "Menu";
+"Main" = "Chart";

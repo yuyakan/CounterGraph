@@ -7,14 +7,14 @@
 */
 "Ann" = "田中";
 "Tom" = "佐藤";
-"Bob" = "吉田";
+"Bob" = "山口";
 "Casey" = "中村";
 "Brian" = "前田";
 "Jack" = "小林";
 
 "Result" = "結果";
-"title" = "タイトル";
-"color" = "カラー";
+"title" = "Title";
+"color" = "Color";
 "Text" = "テキスト";
 "Graph" = "グラフ";
 "Background" = "背景";

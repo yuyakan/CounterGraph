@@ -1,0 +1,37 @@
+/* 
+  Localizable.strings
+  CounterGraph
+
+  Created by 上別縄祐也 on 2023/11/09.
+  
+*/
+"Ann" = "李";
+"Tom" = "王";
+"Bob" = "張";
+"Casey" = "劉";
+"Brian" = "陳";
+"Jack" = "楊";
+
+"Result" = "结果";
+"title" = "标题";
+"color" = "颜色";
+"Text" = "文本";
+"Graph" = "图形";
+"Background" = "背景";
+"Button" = "按钮";
+
+"1unit:" = "1单位:";
+
+"sameAlertText" = "该名称已被使用";
+"sameAlertMessage" = "请为它取一个不同的名称";
+
+"maxAlertText" = "数据太多";
+"maxAlertMessage" = "请将数据数量限制在 10 个或更少";
+
+"newData" = "创建新图表";
+
+"blank" = "在条形图中添加数据";
+"blankBar" = "请添加数据";
+
+"Menu" = "菜单";
+"Main" = "图表";

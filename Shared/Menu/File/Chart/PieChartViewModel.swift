@@ -12,6 +12,7 @@ class PieChartViewModel: ObservableObject {
     @Published var colors: [Color]
     private let dataList: DataList
     
+
     init(fileId: String) {
         self.dataList = DataList(fileId: fileId)
         
@@ -43,31 +44,30 @@ class PieChartViewModel: ObservableObject {
         return dataList.names()
     }
     
-    func labelPositions(radius: Double, centerX: Double, centerY: Double) -> [CGPoint] {
+    func labelPositions(radius: Double, centerX: Double, centerY: Double, angles: [Double]) -> [CGPoint] {
         var labelPositions: [CGPoint] = []
-        coordinates(radius: radius).forEach { position in
+        coordinates(radius: radius, angles: angles).forEach { position in
             labelPositions.append(CGPoint(x: centerX + position.0, y: centerY + position.1 + 15))
         }
         return labelPositions
     }
     
-    func percentPositions(radius: Double, centerX: Double, centerY: Double) -> [CGPoint] {
+    func percentPositions(radius: Double, centerX: Double, centerY: Double, angles: [Double]) -> [CGPoint] {
         var percentPositions: [CGPoint] = []
-        coordinates(radius: radius/1.65).forEach { position in
+        coordinates(radius: radius/1.65, angles: angles).forEach { position in
             percentPositions.append(CGPoint(x: centerX + position.0, y: centerY + position.1 + 12))
         }
         return percentPositions
     }
     
-    private func coordinates(radius: Double) -> Zip2Sequence<[Double], [Double]>{
-        let ratioRasianList = centerAngles().map {3.14 * $0 / 180.0}
+    private func coordinates(radius: Double, angles: [Double]) -> Zip2Sequence<[Double], [Double]>{
+        let ratioRasianList = centerAngles(angles: angles).map {3.14 * $0 / 180.0}
         let xList = ratioRasianList.map {cos($0) * radius}
         let yList = ratioRasianList.map {sin($0) * radius}
         return zip(xList, yList)
     }
     
-    private func centerAngles() -> [Double] {
-        let angles = angles()
+    private func centerAngles(angles: [Double]) -> [Double] {
         var centerAngles: [Double] = []
         for index in 0..<angles.count-1 {
             centerAngles.append((angles[index] + angles[index+1])/2)
