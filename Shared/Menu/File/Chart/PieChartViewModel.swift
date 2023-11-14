@@ -9,22 +9,25 @@ import Foundation
 import SwiftUI
 
 class PieChartViewModel: ObservableObject {
-    @Published var colors: [Color] = [Color.orange, Color.green, Color.blue, Color.red, Color.yellow, Color.pink, Color.purple, Color.mint, Color.indigo, Color.cyan]
+    @Published var colors: [Color]
     private let dataList: DataList
     
-    init(dataList: DataList) {
-        self.dataList = dataList
+    init(fileId: String) {
+        self.dataList = DataList(fileId: fileId)
         
         let jsonDecoder = JSONDecoder()
-        guard let pieColors = UserDefaults.standard.object(forKey: "pieColors") as? Data,
-              let pieColors = try? jsonDecoder.decode([Color].self, from: pieColors)else { return }
+        guard let pieColors = UserDefaults.standard.object(forKey: "pieColors_file\(dataList.fileId)") as? Data,
+              let pieColors = try? jsonDecoder.decode([Color].self, from: pieColors) else {
+            self.colors = [Color.orange, Color.green, Color.blue, Color.red, Color.yellow, Color.pink, Color.purple, Color.mint, Color.indigo, Color.cyan]
+            return
+        }
         self.colors = pieColors
     }
     
     func save() {
         let jsonEncoder = JSONEncoder()
         guard let colors = try? jsonEncoder.encode(colors) else { return }
-        UserDefaults.standard.set(colors, forKey: "pieColors")
+        UserDefaults.standard.set(colors, forKey: "pieColors_file\(dataList.fileId)")
     }
     
     func angles() -> [Double] {

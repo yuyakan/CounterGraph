@@ -27,3 +27,11 @@
 
 "maxAlertText" = "Too many data";
 "maxAlertMessage" = "Please limit the number of data to 10 or less.";
+
+"newData" = "Create a new graph";
+
+"blank" = "Add data in bar graph";
+"blankBar" = "Please add your data";
+
+"Menu" = "Menu";
+"Main" = "Chart";
