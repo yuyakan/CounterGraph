@@ -23,7 +23,7 @@ struct PieChartView: View {
         _chartType = chartType
         self.interstitial = interstitial
         self.centerX = width/2
-        self.centerY = height/4
+        self.centerY = height>1000 ? height/3 : height/4
     }
     
     @State var isVisibleSetting = false

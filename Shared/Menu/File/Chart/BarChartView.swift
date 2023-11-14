@@ -98,6 +98,10 @@ struct BarChartView: View {
                     .font(.largeTitle)
                     .padding(.top, height*0.03)
                     .padding(.bottom, height*0.075)
+                
+                if height > 1000 {
+                    Spacer()
+                }
             }
             
             if bars == 0 {

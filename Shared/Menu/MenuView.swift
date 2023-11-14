@@ -37,6 +37,6 @@ struct MenuView: View {
             .navigationBarItems(trailing: EditButton())
         }.onChange(of: menu.refresh) { _ in
             menu.rebuildFiles()
-        }
+        }.navigationViewStyle(.stack)
     }
 }
