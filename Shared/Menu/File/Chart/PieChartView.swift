@@ -32,100 +32,92 @@ struct PieChartView: View {
         SectorEntry(id: 4, name: String(localized: "Brian"), value: 120, color: .gray.opacity(0.2), percent: "9.6%")
     ]
 
-    @State var isVisibleSetting = false
     var body: some View {
-        let names = pieChart.names()
         let entries = pieChart.entries()
+        let isEmpty = entries.isEmpty
+        let displayedEntries = isEmpty ? blankEntries : entries
+        let total = displayedEntries.reduce(0) { $0 + $1.value }
 
-        VStack {
+        VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 0) {
                 Button(action: {
                     dismiss()
                 }, label: {
                     Image(systemName: "list.bullet")
-                        .accentColor(setting.buttonColor)
-                        .font(.system(size: 30))
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundColor(setting.buttonColor)
                         .padding()
                 })
                 Spacer()
-                VStack(spacing: 0) {
-                    Button(action: {
-                        chartType = .bar
-                    }, label: {
-                        Image(systemName: "chart.pie.fill")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding(.top, 13)
-                            .padding(.bottom, 7)
-                            .padding(.trailing, 8)
-                    })
-                    Button(action: {
-                        isVisibleSetting.toggle()
-                    }, label: {
-                        Image(systemName: isVisibleSetting ? "paintbrush.fill" : "paintbrush")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 24))
-                            .padding(.trailing, 8)
-                    })
-                }
+                Button(action: {
+                    chartType = .bar
+                }, label: {
+                    Image(systemName: "chart.bar.fill")
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundColor(setting.buttonColor)
+                        .padding()
+                })
             }
-            
-            if(!isVisibleSetting){
-                Text(setting.title).foregroundColor(setting.titleColor)
-                    .font(.largeTitle)
-                    .padding(.top, height*0.03)
-            }
-            
-            let displayedEntries = names.count == 0 ? blankEntries : entries
+
+            Text(setting.title)
+                .font(.largeTitle.bold())
+                .foregroundColor(setting.titleColor)
+                .padding(.top, height * 0.01)
+
+            // ドーナツチャート＋中央に合計値
             Chart(displayedEntries) { entry in
                 SectorMark(
                     angle: .value("Value", entry.value),
-                    angularInset: 1.0
+                    innerRadius: .ratio(0.62),
+                    angularInset: 1.5
                 )
+                .cornerRadius(4)
                 .foregroundStyle(entry.color)
-                .annotation(position: .overlay) {
-                    if !isVisibleSetting {
-                        VStack(spacing: 2) {
-                            Text(LocalizedStringKey(entry.name))
-                                .font(.caption)
-                                .foregroundColor(setting.textColor)
-                            Text(entry.percent)
-                                .font(.caption2)
-                                .foregroundColor(.white)
-                        }
-                    }
-                }
+                .opacity(isEmpty ? 0.5 : 1)
             }
             .chartLegend(.hidden)
-            .frame(width: width * 0.8, height: width * 0.8)
-            .padding(.top, height * 0.02)
-            
-            if(isVisibleSetting){
-                if names.count == 0 {
-                    Text(LocalizedStringKey("blank"))
+            .frame(width: width * 0.72, height: width * 0.72)
+            .overlay {
+                VStack(spacing: 2) {
+                    Text(LocalizedStringKey("Total"))
+                        .font(.subheadline)
+                        .foregroundColor(setting.textColor.opacity(0.6))
+                    Text("\(total)")
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                        .foregroundColor(setting.textColor)
                 }
-                HStack(alignment: .bottom, spacing: width * 0.1 / 5){
-                    ForEach(Array(0..<min(names.count, 5)), id: \.self){ index in
-                        VStack {
-                            Text(LocalizedStringKey(names[index]))
-                            ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
-                        }.frame(height: height * 0.063)
-                            .frame(maxWidth: width * 0.8 / 5)
-                            .foregroundColor(pieChart.colors[index])
-                    }
-                }.opacity(isVisibleSetting ? 1:0)
-                HStack(alignment: .bottom, spacing: width * 0.1 / 5){
-                    ForEach(Array(5..<min(max(names.count, 5), 10)), id: \.self){ index in
-                        VStack {
-                            Text(LocalizedStringKey(names[index]))
-                            ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
-                        }.frame(height: height * 0.063)
-                            .frame(maxWidth: width * 0.8 / 5)
-                            .foregroundColor(pieChart.colors[index])
-                    }
-                }.padding(.bottom, names.count>5 ? height*0.05 : height*0.1)
             }
-            Spacer()
+            .padding(.vertical, height * 0.02)
+
+            // 凡例（色チップ＋名前＋値＋パーセント）
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(displayedEntries) { entry in
+                        HStack(spacing: 12) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(entry.color)
+                                .frame(width: 16, height: 16)
+                            Text(LocalizedStringKey(entry.name))
+                                .font(.body)
+                                .foregroundColor(setting.textColor)
+                                .lineLimit(1)
+                            Spacer()
+                            Text("\(entry.value)")
+                                .font(.body.weight(.semibold))
+                                .foregroundColor(setting.textColor)
+                            Text(entry.percent)
+                                .font(.subheadline)
+                                .foregroundColor(setting.textColor.opacity(0.6))
+                                .frame(width: 56, alignment: .trailing)
+                        }
+                        .padding(.vertical, 10)
+                        .opacity(isEmpty ? 0.4 : 1)
+                        Divider()
+                    }
+                }
+                .padding(.horizontal, width * 0.08)
+                .padding(.bottom, height * 0.04)
+            }
         }
         .onAppear(){
             interstitial.presentInterstitial()
