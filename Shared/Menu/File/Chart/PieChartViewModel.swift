@@ -8,6 +8,15 @@
 import Foundation
 import SwiftUI
 
+/// Swift Charts(SectorMark) へ渡す扇形1つぶんのデータ。
+struct SectorEntry: Identifiable {
+    let id: Int          // dataList 内の index
+    let name: String
+    let value: Int
+    let color: Color
+    let percent: String
+}
+
 class PieChartViewModel: ObservableObject {
     @Published var colors: [Color]
     private let dataList: DataList
@@ -46,51 +55,23 @@ class PieChartViewModel: ObservableObject {
         UserDefaults.standard.set(colors, forKey: "pieColors_file\(dataList.fileId)")
     }
     
-    func angles() -> [Double] {
-        let ratio360List = dataList.getRatio().map {$0 * 360.0}
-        var angles: [Double] = [0.0]
-        for index in 0..<ratio360List.count {
-            angles.append(angles[index] + ratio360List[index])
-        }
-        return angles
-    }
-    
     func names() -> [String] {
         return dataList.names()
     }
-    
-    func labelPositions(radius: Double, centerX: Double, centerY: Double, angles: [Double]) -> [CGPoint] {
-        var labelPositions: [CGPoint] = []
-        coordinates(radius: radius, angles: angles).forEach { position in
-            labelPositions.append(CGPoint(x: centerX + position.0, y: centerY + position.1 + 15))
-        }
-        return labelPositions
-    }
-    
-    func percentPositions(radius: Double, centerX: Double, centerY: Double, angles: [Double]) -> [CGPoint] {
-        var percentPositions: [CGPoint] = []
-        coordinates(radius: radius/1.65, angles: angles).forEach { position in
-            percentPositions.append(CGPoint(x: centerX + position.0, y: centerY + position.1 + 12))
-        }
-        return percentPositions
-    }
-    
-    private func coordinates(radius: Double, angles: [Double]) -> Zip2Sequence<[Double], [Double]>{
-        let ratioRasianList = centerAngles(angles: angles).map {3.14 * $0 / 180.0}
-        let xList = ratioRasianList.map {cos($0) * radius}
-        let yList = ratioRasianList.map {sin($0) * radius}
-        return zip(xList, yList)
-    }
-    
-    private func centerAngles(angles: [Double]) -> [Double] {
-        var centerAngles: [Double] = []
-        for index in 0..<angles.count-1 {
-            centerAngles.append((angles[index] + angles[index+1])/2)
-        }
-        return centerAngles
-    }
-    
+
     func percents() ->[String] {
         return dataList.getRatio().map { String(format: "%.1f", $0 * 100) + "%" }
+    }
+
+    /// Swift Charts(SectorMark) 描画用のエントリ一覧。
+    func entries() -> [SectorEntry] {
+        let percents = self.percents()
+        return (0..<dataList.count()).map { index in
+            SectorEntry(id: index,
+                        name: dataList.name(index: index),
+                        value: dataList.value(index: index),
+                        color: index < colors.count ? colors[index] : PieChartViewModel.defaultColors[index % PieChartViewModel.defaultColors.count],
+                        percent: index < percents.count ? percents[index] : "")
+        }
     }
 }
