@@ -53,7 +53,7 @@ class BarChartViewModel: ObservableObject {
     }
     
     func addData() {
-        if dataList.count() > 9 {
+        if dataList.count() >= DataList.maxDataCount {
             maxDataAlert()
             return
         }

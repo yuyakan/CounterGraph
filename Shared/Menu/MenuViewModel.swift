@@ -50,26 +50,28 @@ class MenuViewModel: ObservableObject {
     }
     
     func removeRow(offsets: IndexSet) {
+        // 削除前に対象ファイルのID(UUID文字列)を確定させてから永続データを消す
+        let removedIds = offsets.map { files[$0].id }
         files.remove(atOffsets: offsets)
-        for index in offsets {
-            removeSetting(fileId: index)
-            removeDataList(fileId: index)
-            removePieColors(fileId: index)
+        for fileId in removedIds {
+            removeSetting(fileId: fileId)
+            removeDataList(fileId: fileId)
+            removePieColors(fileId: fileId)
         }
         save()
     }
 
-    private func removeDataList(fileId: Int) {
-        for index in 0..<10 {
+    private func removeDataList(fileId: String) {
+        for index in 0..<DataList.maxDataCount {
             UserDefaults.standard.removeObject(forKey: "data\(String(index))_file\(fileId)")
         }
     }
-    
-    private func removePieColors(fileId: Int) {
-        UserDefaults.standard.removeObject(forKey: "buttonColor_file\(fileId)")
+
+    private func removePieColors(fileId: String) {
+        UserDefaults.standard.removeObject(forKey: "pieColors_file\(fileId)")
     }
-    
-    private func removeSetting(fileId: Int){
+
+    private func removeSetting(fileId: String){
         UserDefaults.standard.removeObject(forKey: "Title_file\(fileId)")
         UserDefaults.standard.removeObject(forKey: "titleColor_file\(fileId)")
         UserDefaults.standard.removeObject(forKey: "textColor_file\(fileId)")

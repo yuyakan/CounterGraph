@@ -15,7 +15,7 @@ struct SettingView: View {
         let height = Double(bounds.height)
         let width = Double(bounds.width)
         ZStack{
-            setting.backColor.edgesIgnoringSafeArea(.all)
+            setting.backColor.ignoresSafeArea(.all)
             VStack(spacing: height * 0.03){
                 Spacer()
                 Text(LocalizedStringKey("title"))

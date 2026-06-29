@@ -69,7 +69,7 @@ struct FileView: View {
         })
         .navigationTitle(String(localized: "Main"))
         .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 

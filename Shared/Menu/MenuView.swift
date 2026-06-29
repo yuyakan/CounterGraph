@@ -11,7 +11,7 @@ struct MenuView: View {
     @StateObject var menu = MenuViewModel()
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(menu.files, id:\.self) { file in
                     NavigationLink(destination: FileView(fileId: file.id).environmentObject(menu), label: {
@@ -29,14 +29,18 @@ struct MenuView: View {
                         .frame(height: 42)
                         .foregroundColor(Color.blue)
                 })
-        
+
                 Spacer(minLength: 300)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(String(localized: "Menu"))
-            .navigationBarItems(trailing: EditButton())
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    EditButton()
+                }
+            }
         }.onChange(of: menu.refresh) { _ in
             menu.rebuildFiles()
-        }.navigationViewStyle(.stack)
+        }
     }
 }

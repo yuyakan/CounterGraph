@@ -8,6 +8,9 @@
 import Foundation
 
 struct DataList {
+    /// 1ファイルあたりに保持できるデータの最大件数
+    static let maxDataCount = 10
+
     let fileId: String
     private var dataList: [PersonalData] = []
     
@@ -32,7 +35,7 @@ struct DataList {
     }
     
     private mutating func createDataList(fileId: String) {
-        for index in 0..<10 {
+        for index in 0..<DataList.maxDataCount {
             guard let personalData = UserDefaults.standard.object(forKey: "data\(String(index))_file\(fileId)") as? Data else {
                 break
             }
@@ -56,7 +59,7 @@ struct DataList {
     }
     
     func max() -> Int {
-        return dataList.reduce(dataList[0].value, { Swift.max($0, $1.value) })
+        return dataList.map { $0.value }.max() ?? 0
     }
     
     func count() -> Int {
@@ -105,7 +108,7 @@ struct DataList {
     
     mutating func removeData(index: Int) {
         dataList.remove(at: index)
-        for index in dataList.count..<10 {
+        for index in dataList.count..<DataList.maxDataCount {
             UserDefaults.standard.removeObject(forKey: "data\(index)_file\(fileId)")
         }
         save(dataList: dataList)
