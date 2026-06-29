@@ -15,245 +15,198 @@ struct BarChartView: View {
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
     @State var unit: Int = 10
-    @State var isVisibleSetting : Bool = false
-    
+    @State private var showAddSheet = false
+    let height = Double(UIScreen.main.bounds.height)
+    let width = Double(UIScreen.main.bounds.width)
+
     init(fileId: String, chartType:  Binding<ChartType>) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
         _chartType = chartType
     }
-    
+
+    /// データ未登録時に表示するサンプル（淡色プレースホルダ）。
+    private let blankEntries: [BarEntry] = [
+        BarEntry(id: 0, name: String(localized: "Ann"),   value: 80),
+        BarEntry(id: 1, name: String(localized: "Tom"),   value: 230),
+        BarEntry(id: 2, name: String(localized: "Bob"),   value: 500),
+        BarEntry(id: 3, name: String(localized: "Casey"), value: 320),
+        BarEntry(id: 4, name: String(localized: "Brian"), value: 120)
+    ]
+
     var body: some View {
-        let bars = barChart.count()
-        let bounds = UIScreen.main.bounds
-        let height = Double(bounds.height)
-        let width = Double(bounds.width)
-        let fixedHeight = height * 0.5
-        let fixedWidth = width * 0.8
-        let baseframeWidth = fixedWidth / Double(bars)
-        let blankList = [
-            PersonalData(value: 80, name: String(localized: "Ann")),
-            PersonalData(value: 230, name: String(localized: "Tom")),
-            PersonalData(value: 500, name: String(localized: "Bob")),
-            PersonalData(value: 320, name: String(localized: "Casey")),
-            PersonalData(value: 120, name: String(localized: "Brian"))
-        ]
-        
-        VStack{
-            HStack(alignment: .top , spacing: 0) {
+        let entries = barChart.entries()
+        let isEmpty = entries.isEmpty
+        let displayedEntries = isEmpty ? blankEntries : entries
+
+        VStack(spacing: 0) {
+            HStack(alignment: .top, spacing: 0) {
                 Button(action: {
                     dismiss()
                 }, label: {
                     Image(systemName: "list.bullet")
-                        .accentColor(setting.buttonColor)
-                        .font(.system(size: 30))
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundColor(setting.buttonColor)
                         .padding()
                 })
                 Spacer()
-                VStack(spacing: 0) {
-                    Button(action: {
-                        chartType = .pie
-                    }, label: {
-                        Image(systemName: "chart.pie")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding(.top, 13)
-                            .padding(.bottom, 7)
-                            .padding(.trailing, 8)
-                    })
-                    if #available(iOS 16.0, *) {
-                        Button(action: {
-                            isVisibleSetting.toggle()
-                        }, label: {
-                            Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
-                                .accentColor(setting.buttonColor)
-                                .font(.system(size: 30))
-                                .padding(.trailing, 8)
-                        })
-                    } else {
-                        Button(action: {
-                            isVisibleSetting.toggle()
-                        }, label: {
-                            Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
-                                .accentColor(setting.buttonColor)
-                                .font(.system(size: 30))
-                                .padding(.trailing, 8)
-                        })
-                    }
+                Button(action: {
+                    chartType = .pie
+                }, label: {
+                    Image(systemName: "chart.pie.fill")
+                        .font(.system(size: 28, weight: .semibold))
+                        .foregroundColor(setting.buttonColor)
+                        .padding()
+                })
+            }
+
+            Text(setting.title)
+                .font(.largeTitle.bold())
+                .foregroundColor(setting.titleColor)
+                .padding(.top, height * 0.01)
+
+            // 棒グラフ
+            Chart(displayedEntries) { entry in
+                BarMark(
+                    // X軸は名前ではなく一意なindex。
+                    // 名前にすると同名項目が1本の棒に積み上がってしまう。
+                    x: .value("Index", String(entry.id)),
+                    y: .value("Value", max(entry.value, 0))
+                )
+                .cornerRadius(6)
+                .foregroundStyle(
+                    LinearGradient(
+                        gradient: Gradient(colors: [setting.graphColor, setting.graphColor.opacity(0.55)]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .opacity(isEmpty ? 0.35 : 1)
+                .annotation(position: .top) {
+                    Text("\(entry.value)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
                 }
             }
-            
-            if isVisibleSetting {
-                HStack{
-                    Text(LocalizedStringKey("1unit:"))
-                    TextField("", value: $unit, formatter: NumberFormatter())
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .keyboardType(.default)
-                        .frame(width: fixedWidth * 0.2)
-                    Spacer()
-                }.padding(.horizontal)
-                Spacer()
-            }
-            
-            if(!isVisibleSetting){
-                Text(setting.title).foregroundColor(setting.titleColor)
-                    .font(.largeTitle)
-                    .padding(.top, height*0.03)
-                    .padding(.bottom, height*0.075)
-                
-                if height > 1000 {
-                    Spacer()
-                }
-            }
-            
-            if bars == 0 {
-                // データ未登録時のサンプル表示（淡色のプレースホルダ）
-                Chart(blankList, id: \.name) { item in
-                    BarMark(
-                        x: .value("Name", item.name),
-                        y: .value("Value", item.value)
-                    )
-                    .foregroundStyle(Color.gray.opacity(0.3))
-                    .annotation(position: .top) {
-                        Text("\(item.value)")
-                            .font(.caption)
-                            .foregroundColor(Color.gray.opacity(0.4))
-                    }
-                }
-                .chartYAxis(.hidden)
-                .frame(height: fixedHeight * 0.5)
-                .padding(.horizontal)
-            } else {
-                Chart(barChart.entries()) { entry in
-                    // X軸は名前ではなく一意なindexにする。
-                    // 名前にすると同名項目（既定名"Jack"など）が1本の棒に積み上がってしまう。
-                    BarMark(
-                        x: .value("Index", String(entry.id)),
-                        y: .value("Value", max(entry.value, 0))
-                    )
-                    .foregroundStyle(
-                        LinearGradient(
-                            gradient: Gradient(colors: [setting.graphColor, setting.graphColor.opacity(0.7), setting.graphColor.opacity(0.4)]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .annotation(position: .top) {
-                        Text("\(entry.value)")
-                            .font(.caption)
+            .chartYAxis(.hidden)
+            .chartXAxis(.hidden)
+            .frame(height: height * 0.28)
+            .padding(.horizontal, width * 0.06)
+            .padding(.vertical, height * 0.02)
+
+            // 各項目の行（名前＋値＋±ボタン）。編集モードなしで常時カウント可能。
+            // 左スワイプで削除（List の swipeActions）。
+            List {
+                ForEach(displayedEntries) { entry in
+                    HStack(spacing: 12) {
+                        Text(LocalizedStringKey(entry.name))
+                            .font(.body)
                             .foregroundColor(setting.textColor)
-                    }
-                }
-                .chartYAxis(.hidden)
-                .chartXAxis(.hidden)
-                .frame(height: fixedHeight * 0.5)
-                .padding(.horizontal)
-            }
-            
-            if bars == 0 {
-                HStack(alignment: .center, spacing: fixedWidth/40){
-                    ForEach(0..<5, id: \.self){ index in
-                        VStack {
-                            Text("\(blankList[index].name)")
-                                .frame(height: fixedHeight/8)
-                                .frame(maxWidth: fixedWidth/5)
-                                .foregroundColor(Color.gray.opacity(0.4))
-                                .padding(.top, height * 0.015)
-                                .padding(.bottom, height * 0.01)
+                            .lineLimit(1)
+                        Spacer()
+                        Text("\(entry.value)")
+                            .font(.body.weight(.semibold).monospacedDigit())
+                            .foregroundColor(setting.textColor)
+                            .frame(minWidth: 56, alignment: .trailing)
+
+                        if !isEmpty {
+                            Button {
+                                barChart.minus(index: entry.id, value: unit)
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(setting.buttonColor)
+                            }
+                            .buttonStyle(.plain)
+                            Button {
+                                barChart.plus(index: entry.id, value: unit)
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(setting.buttonColor)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
-                }
-                
-                if(isVisibleSetting){
-                    ZStack {
-                        VStack(spacing: 0){
-                            Image(systemName: "minus.circle")
-                                .font(.system(size: 30))
-                                .padding(.vertical, 10)
-                            Image(systemName: "minus.circle")
-                                .font(.system(size: 30))
-                                .padding(.vertical, 10)
-                        }.opacity(0)
-                        Text(LocalizedStringKey("blankBar"))
-                            .padding(.bottom)
-                    }
-                }
-            } else {
-                HStack(alignment: .center, spacing: baseframeWidth/8){
-                    ForEach(Array(0..<bars), id: \.self){ index in
-                        VStack {
-                            Text(LocalizedStringKey(barChart.name(index: index)))
-                                .frame(height: fixedHeight/8)
-                                .frame(maxWidth: baseframeWidth)
-                                .foregroundColor(setting.textColor)
-                                .padding(.top, height > 800 ? height * 0.005 : 0)
-                                .padding(.bottom, height > 800 ? height * 0.005 : 0)
-                            VStack(spacing: 0){
-                                Button(action: {
-                                    barChart.plus(index: index, value: unit)
-                                }) {
-                                    if(isVisibleSetting){
-                                        Image(systemName: "plus.circle")
-                                            .accentColor(setting.buttonColor)
-                                            .font(.system(size: 30))
-                                    }
-                                }
-                                
-                                Button(action: {
-                                    barChart.minus(index: index, value: unit)
-                                }) {
-                                    if(isVisibleSetting){
-                                        Image(systemName: "minus.circle")
-                                            .accentColor(setting.buttonColor)
-                                            .font(.system(size: 30))
-                                            .padding(.vertical, height > 800 ? 10 : 6)
-                                    }
-                                }
-
-                                Button(action: {
-                                    barChart.removeData(index: index)
-                                }) {
-                                    if(isVisibleSetting){
-                                        Image(systemName: "trash")
-                                            .accentColor(Color.red)
-                                            .font(.system(size: 22))
-                                    }
-                                }
+                    .opacity(isEmpty ? 0.4 : 1)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 8, leading: width * 0.06, bottom: 8, trailing: width * 0.06))
+                    .swipeActions(edge: .trailing) {
+                        if !isEmpty {
+                            Button(role: .destructive) {
+                                barChart.removeData(index: entry.id)
+                            } label: {
+                                Label(String(localized: "Delete"), systemImage: "trash")
                             }
                         }
                     }
                 }
+                Color.clear
+                    .frame(height: height * 0.02)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
             }
-            
-            Spacer()
-            if height > 800 {
-                Divider()
-                    .opacity(isVisibleSetting ? 1:0).frame(width: width*0.85)
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+
+            // 増減単位の設定＋新規項目追加
+            HStack(spacing: 16) {
+                HStack(spacing: 6) {
+                    Text(LocalizedStringKey("1unit:"))
+                        .font(.subheadline)
+                        .foregroundColor(setting.textColor.opacity(0.7))
+                    TextField("", value: $unit, format: .number)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.numberPad)
+                        .frame(width: 60)
+                }
+                Spacer()
+                Button {
+                    showAddSheet = true
+                } label: {
+                    Label(String(localized: "Add"), systemImage: "plus.circle.fill")
+                        .font(.body.weight(.semibold))
+                        .foregroundColor(setting.buttonColor)
+                }
             }
-            
-            HStack(spacing: 0){
-                Spacer()
-                TextField("Jack", text: $barChart.name)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: fixedWidth * 0.3)
-                    .padding(.trailing)
-                TextField("", value: $barChart.value, formatter: NumberFormatter())
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .keyboardType(.default)
-                            .frame(width: fixedWidth * 0.3)
-                Spacer()
-                Button(action: {
-                    barChart.addData()
-                }, label: {
-                    Image(systemName: "plus.square.on.square")
-                        .accentColor(setting.buttonColor)
-                        .font(.system(size: 30))
-                })
-                Spacer()
-            }.padding(.top, height > 800 ? 10 : 0)
-                .opacity(isVisibleSetting ? 1:0)
-                .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
-            Spacer()
+            .padding(.horizontal, width * 0.06)
+            .padding(.vertical, 10)
         }
         .background(setting.backColor)
+        .sheet(isPresented: $showAddSheet) {
+            AddItemSheet(barChart: barChart, buttonColor: setting.buttonColor)
+                .presentationDetents([.height(220)])
+        }
+        .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
+    }
+}
+
+/// 新規項目を追加するためのシート。
+private struct AddItemSheet: View {
+    @Environment(\.dismiss) var dismiss
+    @ObservedObject var barChart: BarChartViewModel
+    let buttonColor: Color
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField(String(localized: "Jack"), text: $barChart.name)
+                TextField(String(localized: "Value"), value: $barChart.value, format: .number)
+                    .keyboardType(.numberPad)
+            }
+            .navigationTitle(String(localized: "Add"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cancel")) { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(String(localized: "Add")) {
+                        barChart.addData()
+                        dismiss()
+                    }
+                    .disabled(barChart.name.isEmpty)
+                }
+            }
+        }
     }
 }

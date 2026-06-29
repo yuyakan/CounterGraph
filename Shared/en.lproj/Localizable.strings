@@ -37,3 +37,8 @@
 "Main" = "Chart";
 
 "Total" = "Total";
+
+"Add" = "Add";
+"Delete" = "Delete";
+"Value" = "Value";
+"Cancel" = "Cancel";
