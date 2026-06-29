@@ -13,16 +13,31 @@ class PieChartViewModel: ObservableObject {
     private let dataList: DataList
     
 
+    /// 凡例の既定色（データ件数の上限ぶん用意しておく）。
+    static let defaultColors: [Color] = [.orange, .green, .blue, .red, .yellow, .pink, .purple, .mint, .indigo, .cyan]
+
     init(fileId: String) {
         self.dataList = DataList(fileId: fileId)
-        
+
         let jsonDecoder = JSONDecoder()
-        guard let pieColors = UserDefaults.standard.object(forKey: "pieColors_file\(dataList.fileId)") as? Data,
-              let pieColors = try? jsonDecoder.decode([Color].self, from: pieColors) else {
-            self.colors = [Color.orange, Color.green, Color.blue, Color.red, Color.yellow, Color.pink, Color.purple, Color.mint, Color.indigo, Color.cyan]
-            return
+        if let saved = UserDefaults.standard.object(forKey: "pieColors_file\(dataList.fileId)") as? Data,
+           let pieColors = try? jsonDecoder.decode([Color].self, from: saved) {
+            self.colors = pieColors
+        } else {
+            self.colors = PieChartViewModel.defaultColors
         }
-        self.colors = pieColors
+
+        // 保存色が古く、データ件数より少ない場合に備えて不足ぶんを既定色で補う。
+        // これがないと colors[index] が範囲外アクセスでクラッシュする。
+        ensureColorCount(dataList.count())
+    }
+
+    /// colors の要素数が少なくとも `count` になるよう、不足ぶんを既定色で補完する。
+    private func ensureColorCount(_ count: Int) {
+        guard colors.count < count else { return }
+        for index in colors.count..<count {
+            colors.append(PieChartViewModel.defaultColors[index % PieChartViewModel.defaultColors.count])
+        }
     }
     
     func save() {

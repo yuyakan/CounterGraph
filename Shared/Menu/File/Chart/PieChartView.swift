@@ -118,7 +118,7 @@ struct PieChartView: View {
                     }
                 }
                 
-                ForEach(0..<(angles.count - 1), id: \.self) { index in
+                ForEach(Array(0..<max(angles.count - 1, 0)), id: \.self) { index in
                     Path { path in
                         path.move(to: CGPoint(x: centerX, y: centerY))
                         path.addArc(center: .init(x: centerX, y: centerY),
@@ -154,7 +154,7 @@ struct PieChartView: View {
                     Text(LocalizedStringKey("blank"))
                 }
                 HStack(alignment: .bottom, spacing: width * 0.1 / 5){
-                    ForEach(0..<min(names.count, 5), id: \.self){ index in
+                    ForEach(Array(0..<min(names.count, 5)), id: \.self){ index in
                         VStack {
                             Text(LocalizedStringKey(names[index]))
                             ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
@@ -164,7 +164,7 @@ struct PieChartView: View {
                     }
                 }.opacity(isVisibleSetting ? 1:0)
                 HStack(alignment: .bottom, spacing: width * 0.1 / 5){
-                    ForEach(5..<min(max(names.count,5), 10), id: \.self){ index in
+                    ForEach(Array(5..<min(max(names.count, 5), 10)), id: \.self){ index in
                         VStack {
                             Text(LocalizedStringKey(names[index]))
                             ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)

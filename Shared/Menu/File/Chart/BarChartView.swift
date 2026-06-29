@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Charts
 
 
 struct BarChartView: View {
@@ -105,46 +106,47 @@ struct BarChartView: View {
             }
             
             if bars == 0 {
-                HStack(alignment: .bottom, spacing: fixedWidth/40){
-                    ForEach(0..<5, id: \.self){ index in
-                        ZStack (alignment: .bottom) {
-                            VStack(spacing:0) {
-                                Text("\(Int(blankList[index].value))")
-                                    .frame(width: fixedWidth/5)
-                                    .foregroundColor(Color.gray.opacity(0.4))
-                                    .padding(.bottom, fixedHeight * 0.02)
-                                RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0))
-                                    .fill(Color.gray.opacity(0.3))
-                                    .frame(width: fixedWidth/10, height: (Double(blankList[index].value) / 500)*fixedHeight*0.5)
-                            }
-                        }
+                // データ未登録時のサンプル表示（淡色のプレースホルダ）
+                Chart(blankList, id: \.name) { item in
+                    BarMark(
+                        x: .value("Name", item.name),
+                        y: .value("Value", item.value)
+                    )
+                    .foregroundStyle(Color.gray.opacity(0.3))
+                    .annotation(position: .top) {
+                        Text("\(item.value)")
+                            .font(.caption)
+                            .foregroundColor(Color.gray.opacity(0.4))
                     }
                 }
+                .chartYAxis(.hidden)
+                .frame(height: fixedHeight * 0.5)
+                .padding(.horizontal)
             } else {
-                HStack(alignment: .bottom, spacing: baseframeWidth/8){
-                    ForEach(0..<bars, id: \.self){ index in
-                        ZStack (alignment: .bottom) {
-                            VStack(spacing:0) {
-                                Button(action: {
-                                    barChart.removeData(index: index)
-                                }) {
-                                    if(isVisibleSetting){
-                                        Image(systemName: "trash")
-                                            .accentColor(Color.red)
-                                            .padding(.bottom, 6)
-                                    }
-                                }
-                                Text("\(Int(barChart.value(index: index)))")
-                                    .frame(width: baseframeWidth)
-                                    .foregroundColor(setting.textColor)
-                                    .padding(.bottom, fixedHeight * 0.02)
-                                RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0))
-                                    .fill(LinearGradient(gradient: Gradient(colors: [setting.graphColor, setting.graphColor.opacity(0.7), setting.graphColor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
-                                    .frame(width: baseframeWidth/2, height: barChart.value(index: index) <= CGFloat(0) ? 0 :  (barChart.value(index: index)/barChart.maxValue())*fixedHeight*0.5)
-                            }
-                        }
+                Chart(barChart.entries()) { entry in
+                    // X軸は名前ではなく一意なindexにする。
+                    // 名前にすると同名項目（既定名"Jack"など）が1本の棒に積み上がってしまう。
+                    BarMark(
+                        x: .value("Index", String(entry.id)),
+                        y: .value("Value", max(entry.value, 0))
+                    )
+                    .foregroundStyle(
+                        LinearGradient(
+                            gradient: Gradient(colors: [setting.graphColor, setting.graphColor.opacity(0.7), setting.graphColor.opacity(0.4)]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .annotation(position: .top) {
+                        Text("\(entry.value)")
+                            .font(.caption)
+                            .foregroundColor(setting.textColor)
                     }
                 }
+                .chartYAxis(.hidden)
+                .chartXAxis(.hidden)
+                .frame(height: fixedHeight * 0.5)
+                .padding(.horizontal)
             }
             
             if bars == 0 {
@@ -177,7 +179,7 @@ struct BarChartView: View {
                 }
             } else {
                 HStack(alignment: .center, spacing: baseframeWidth/8){
-                    ForEach(0..<bars, id: \.self){ index in
+                    ForEach(Array(0..<bars), id: \.self){ index in
                         VStack {
                             Text(LocalizedStringKey(barChart.name(index: index)))
                                 .frame(height: fixedHeight/8)
@@ -204,6 +206,16 @@ struct BarChartView: View {
                                             .accentColor(setting.buttonColor)
                                             .font(.system(size: 30))
                                             .padding(.vertical, height > 800 ? 10 : 6)
+                                    }
+                                }
+
+                                Button(action: {
+                                    barChart.removeData(index: index)
+                                }) {
+                                    if(isVisibleSetting){
+                                        Image(systemName: "trash")
+                                            .accentColor(Color.red)
+                                            .font(.system(size: 22))
                                     }
                                 }
                             }

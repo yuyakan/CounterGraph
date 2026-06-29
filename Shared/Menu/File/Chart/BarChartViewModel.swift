@@ -8,6 +8,13 @@
 import Foundation
 import SwiftUI
 
+/// Swift Charts へ渡すための棒1本分のデータ。
+struct BarEntry: Identifiable {
+    let id: Int          // dataList 内の index
+    let name: String
+    let value: Int
+}
+
 class BarChartViewModel: ObservableObject {
     @Published var name : String = String(localized: "Jack")
     @Published var value: Int = 100
@@ -30,6 +37,15 @@ class BarChartViewModel: ObservableObject {
     
     func count() -> Int {
         return dataList.count()
+    }
+
+    /// Swift Charts 描画用のエントリ一覧。
+    func entries() -> [BarEntry] {
+        (0..<dataList.count()).map { index in
+            BarEntry(id: index,
+                     name: dataList.name(index: index),
+                     value: dataList.value(index: index))
+        }
     }
     
     func value(index: Int) -> CGFloat {
