@@ -29,8 +29,6 @@ struct FileView: View {
                 PieChartView(fileId: fileId, chartType: $chartType, interstitial: interstitial)
                     .environmentObject(setting)
             }
-            BannerView()
-                .frame(height: 60)
         }
         .onDisappear(perform: {
             menu.refresh.toggle()
