@@ -26,11 +26,11 @@ struct BarChartView: View {
 
     /// データ未登録時に表示するサンプル（淡色プレースホルダ）。
     private let blankEntries: [BarEntry] = [
-        BarEntry(id: 0, name: String(localized: "Ann"),   value: 80),
-        BarEntry(id: 1, name: String(localized: "Tom"),   value: 230),
-        BarEntry(id: 2, name: String(localized: "Bob"),   value: 500),
-        BarEntry(id: 3, name: String(localized: "Casey"), value: 320),
-        BarEntry(id: 4, name: String(localized: "Brian"), value: 120)
+        BarEntry(id: 0, name: String(localized: "Ann"),   value: 80,  color: .gray.opacity(0.3)),
+        BarEntry(id: 1, name: String(localized: "Tom"),   value: 230, color: .gray.opacity(0.3)),
+        BarEntry(id: 2, name: String(localized: "Bob"),   value: 500, color: .gray.opacity(0.3)),
+        BarEntry(id: 3, name: String(localized: "Casey"), value: 320, color: .gray.opacity(0.3)),
+        BarEntry(id: 4, name: String(localized: "Brian"), value: 120, color: .gray.opacity(0.3))
     ]
 
     var body: some View {
@@ -75,12 +75,12 @@ struct BarChartView: View {
                 .cornerRadius(6)
                 .foregroundStyle(
                     LinearGradient(
-                        gradient: Gradient(colors: [setting.graphColor, setting.graphColor.opacity(0.55)]),
+                        gradient: Gradient(colors: [entry.color, entry.color.opacity(0.55)]),
                         startPoint: .top,
                         endPoint: .bottom
                     )
                 )
-                .opacity(isEmpty ? 0.35 : 1)
+                .opacity(isEmpty ? 0.5 : 1)
                 .annotation(position: .top) {
                     Text("\(entry.value)")
                         .font(.caption.weight(.semibold))
@@ -98,6 +98,9 @@ struct BarChartView: View {
             List {
                 ForEach(displayedEntries) { entry in
                     HStack(spacing: 12) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(entry.color)
+                            .frame(width: 16, height: 16)
                         Text(LocalizedStringKey(entry.name))
                             .font(.body)
                             .foregroundColor(setting.textColor)

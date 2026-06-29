@@ -13,6 +13,7 @@ struct BarEntry: Identifiable {
     let id: Int          // dataList 内の index
     let name: String
     let value: Int
+    let color: Color
 }
 
 class BarChartViewModel: ObservableObject {
@@ -40,11 +41,14 @@ class BarChartViewModel: ObservableObject {
     }
 
     /// Swift Charts 描画用のエントリ一覧。
+    /// 色は円グラフと共通のパレットを index で割り当て、下のリストと棒を紐づける。
     func entries() -> [BarEntry] {
-        (0..<dataList.count()).map { index in
+        let palette = PieChartViewModel.defaultColors
+        return (0..<dataList.count()).map { index in
             BarEntry(id: index,
                      name: dataList.name(index: index),
-                     value: dataList.value(index: index))
+                     value: dataList.value(index: index),
+                     color: palette[index % palette.count])
         }
     }
     
