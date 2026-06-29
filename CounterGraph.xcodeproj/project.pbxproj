@@ -24,8 +24,6 @@
 		4B7D4B8F2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */; };
 		4B8782A827C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
 		4B8782A927C633340057DF32 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B8782A727C633340057DF32 /* GoogleService-Info.plist */; };
-		4BBFC61A27C37BB700A05720 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBFC61927C37BB700A05720 /* SettingView.swift */; };
-		4BBFC61B27C37BB700A05720 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BBFC61927C37BB700A05720 /* SettingView.swift */; };
 		4BD17D772AFF910200120E96 /* extensionColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D762AFF910200120E96 /* extensionColor.swift */; };
 		4BD17D782AFF910200120E96 /* extensionColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D762AFF910200120E96 /* extensionColor.swift */; };
 		4BD17D7A2AFFB4BF00120E96 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D792AFFB4BF00120E96 /* MenuView.swift */; };
@@ -82,7 +80,6 @@
 		4B7D4B8D2AFE03BA00858ED9 /* PieChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieChartViewModel.swift; sourceTree = "<group>"; };
 		4B8782A627C60EA60057DF32 /* CounterGraph--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CounterGraph--iOS--Info.plist"; sourceTree = "<group>"; };
 		4B8782A727C633340057DF32 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		4BBFC61927C37BB700A05720 /* SettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; tabWidth = 4; };
 		4BD17D762AFF910200120E96 /* extensionColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensionColor.swift; sourceTree = "<group>"; };
 		4BD17D792AFFB4BF00120E96 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		4BD17D7D2AFFBED900120E96 /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
@@ -168,7 +165,6 @@
 		4B7D4B8C2AFDF87800858ED9 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
-				4BBFC61927C37BB700A05720 /* SettingView.swift */,
 				4B7D4B832AFD31CF00858ED9 /* Setting.swift */,
 				4BD17D762AFF910200120E96 /* extensionColor.swift */,
 			);
@@ -448,7 +444,6 @@
 				4BD17D7E2AFFBED900120E96 /* MenuViewModel.swift in Sources */,
 				4B7D4B8E2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */,
 				4B1A83CC2AFCE30F002F1BFE /* DataList.swift in Sources */,
-				4BBFC61A27C37BB700A05720 /* SettingView.swift in Sources */,
 				4BD17D882B0220F700120E96 /* File.swift in Sources */,
 				4B1A83CF2AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
 				4BD213FD27C1307B004280DA /* BarChartView.swift in Sources */,
@@ -472,7 +467,6 @@
 				4BD17D7F2AFFBED900120E96 /* MenuViewModel.swift in Sources */,
 				4B7D4B8F2AFE03BA00858ED9 /* PieChartViewModel.swift in Sources */,
 				4B1A83CD2AFCE30F002F1BFE /* DataList.swift in Sources */,
-				4BBFC61B27C37BB700A05720 /* SettingView.swift in Sources */,
 				4BD17D892B0220F700120E96 /* File.swift in Sources */,
 				4B1A83D02AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
 				4BD213FE27C1307B004280DA /* BarChartView.swift in Sources */,

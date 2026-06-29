@@ -16,6 +16,8 @@ struct PieChartView: View {
     @ObservedObject var interstitial: Interstitial
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
+    @State private var showRenameAlert = false
+    @State private var draftTitle = ""
 
     init (fileId: String, chartType:  Binding<ChartType>, interstitial: Interstitial){
         _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
@@ -59,10 +61,21 @@ struct PieChartView: View {
                 })
             }
 
-            Text(setting.title)
-                .font(.largeTitle.bold())
-                .foregroundColor(setting.titleColor)
-                .padding(.top, height * 0.01)
+            Button {
+                draftTitle = setting.title
+                showRenameAlert = true
+            } label: {
+                HStack(spacing: 6) {
+                    Text(setting.title)
+                        .font(.largeTitle.bold())
+                        .foregroundColor(setting.titleColor)
+                    Image(systemName: "pencil")
+                        .font(.subheadline)
+                        .foregroundColor(setting.titleColor.opacity(0.5))
+                }
+            }
+            .buttonStyle(.plain)
+            .padding(.top, height * 0.01)
 
             // ドーナツチャート＋中央に合計値
             Chart(displayedEntries) { entry in
@@ -126,6 +139,17 @@ struct PieChartView: View {
             pieChart.save()
         })
         .background(setting.backColor)
+        .alert(String(localized: "title"), isPresented: $showRenameAlert) {
+            TextField("", text: $draftTitle)
+            Button(String(localized: "Cancel"), role: .cancel) {}
+            Button("OK") {
+                let trimmed = draftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty {
+                    setting.title = trimmed
+                    setting.save()
+                }
+            }
+        }
     }
 }
 

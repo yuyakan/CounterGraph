@@ -14,48 +14,21 @@ struct FileView: View {
     @EnvironmentObject var menu: MenuViewModel
     @StateObject var setting: Setting
     @State var chartType: ChartType = .bar
-    @State var tabIndex:Int = 0
     let fileId: String
     init(fileId: String) {
         _setting = StateObject(wrappedValue: Setting(fileId: fileId))
         self.fileId = fileId
     }
-    
+
     var body: some View {
-        VStack{
-            TabView(selection: $tabIndex) {
-                if chartType.isBar() {
-                    BarChartView(fileId: fileId, chartType: $chartType)
-                        .environmentObject(setting)
-                        .tabItem { Group{
-                            if #available(iOS 16.0, *) {
-                                Image(systemName: "light.panel.fill")
-                            } else {
-                                Image(systemName: "display")
-                            }
-                            Text("Charts")
-                        }
-                    }.tag(0)
-                } else {
-                    PieChartView(fileId: fileId, chartType: $chartType, interstitial: interstitial)
-                        .environmentObject(setting)
-                        .tabItem { Group{
-                            if #available(iOS 16.0, *) {
-                                Image(systemName: "light.panel.fill")
-                            } else {
-                                Image(systemName: "display")
-                            }
-                            Text("Charts")
-                        }
-                    }.tag(0)
-                }
-                SettingView()
+        VStack(spacing: 0) {
+            if chartType.isBar() {
+                BarChartView(fileId: fileId, chartType: $chartType)
                     .environmentObject(setting)
-                    .tabItem { Group{
-                                Image(systemName: "gearshape")
-                                Text("Setting")
-                            }}.tag(1)
-            }.accentColor(setting.buttonColor)
+            } else {
+                PieChartView(fileId: fileId, chartType: $chartType, interstitial: interstitial)
+                    .environmentObject(setting)
+            }
             BannerView()
                 .frame(height: 60)
         }

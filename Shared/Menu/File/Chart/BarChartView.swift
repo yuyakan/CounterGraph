@@ -16,6 +16,8 @@ struct BarChartView: View {
     @Binding var chartType: ChartType
     @State var unit: Int = 10
     @State private var showAddSheet = false
+    @State private var showRenameAlert = false
+    @State private var draftTitle = ""
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
 
@@ -59,10 +61,21 @@ struct BarChartView: View {
                 })
             }
 
-            Text(setting.title)
-                .font(.largeTitle.bold())
-                .foregroundColor(setting.titleColor)
-                .padding(.top, height * 0.01)
+            Button {
+                draftTitle = setting.title
+                showRenameAlert = true
+            } label: {
+                HStack(spacing: 6) {
+                    Text(setting.title)
+                        .font(.largeTitle.bold())
+                        .foregroundColor(setting.titleColor)
+                    Image(systemName: "pencil")
+                        .font(.subheadline)
+                        .foregroundColor(setting.titleColor.opacity(0.5))
+                }
+            }
+            .buttonStyle(.plain)
+            .padding(.top, height * 0.01)
 
             // 棒グラフ
             Chart(displayedEntries) { entry in
@@ -180,6 +193,17 @@ struct BarChartView: View {
                 .presentationDetents([.height(220)])
         }
         .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
+        .alert(String(localized: "title"), isPresented: $showRenameAlert) {
+            TextField("", text: $draftTitle)
+            Button(String(localized: "Cancel"), role: .cancel) {}
+            Button("OK") {
+                let trimmed = draftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty {
+                    setting.title = trimmed
+                    setting.save()
+                }
+            }
+        }
     }
 }
 
