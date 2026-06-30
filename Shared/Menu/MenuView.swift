@@ -18,10 +18,8 @@ struct MenuView: View {
                 Color(.systemBackground).ignoresSafeArea()
 
                 List {
-                    // カスタムヘッダー（大きなタイトル＋編集トグル）
+                    // ヘッダー（編集トグルのみ・右寄せ）
                     HStack {
-                        Text(String(localized: "Menu"))
-                            .font(.system(size: 34, weight: .bold))
                         Spacer()
                         Button {
                             withAnimation { editMode = editMode.isEditing ? .inactive : .active }
