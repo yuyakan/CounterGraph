@@ -15,6 +15,7 @@ struct PieChartView: View {
     @ObservedObject var interstitial: Interstitial
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
+    @State private var isEditing = false
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
     /// メニューへ戻る処理（FileView から渡される）。
@@ -59,11 +60,20 @@ struct PieChartView: View {
                     Image(systemName: "chart.bar.fill")
                         .font(.system(size: 28, weight: .semibold))
                         .foregroundColor(setting.buttonColor)
+                        .padding(.vertical)
+                })
+                Button(action: {
+                    withAnimation { isEditing.toggle() }
+                }, label: {
+                    Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
+                        .font(.body.weight(.semibold))
+                        .foregroundColor(setting.buttonColor)
                         .padding()
                 })
             }
 
             Button {
+                guard isEditing else { return }
                 draftTitle = setting.title
                 showRenameAlert = true
             } label: {
@@ -71,12 +81,15 @@ struct PieChartView: View {
                     Text(setting.title)
                         .font(.largeTitle.bold())
                         .foregroundColor(setting.titleColor)
-                    Image(systemName: "pencil")
-                        .font(.subheadline)
-                        .foregroundColor(setting.titleColor.opacity(0.5))
+                    if isEditing {
+                        Image(systemName: "pencil")
+                            .font(.subheadline)
+                            .foregroundColor(setting.titleColor.opacity(0.5))
+                    }
                 }
             }
             .buttonStyle(.plain)
+            .disabled(!isEditing)
             .padding(.top, height * 0.01)
 
             // ドーナツチャート＋中央に合計値

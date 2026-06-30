@@ -14,6 +14,7 @@ struct BarChartView: View {
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
     @State var unit: Int = 10
+    @State private var isEditing = false
     @State private var showAddSheet = false
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
@@ -59,11 +60,20 @@ struct BarChartView: View {
                     Image(systemName: "chart.pie.fill")
                         .font(.system(size: 28, weight: .semibold))
                         .foregroundColor(setting.buttonColor)
+                        .padding(.vertical)
+                })
+                Button(action: {
+                    withAnimation { isEditing.toggle() }
+                }, label: {
+                    Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
+                        .font(.body.weight(.semibold))
+                        .foregroundColor(setting.buttonColor)
                         .padding()
                 })
             }
 
             Button {
+                guard isEditing else { return }
                 draftTitle = setting.title
                 showRenameAlert = true
             } label: {
@@ -71,12 +81,15 @@ struct BarChartView: View {
                     Text(setting.title)
                         .font(.largeTitle.bold())
                         .foregroundColor(setting.titleColor)
-                    Image(systemName: "pencil")
-                        .font(.subheadline)
-                        .foregroundColor(setting.titleColor.opacity(0.5))
+                    if isEditing {
+                        Image(systemName: "pencil")
+                            .font(.subheadline)
+                            .foregroundColor(setting.titleColor.opacity(0.5))
+                    }
                 }
             }
             .buttonStyle(.plain)
+            .disabled(!isEditing)
             .padding(.top, height * 0.01)
 
             // 棒グラフ
@@ -126,7 +139,7 @@ struct BarChartView: View {
                             .foregroundColor(setting.textColor)
                             .frame(minWidth: 56, alignment: .trailing)
 
-                        if !isEmpty {
+                        if isEditing && !isEmpty {
                             Button {
                                 barChart.minus(index: entry.id, value: unit)
                             } label: {
@@ -149,7 +162,7 @@ struct BarChartView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 8, leading: width * 0.06, bottom: 8, trailing: width * 0.06))
                     .swipeActions(edge: .trailing) {
-                        if !isEmpty {
+                        if isEditing && !isEmpty {
                             Button(role: .destructive) {
                                 barChart.removeData(index: entry.id)
                             } label: {
@@ -166,28 +179,30 @@ struct BarChartView: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
 
-            // 増減単位の設定＋新規項目追加
-            HStack(spacing: 16) {
-                HStack(spacing: 6) {
-                    Text(LocalizedStringKey("1unit:"))
-                        .font(.subheadline)
-                        .foregroundColor(setting.textColor.opacity(0.7))
-                    TextField("", value: $unit, format: .number)
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.numberPad)
-                        .frame(width: 60)
+            // 増減単位の設定＋新規項目追加（編集モードのみ）
+            if isEditing {
+                HStack(spacing: 16) {
+                    HStack(spacing: 6) {
+                        Text(LocalizedStringKey("1unit:"))
+                            .font(.subheadline)
+                            .foregroundColor(setting.textColor.opacity(0.7))
+                        TextField("", value: $unit, format: .number)
+                            .textFieldStyle(.roundedBorder)
+                            .keyboardType(.numberPad)
+                            .frame(width: 60)
+                    }
+                    Spacer()
+                    Button {
+                        showAddSheet = true
+                    } label: {
+                        Label(String(localized: "Add"), systemImage: "plus.circle.fill")
+                            .font(.body.weight(.semibold))
+                            .foregroundColor(setting.buttonColor)
+                    }
                 }
-                Spacer()
-                Button {
-                    showAddSheet = true
-                } label: {
-                    Label(String(localized: "Add"), systemImage: "plus.circle.fill")
-                        .font(.body.weight(.semibold))
-                        .foregroundColor(setting.buttonColor)
-                }
+                .padding(.horizontal, width * 0.06)
+                .padding(.vertical, 10)
             }
-            .padding(.horizontal, width * 0.06)
-            .padding(.vertical, 10)
         }
         .background(setting.backColor)
         .sheet(isPresented: $showAddSheet) {
