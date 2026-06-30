@@ -47,23 +47,23 @@ struct PieChartView: View {
         let total = displayedEntries.reduce(0) { $0 + $1.value }
 
         VStack(spacing: 0) {
-            HStack(alignment: .top, spacing: 0) {
+            HStack(alignment: .center, spacing: 4) {
                 Button(action: {
                     goBack()
                 }, label: {
                     Image(systemName: "list.bullet")
-                        .font(.system(size: 28, weight: .semibold))
+                        .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
-                        .padding()
+                        .frame(width: 44, height: 44)
                 })
                 Spacer()
                 Button(action: {
                     chartType = .bar
                 }, label: {
                     Image(systemName: "chart.bar.fill")
-                        .font(.system(size: 28, weight: .semibold))
+                        .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
-                        .padding(.vertical)
+                        .frame(width: 44, height: 44)
                 })
                 Button(action: {
                     withAnimation { isEditing.toggle() }
@@ -71,9 +71,11 @@ struct PieChartView: View {
                     Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
                         .font(.body.weight(.semibold))
                         .foregroundColor(brandColor)
-                        .padding()
+                        .frame(height: 44)
+                        .padding(.horizontal, 8)
                 })
             }
+            .padding(.horizontal, 8)
 
             HStack(spacing: 6) {
                 Text(setting.title)
