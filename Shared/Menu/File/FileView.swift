@@ -23,10 +23,10 @@ struct FileView: View {
     var body: some View {
         VStack(spacing: 0) {
             if chartType.isBar() {
-                BarChartView(fileId: fileId, chartType: $chartType)
+                BarChartView(fileId: fileId, chartType: $chartType, goBack: { dismiss() })
                     .environmentObject(setting)
             } else {
-                PieChartView(fileId: fileId, chartType: $chartType, interstitial: interstitial)
+                PieChartView(fileId: fileId, chartType: $chartType, interstitial: interstitial, goBack: { dismiss() })
                     .environmentObject(setting)
             }
         }

@@ -10,7 +10,6 @@ import Charts
 
 
 struct BarChartView: View {
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var setting: Setting
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
@@ -20,10 +19,13 @@ struct BarChartView: View {
     @State private var draftTitle = ""
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
+    /// メニューへ戻る処理（FileView から渡される）。
+    let goBack: () -> Void
 
-    init(fileId: String, chartType:  Binding<ChartType>) {
+    init(fileId: String, chartType: Binding<ChartType>, goBack: @escaping () -> Void) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
         _chartType = chartType
+        self.goBack = goBack
     }
 
     /// データ未登録時に表示するサンプル（淡色プレースホルダ）。
@@ -43,7 +45,7 @@ struct BarChartView: View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 0) {
                 Button(action: {
-                    dismiss()
+                    goBack()
                 }, label: {
                     Image(systemName: "list.bullet")
                         .font(.system(size: 28, weight: .semibold))

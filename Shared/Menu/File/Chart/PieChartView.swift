@@ -9,7 +9,6 @@ import SwiftUI
 import Charts
 
 struct PieChartView: View {
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var setting: Setting
     @StateObject var pieChart: PieChartViewModel
     @Binding var chartType: ChartType
@@ -18,10 +17,13 @@ struct PieChartView: View {
     let width = Double(UIScreen.main.bounds.width)
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
+    /// メニューへ戻る処理（FileView から渡される）。
+    let goBack: () -> Void
 
-    init (fileId: String, chartType:  Binding<ChartType>, interstitial: Interstitial){
+    init (fileId: String, chartType: Binding<ChartType>, interstitial: Interstitial, goBack: @escaping () -> Void){
         _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
         _chartType = chartType
+        self.goBack = goBack
         self.interstitial = interstitial
     }
 
@@ -43,7 +45,7 @@ struct PieChartView: View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 0) {
                 Button(action: {
-                    dismiss()
+                    goBack()
                 }, label: {
                     Image(systemName: "list.bullet")
                         .font(.system(size: 28, weight: .semibold))
