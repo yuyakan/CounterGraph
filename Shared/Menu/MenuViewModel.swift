@@ -9,8 +9,8 @@ import Foundation
 
 class MenuViewModel: ObservableObject {
     @Published var refresh = false
-    @Published var files: [File] = [File(fileId: "0"), File(fileId: UUID().uuidString), File(fileId: UUID().uuidString), File(fileId: UUID().uuidString), File(fileId: UUID().uuidString)]
-    
+    @Published var files: [File] = [File(fileId: "0")]
+
     init() {
         if !UserDefaults.standard.bool(forKey: "isSecondLaunched") {
             UserDefaults.standard.set(String(localized: "Result"), forKey: "Title_file0")
