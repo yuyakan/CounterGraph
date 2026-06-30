@@ -8,6 +8,12 @@
 import Foundation
 import SwiftUI
 
+extension Color {
+    /// アプリ共通のブランドカラー（ティール/シアン系）。
+    /// ボタン・タイトル・アクセントに使う唯一のアクセント色。
+    static let brand = Color(red: 0.0, green: 0.62, blue: 0.65)
+}
+
 extension Color: Codable {
     enum CodingKeys: String, CodingKey {
         case red
