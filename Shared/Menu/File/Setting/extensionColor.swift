@@ -11,15 +11,15 @@ import SwiftUI
 extension Color {
     /// アプリ共通のブランドカラー（ティール/シアン系）。
     /// ボタン・タイトル・アクセントに使う唯一のアクセント色。
-    /// ライトはやや濃いめ、ダークは黒地で映えるよう明るめにする。
+    /// ダークは黒地で映えるよう明るめにする。
     static let brand = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.0, green: 0.70, blue: 0.73, alpha: 1.0)   // ダーク: 鮮やかな濃いティール
-            : UIColor(red: 0.0, green: 0.48, blue: 0.52, alpha: 1.0)   // ライト: しっかり濃いティール
+            ? UIColor(red: 0.0, green: 0.70, blue: 0.73, alpha: 1.0)   // ダーク: 明るいティール
+            : UIColor(red: 0.0, green: 0.62, blue: 0.65, alpha: 1.0)   // ライト: 標準ティール
     })
 
     /// ライト/ダークそれぞれのブランドカラー（描画コンテキストで trait が解決されない場合に明示利用）。
-    static let brandLight = Color(red: 0.0, green: 0.48, blue: 0.52)
+    static let brandLight = Color(red: 0.0, green: 0.62, blue: 0.65)
     static let brandDark  = Color(red: 0.0, green: 0.70, blue: 0.73)
 }
 
