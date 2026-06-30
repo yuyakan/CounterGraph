@@ -90,7 +90,8 @@ struct BarChartView: View {
             }
             .buttonStyle(.plain)
             .disabled(!isEditing)
-            .padding(.top, height * 0.01)
+            .padding(.top, height * 0.035)
+            .padding(.bottom, height * 0.01)
 
             // 棒グラフ
             Chart(displayedEntries) { entry in

@@ -90,7 +90,8 @@ struct PieChartView: View {
             }
             .buttonStyle(.plain)
             .disabled(!isEditing)
-            .padding(.top, height * 0.01)
+            .padding(.top, height * 0.035)
+            .padding(.bottom, height * 0.01)
 
             // ドーナツチャート＋中央に合計値
             Chart(displayedEntries) { entry in
