@@ -15,11 +15,14 @@ struct PieChartView: View {
     @ObservedObject var interstitial: Interstitial
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
+    @Environment(\.colorScheme) private var colorScheme
     @State private var isEditing = false
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
     /// メニューへ戻る処理（FileView から渡される）。
     let goBack: () -> Void
+
+    private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
     init (fileId: String, chartType: Binding<ChartType>, interstitial: Interstitial, goBack: @escaping () -> Void){
         _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
@@ -50,7 +53,7 @@ struct PieChartView: View {
                 }, label: {
                     Image(systemName: "list.bullet")
                         .font(.system(size: 28, weight: .semibold))
-                        .foregroundColor(setting.buttonColor)
+                        .foregroundColor(brandColor)
                         .padding()
                 })
                 Spacer()
@@ -59,7 +62,7 @@ struct PieChartView: View {
                 }, label: {
                     Image(systemName: "chart.bar.fill")
                         .font(.system(size: 28, weight: .semibold))
-                        .foregroundColor(setting.buttonColor)
+                        .foregroundColor(brandColor)
                         .padding(.vertical)
                 })
                 Button(action: {
@@ -67,29 +70,27 @@ struct PieChartView: View {
                 }, label: {
                     Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
                         .font(.body.weight(.semibold))
-                        .foregroundColor(setting.buttonColor)
+                        .foregroundColor(brandColor)
                         .padding()
                 })
             }
 
-            Button {
+            HStack(spacing: 6) {
+                Text(setting.title)
+                    .font(.largeTitle.bold())
+                    .foregroundColor(brandColor)
+                if isEditing {
+                    Image(systemName: "pencil")
+                        .font(.subheadline)
+                        .foregroundColor(brandColor.opacity(0.5))
+                }
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
                 guard isEditing else { return }
                 draftTitle = setting.title
                 showRenameAlert = true
-            } label: {
-                HStack(spacing: 6) {
-                    Text(setting.title)
-                        .font(.largeTitle.bold())
-                        .foregroundColor(setting.titleColor)
-                    if isEditing {
-                        Image(systemName: "pencil")
-                            .font(.subheadline)
-                            .foregroundColor(setting.titleColor.opacity(0.5))
-                    }
-                }
             }
-            .buttonStyle(.plain)
-            .disabled(!isEditing)
             .padding(.top, height * 0.035)
             .padding(.bottom, height * 0.01)
 

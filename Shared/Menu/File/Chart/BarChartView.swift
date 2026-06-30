@@ -11,6 +11,7 @@ import Charts
 
 struct BarChartView: View {
     @EnvironmentObject var setting: Setting
+    @Environment(\.colorScheme) private var colorScheme
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
     @State var unit: Int = 10
@@ -22,6 +23,8 @@ struct BarChartView: View {
     let width = Double(UIScreen.main.bounds.width)
     /// メニューへ戻る処理（FileView から渡される）。
     let goBack: () -> Void
+
+    private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
     init(fileId: String, chartType: Binding<ChartType>, goBack: @escaping () -> Void) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
@@ -50,7 +53,7 @@ struct BarChartView: View {
                 }, label: {
                     Image(systemName: "list.bullet")
                         .font(.system(size: 28, weight: .semibold))
-                        .foregroundColor(setting.buttonColor)
+                        .foregroundColor(brandColor)
                         .padding()
                 })
                 Spacer()
@@ -59,7 +62,7 @@ struct BarChartView: View {
                 }, label: {
                     Image(systemName: "chart.pie.fill")
                         .font(.system(size: 28, weight: .semibold))
-                        .foregroundColor(setting.buttonColor)
+                        .foregroundColor(brandColor)
                         .padding(.vertical)
                 })
                 Button(action: {
@@ -67,29 +70,27 @@ struct BarChartView: View {
                 }, label: {
                     Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
                         .font(.body.weight(.semibold))
-                        .foregroundColor(setting.buttonColor)
+                        .foregroundColor(brandColor)
                         .padding()
                 })
             }
 
-            Button {
+            HStack(spacing: 6) {
+                Text(setting.title)
+                    .font(.largeTitle.bold())
+                    .foregroundColor(brandColor)
+                if isEditing {
+                    Image(systemName: "pencil")
+                        .font(.subheadline)
+                        .foregroundColor(brandColor.opacity(0.5))
+                }
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
                 guard isEditing else { return }
                 draftTitle = setting.title
                 showRenameAlert = true
-            } label: {
-                HStack(spacing: 6) {
-                    Text(setting.title)
-                        .font(.largeTitle.bold())
-                        .foregroundColor(setting.titleColor)
-                    if isEditing {
-                        Image(systemName: "pencil")
-                            .font(.subheadline)
-                            .foregroundColor(setting.titleColor.opacity(0.5))
-                    }
-                }
             }
-            .buttonStyle(.plain)
-            .disabled(!isEditing)
             .padding(.top, height * 0.035)
             .padding(.bottom, height * 0.01)
 
@@ -146,7 +147,7 @@ struct BarChartView: View {
                             } label: {
                                 Image(systemName: "minus.circle.fill")
                                     .font(.system(size: 28))
-                                    .foregroundColor(setting.buttonColor)
+                                    .foregroundColor(brandColor)
                             }
                             .buttonStyle(.plain)
                             Button {
@@ -154,7 +155,7 @@ struct BarChartView: View {
                             } label: {
                                 Image(systemName: "plus.circle.fill")
                                     .font(.system(size: 28))
-                                    .foregroundColor(setting.buttonColor)
+                                    .foregroundColor(brandColor)
                             }
                             .buttonStyle(.plain)
                         }
@@ -198,7 +199,7 @@ struct BarChartView: View {
                     } label: {
                         Label(String(localized: "Add"), systemImage: "plus.circle.fill")
                             .font(.body.weight(.semibold))
-                            .foregroundColor(setting.buttonColor)
+                            .foregroundColor(brandColor)
                     }
                 }
                 .padding(.horizontal, width * 0.06)
@@ -207,7 +208,7 @@ struct BarChartView: View {
         }
         .background(setting.backColor)
         .sheet(isPresented: $showAddSheet) {
-            AddItemSheet(barChart: barChart, buttonColor: setting.buttonColor)
+            AddItemSheet(barChart: barChart, buttonColor: brandColor)
                 .presentationDetents([.height(220)])
         }
         .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
