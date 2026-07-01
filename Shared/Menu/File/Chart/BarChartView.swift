@@ -160,9 +160,9 @@ struct BarChartView: View {
             }
             .chartYAxis(.hidden)
             .chartXAxis(.hidden)
-            .frame(height: height * 0.28)
+            .frame(height: height * 0.40)
             .padding(.horizontal, width * 0.06)
-            .padding(.vertical, height * 0.02)
+            .padding(.vertical, height * 0.015)
 
             // 各項目の行（名前＋値＋±ボタン）。編集モードなしで常時カウント可能。
             // 左スワイプで削除（List の swipeActions）。
@@ -177,10 +177,13 @@ struct BarChartView: View {
                             .foregroundColor(setting.textColor)
                             .lineLimit(1)
                         Spacer()
-                        Text("\(entry.value)")
-                            .font(.body.weight(.semibold).monospacedDigit())
-                            .foregroundColor(setting.textColor)
-                            .frame(minWidth: 56, alignment: .trailing)
+                        // 値はグラフ上に表示済みのため、編集モードのみ表示する
+                        if isEditing {
+                            Text("\(entry.value)")
+                                .font(.body.weight(.semibold).monospacedDigit())
+                                .foregroundColor(setting.textColor)
+                                .frame(minWidth: 56, alignment: .trailing)
+                        }
 
                         if isEditing && !isEmpty {
                             Button {
@@ -203,7 +206,7 @@ struct BarChartView: View {
                     }
                     .opacity(isEmpty ? 0.4 : 1)
                     .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(top: 8, leading: width * 0.06, bottom: 8, trailing: width * 0.06))
+                    .listRowInsets(EdgeInsets(top: 4, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
                     .swipeActions(edge: .trailing) {
                         if isEditing && !isEmpty {
                             Button(role: .destructive) {
