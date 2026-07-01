@@ -15,6 +15,7 @@ struct BarChartView: View {
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
     @State var unit: Int = 10
+    @State private var orientation: BarOrientation = .vertical
     @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
     @State private var showAddSheet = false
@@ -59,9 +60,15 @@ struct BarChartView: View {
                 })
                 Spacer()
                 Button(action: {
-                    chartType = .pie
+                    // 縦棒 → 横棒 → 円 の順で切り替える
+                    withAnimation {
+                        switch orientation {
+                        case .vertical:   orientation = .horizontal
+                        case .horizontal: chartType = .pie
+                        }
+                    }
                 }, label: {
-                    Image(systemName: "chart.pie.fill")
+                    Image(systemName: orientation == .vertical ? "chart.bar.xaxis" : "chart.pie.fill")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)
@@ -109,27 +116,40 @@ struct BarChartView: View {
             .padding(.top, height * 0.035)
             .padding(.bottom, height * 0.01)
 
-            // 棒グラフ
+            // 棒グラフ（縦棒 / 横棒）。X/Y は一意な index を軸にし、同名項目が積み上がるのを防ぐ。
             Chart(displayedEntries) { entry in
-                BarMark(
-                    // X軸は名前ではなく一意なindex。
-                    // 名前にすると同名項目が1本の棒に積み上がってしまう。
-                    x: .value("Index", String(entry.id)),
-                    y: .value("Value", max(entry.value, 0))
-                )
-                .cornerRadius(6)
-                .foregroundStyle(
-                    LinearGradient(
-                        gradient: Gradient(colors: [entry.color, entry.color.opacity(0.55)]),
-                        startPoint: .top,
-                        endPoint: .bottom
+                if orientation == .vertical {
+                    BarMark(
+                        x: .value("Index", String(entry.id)),
+                        y: .value("Value", max(entry.value, 0))
                     )
-                )
-                .opacity(isEmpty ? 0.5 : 1)
-                .annotation(position: .top) {
-                    Text("\(entry.value)")
-                        .font(.caption.weight(.semibold))
-                        .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
+                    .cornerRadius(6)
+                    .foregroundStyle(
+                        LinearGradient(colors: [entry.color, entry.color.opacity(0.55)],
+                                       startPoint: .top, endPoint: .bottom)
+                    )
+                    .opacity(isEmpty ? 0.5 : 1)
+                    .annotation(position: .top) {
+                        Text("\(entry.value)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
+                    }
+                } else {
+                    BarMark(
+                        x: .value("Value", max(entry.value, 0)),
+                        y: .value("Index", String(entry.id))
+                    )
+                    .cornerRadius(6)
+                    .foregroundStyle(
+                        LinearGradient(colors: [entry.color, entry.color.opacity(0.55)],
+                                       startPoint: .leading, endPoint: .trailing)
+                    )
+                    .opacity(isEmpty ? 0.5 : 1)
+                    .annotation(position: .trailing) {
+                        Text("\(entry.value)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
+                    }
                 }
             }
             .chartYAxis(.hidden)
