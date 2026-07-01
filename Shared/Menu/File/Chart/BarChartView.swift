@@ -48,6 +48,8 @@ struct BarChartView: View {
         let entries = barChart.entries(sortedBy: sortOrder)
         let isEmpty = entries.isEmpty
         let displayedEntries = isEmpty ? blankEntries : entries
+        // 軸の index("0","1"...) から名前へ変換する辞書。棒の直下/横に名前を表示するために使う。
+        let nameByID = Dictionary(uniqueKeysWithValues: displayedEntries.map { (String($0.id), $0.name) })
 
         VStack(spacing: 0) {
             HStack(alignment: .center, spacing: 4) {
@@ -158,8 +160,34 @@ struct BarChartView: View {
                     }
                 }
             }
-            .chartYAxis(.hidden)
-            .chartXAxis(.hidden)
+            .chartXAxis {
+                // 縦棒: X軸(カテゴリ)に名前を表示。横棒: X軸は値なので非表示。
+                if orientation == .vertical {
+                    AxisMarks(position: .bottom) { value in
+                        AxisValueLabel {
+                            if let key = value.as(String.self), let name = nameByID[key] {
+                                Text(LocalizedStringKey(name))
+                                    .font(.caption)
+                                    .foregroundColor(setting.textColor)
+                            }
+                        }
+                    }
+                }
+            }
+            .chartYAxis {
+                // 横棒: Y軸(カテゴリ)に名前を表示。縦棒: Y軸は値なので非表示。
+                if orientation == .horizontal {
+                    AxisMarks(position: .leading) { value in
+                        AxisValueLabel {
+                            if let key = value.as(String.self), let name = nameByID[key] {
+                                Text(LocalizedStringKey(name))
+                                    .font(.caption)
+                                    .foregroundColor(setting.textColor)
+                            }
+                        }
+                    }
+                }
+            }
             .frame(height: height * 0.40)
             .padding(.horizontal, width * 0.06)
             .padding(.vertical, height * 0.015)
@@ -217,29 +245,8 @@ struct BarChartView: View {
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
             } else {
-                // 表示モード: 色チップ＋名前を2列グリッドでコンパクトに
-                ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading),
-                                        GridItem(.flexible(), alignment: .leading)],
-                              spacing: 14) {
-                        ForEach(displayedEntries) { entry in
-                            HStack(spacing: 10) {
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(entry.color)
-                                    .frame(width: 16, height: 16)
-                                Text(LocalizedStringKey(entry.name))
-                                    .font(.body)
-                                    .foregroundColor(setting.textColor)
-                                    .lineLimit(1)
-                                Spacer(minLength: 0)
-                            }
-                            .opacity(isEmpty ? 0.4 : 1)
-                        }
-                    }
-                    .padding(.horizontal, width * 0.06)
-                    .padding(.top, 8)
-                    .padding(.bottom, height * 0.02)
-                }
+                // 表示モード: 名前は棒の下(軸)に表示済みのため凡例は不要
+                Spacer()
             }
 
             // 増減単位の設定＋新規項目追加（編集モードのみ）
