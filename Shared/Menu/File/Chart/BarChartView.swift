@@ -164,66 +164,83 @@ struct BarChartView: View {
             .padding(.horizontal, width * 0.06)
             .padding(.vertical, height * 0.015)
 
-            // 各項目の行（名前＋値＋±ボタン）。編集モードなしで常時カウント可能。
-            // 左スワイプで削除（List の swipeActions）。
-            List {
-                ForEach(displayedEntries) { entry in
-                    HStack(spacing: 12) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(entry.color)
-                            .frame(width: 16, height: 16)
-                        Text(LocalizedStringKey(entry.name))
-                            .font(.body)
-                            .foregroundColor(setting.textColor)
-                            .lineLimit(1)
-                        Spacer()
-                        // 値はグラフ上に表示済みのため、編集モードのみ表示する
-                        if isEditing {
+            if isEditing {
+                // 編集モード: 名前＋値＋±ボタン、左スワイプで削除
+                List {
+                    ForEach(displayedEntries) { entry in
+                        HStack(spacing: 12) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(entry.color)
+                                .frame(width: 16, height: 16)
+                            Text(LocalizedStringKey(entry.name))
+                                .font(.body)
+                                .foregroundColor(setting.textColor)
+                                .lineLimit(1)
+                            Spacer()
                             Text("\(entry.value)")
                                 .font(.body.weight(.semibold).monospacedDigit())
                                 .foregroundColor(setting.textColor)
                                 .frame(minWidth: 56, alignment: .trailing)
-                        }
 
-                        if isEditing && !isEmpty {
-                            Button {
-                                barChart.minus(index: entry.id, value: unit)
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                                    .font(.system(size: 28))
-                                    .foregroundColor(brandColor)
+                            if !isEmpty {
+                                Button {
+                                    barChart.minus(index: entry.id, value: unit)
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .font(.system(size: 28))
+                                        .foregroundColor(brandColor)
+                                }
+                                .buttonStyle(.plain)
+                                Button {
+                                    barChart.plus(index: entry.id, value: unit)
+                                } label: {
+                                    Image(systemName: "plus.circle.fill")
+                                        .font(.system(size: 28))
+                                        .foregroundColor(brandColor)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
-                            Button {
-                                barChart.plus(index: entry.id, value: unit)
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.system(size: 28))
-                                    .foregroundColor(brandColor)
-                            }
-                            .buttonStyle(.plain)
                         }
-                    }
-                    .opacity(isEmpty ? 0.4 : 1)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(top: 4, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
-                    .swipeActions(edge: .trailing) {
-                        if isEditing && !isEmpty {
-                            Button(role: .destructive) {
-                                barChart.removeData(index: entry.id)
-                            } label: {
-                                Label(String(localized: "Delete"), systemImage: "trash")
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 4, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
+                        .swipeActions(edge: .trailing) {
+                            if !isEmpty {
+                                Button(role: .destructive) {
+                                    barChart.removeData(index: entry.id)
+                                } label: {
+                                    Label(String(localized: "Delete"), systemImage: "trash")
+                                }
                             }
                         }
                     }
                 }
-                Color.clear
-                    .frame(height: height * 0.02)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+            } else {
+                // 表示モード: 色チップ＋名前を2列グリッドでコンパクトに
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.flexible(), alignment: .leading),
+                                        GridItem(.flexible(), alignment: .leading)],
+                              spacing: 14) {
+                        ForEach(displayedEntries) { entry in
+                            HStack(spacing: 10) {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(entry.color)
+                                    .frame(width: 16, height: 16)
+                                Text(LocalizedStringKey(entry.name))
+                                    .font(.body)
+                                    .foregroundColor(setting.textColor)
+                                    .lineLimit(1)
+                                Spacer(minLength: 0)
+                            }
+                            .opacity(isEmpty ? 0.4 : 1)
+                        }
+                    }
+                    .padding(.horizontal, width * 0.06)
+                    .padding(.top, 8)
+                    .padding(.bottom, height * 0.02)
+                }
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
 
             // 増減単位の設定＋新規項目追加（編集モードのみ）
             if isEditing {
