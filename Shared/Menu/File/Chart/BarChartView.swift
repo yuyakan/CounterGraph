@@ -164,7 +164,7 @@ struct BarChartView: View {
                 // 縦棒: X軸(カテゴリ)に名前を表示。横棒: X軸は値なので非表示。
                 if orientation == .vertical {
                     AxisMarks(position: .bottom) { value in
-                        AxisValueLabel {
+                        AxisValueLabel(orientation: .vertical) {
                             if let key = value.as(String.self), let name = nameByID[key] {
                                 Text(LocalizedStringKey(name))
                                     .font(.caption)
