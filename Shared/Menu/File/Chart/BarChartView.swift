@@ -14,8 +14,8 @@ struct BarChartView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
+    @Binding var orientation: BarOrientation
     @State var unit: Int = 10
-    @State private var orientation: BarOrientation = .vertical
     @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
     @State private var showAddSheet = false
@@ -28,9 +28,10 @@ struct BarChartView: View {
 
     private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
-    init(fileId: String, chartType: Binding<ChartType>, goBack: @escaping () -> Void) {
+    init(fileId: String, chartType: Binding<ChartType>, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
         _chartType = chartType
+        _orientation = orientation
         self.goBack = goBack
     }
 
@@ -59,16 +60,21 @@ struct BarChartView: View {
                         .frame(width: 44, height: 44)
                 })
                 Spacer()
+                // 現在の形式以外の2つへ直接切り替える
                 Button(action: {
-                    // 縦棒 → 横棒 → 円 の順で切り替える
                     withAnimation {
-                        switch orientation {
-                        case .vertical:   orientation = .horizontal
-                        case .horizontal: chartType = .pie
-                        }
+                        orientation = (orientation == .vertical) ? .horizontal : .vertical
                     }
                 }, label: {
-                    Image(systemName: orientation == .vertical ? "chart.bar.xaxis" : "chart.pie.fill")
+                    Image(systemName: orientation == .vertical ? "chart.bar.xaxis" : "chart.bar.fill")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
+                })
+                Button(action: {
+                    chartType = .pie
+                }, label: {
+                    Image(systemName: "chart.pie.fill")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)

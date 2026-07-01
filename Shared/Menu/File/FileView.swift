@@ -14,6 +14,7 @@ struct FileView: View {
     @EnvironmentObject var menu: MenuViewModel
     @StateObject var setting: Setting
     @State var chartType: ChartType = .bar
+    @State private var orientation: BarOrientation = .vertical
     let fileId: String
     init(fileId: String) {
         _setting = StateObject(wrappedValue: Setting(fileId: fileId))
@@ -23,10 +24,10 @@ struct FileView: View {
     var body: some View {
         VStack(spacing: 0) {
             if chartType.isBar() {
-                BarChartView(fileId: fileId, chartType: $chartType, goBack: { dismiss() })
+                BarChartView(fileId: fileId, chartType: $chartType, orientation: $orientation, goBack: { dismiss() })
                     .environmentObject(setting)
             } else {
-                PieChartView(fileId: fileId, chartType: $chartType, interstitial: interstitial, goBack: { dismiss() })
+                PieChartView(fileId: fileId, chartType: $chartType, orientation: $orientation, interstitial: interstitial, goBack: { dismiss() })
                     .environmentObject(setting)
             }
         }

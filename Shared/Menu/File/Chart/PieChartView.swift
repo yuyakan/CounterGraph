@@ -12,6 +12,7 @@ struct PieChartView: View {
     @EnvironmentObject var setting: Setting
     @StateObject var pieChart: PieChartViewModel
     @Binding var chartType: ChartType
+    @Binding var orientation: BarOrientation
     @ObservedObject var interstitial: Interstitial
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
@@ -25,9 +26,10 @@ struct PieChartView: View {
 
     private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
-    init (fileId: String, chartType: Binding<ChartType>, interstitial: Interstitial, goBack: @escaping () -> Void){
+    init (fileId: String, chartType: Binding<ChartType>, orientation: Binding<BarOrientation>, interstitial: Interstitial, goBack: @escaping () -> Void){
         _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
         _chartType = chartType
+        _orientation = orientation
         self.goBack = goBack
         self.interstitial = interstitial
     }
@@ -58,10 +60,21 @@ struct PieChartView: View {
                         .frame(width: 44, height: 44)
                 })
                 Spacer()
+                // 縦棒 / 横棒 それぞれへ直接切り替える
                 Button(action: {
+                    orientation = .vertical
                     chartType = .bar
                 }, label: {
                     Image(systemName: "chart.bar.fill")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
+                })
+                Button(action: {
+                    orientation = .horizontal
+                    chartType = .bar
+                }, label: {
+                    Image(systemName: "chart.bar.xaxis")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)
