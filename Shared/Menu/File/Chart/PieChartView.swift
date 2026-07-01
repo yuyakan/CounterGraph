@@ -74,7 +74,7 @@ struct PieChartView: View {
                     orientation = .horizontal
                     chartType = .bar
                 }, label: {
-                    Image(systemName: "chart.bar.xaxis")
+                    Image(systemName: "text.alignleft")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)

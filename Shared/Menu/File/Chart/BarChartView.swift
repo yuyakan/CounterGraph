@@ -66,7 +66,7 @@ struct BarChartView: View {
                         orientation = (orientation == .vertical) ? .horizontal : .vertical
                     }
                 }, label: {
-                    Image(systemName: orientation == .vertical ? "chart.bar.xaxis" : "chart.bar.fill")
+                    Image(systemName: orientation == .vertical ? "text.alignleft" : "chart.bar.fill")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)
