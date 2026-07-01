@@ -14,12 +14,20 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
 
     private let adUnitID = "ca-app-pub-3940256099942544/4411468910"//テスト
 
+    /// 開発中は広告を無効化する。DEBUGビルドでは true になり、広告の読み込み・表示を行わない。
+    #if DEBUG
+    private let isAdDisabled = true
+    #else
+    private let isAdDisabled = false
+    #endif
+
     override init() {
         super.init()
     }
 
     // 読み込み
     func loadInterstitial() {
+        if isAdDisabled { return }
         let request = Request()
         request.scene = UIApplication.shared.connectedScenes.first as? UIWindowScene
         Task { @MainActor in
@@ -38,6 +46,7 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
 
     // インタースティシャル広告の表示
     func presentInterstitial() {
+        if isAdDisabled { return }
         guard let ad = interstitialAd else {
             self.interstitialAdLoaded = false
             self.loadInterstitial()
