@@ -42,13 +42,19 @@ class BarChartViewModel: ObservableObject {
 
     /// Swift Charts 描画用のエントリ一覧。
     /// 色は円グラフと共通のパレットを index で割り当て、下のリストと棒を紐づける。
-    func entries() -> [BarEntry] {
+    /// id は常に dataList 内の元 index を保持するため、ソートしてもカウント操作は正しい項目に効く。
+    func entries(sortedBy order: ChartSortOrder = .entry) -> [BarEntry] {
         let palette = PieChartViewModel.defaultColors
-        return (0..<dataList.count()).map { index in
+        let base = (0..<dataList.count()).map { index in
             BarEntry(id: index,
                      name: dataList.name(index: index),
                      value: dataList.value(index: index),
                      color: palette[index % palette.count])
+        }
+        switch order {
+        case .entry:      return base
+        case .descending: return base.sorted { $0.value > $1.value }
+        case .ascending:  return base.sorted { $0.value < $1.value }
         }
     }
     

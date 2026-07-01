@@ -45,3 +45,7 @@
 
 "Edit" = "編集";
 "Done" = "完了";
+
+"sortEntry" = "登録順";
+"sortDescending" = "大きい順";
+"sortAscending" = "小さい順";

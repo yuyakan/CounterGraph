@@ -16,6 +16,7 @@ struct PieChartView: View {
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     @Environment(\.colorScheme) private var colorScheme
+    @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
@@ -41,7 +42,7 @@ struct PieChartView: View {
     ]
 
     var body: some View {
-        let entries = pieChart.entries()
+        let entries = pieChart.entries(sortedBy: sortOrder)
         let isEmpty = entries.isEmpty
         let displayedEntries = isEmpty ? blankEntries : entries
         let total = displayedEntries.reduce(0) { $0 + $1.value }
@@ -65,6 +66,18 @@ struct PieChartView: View {
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)
                 })
+                Menu {
+                    Picker("", selection: $sortOrder) {
+                        ForEach(ChartSortOrder.allCases) { order in
+                            Label(order.label, systemImage: order.systemImage).tag(order)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
+                }
                 Button(action: {
                     withAnimation { isEditing.toggle() }
                 }, label: {

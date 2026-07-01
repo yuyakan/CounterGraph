@@ -45,3 +45,7 @@
 
 "Edit" = "Edit";
 "Done" = "Done";
+
+"sortEntry" = "Default order";
+"sortDescending" = "Highest first";
+"sortAscending" = "Lowest first";

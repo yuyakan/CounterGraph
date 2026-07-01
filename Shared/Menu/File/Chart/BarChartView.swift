@@ -15,6 +15,7 @@ struct BarChartView: View {
     @StateObject var barChart: BarChartViewModel
     @Binding var chartType: ChartType
     @State var unit: Int = 10
+    @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
     @State private var showAddSheet = false
     @State private var showRenameAlert = false
@@ -42,7 +43,7 @@ struct BarChartView: View {
     ]
 
     var body: some View {
-        let entries = barChart.entries()
+        let entries = barChart.entries(sortedBy: sortOrder)
         let isEmpty = entries.isEmpty
         let displayedEntries = isEmpty ? blankEntries : entries
 
@@ -65,6 +66,18 @@ struct BarChartView: View {
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)
                 })
+                Menu {
+                    Picker("", selection: $sortOrder) {
+                        ForEach(ChartSortOrder.allCases) { order in
+                            Label(order.label, systemImage: order.systemImage).tag(order)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
+                }
                 Button(action: {
                     withAnimation { isEditing.toggle() }
                 }, label: {

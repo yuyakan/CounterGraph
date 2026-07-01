@@ -64,14 +64,20 @@ class PieChartViewModel: ObservableObject {
     }
 
     /// Swift Charts(SectorMark) 描画用のエントリ一覧。
-    func entries() -> [SectorEntry] {
+    /// id は元 index を保持する。
+    func entries(sortedBy order: ChartSortOrder = .entry) -> [SectorEntry] {
         let percents = self.percents()
-        return (0..<dataList.count()).map { index in
+        let base = (0..<dataList.count()).map { index in
             SectorEntry(id: index,
                         name: dataList.name(index: index),
                         value: dataList.value(index: index),
                         color: index < colors.count ? colors[index] : PieChartViewModel.defaultColors[index % PieChartViewModel.defaultColors.count],
                         percent: index < percents.count ? percents[index] : "")
+        }
+        switch order {
+        case .entry:      return base
+        case .descending: return base.sorted { $0.value > $1.value }
+        case .ascending:  return base.sorted { $0.value < $1.value }
         }
     }
 }
