@@ -364,6 +364,7 @@ private struct ItemEditSheet: View {
 
     @State private var name: String
     @State private var value: Int
+    @FocusState private var nameFocused: Bool
 
     init(initialName: String, initialValue: Int, buttonColor: Color, onSave: @escaping (String, Int) -> Void) {
         self.initialName = initialName
@@ -378,11 +379,17 @@ private struct ItemEditSheet: View {
         NavigationStack {
             Form {
                 TextField(String(localized: "Jack"), text: $name)
+                    .focused($nameFocused)
                 TextField(String(localized: "Value"), value: $value, format: .number)
                     .keyboardType(.numberPad)
             }
             .navigationTitle(String(localized: "Edit"))
             .navigationBarTitleDisplayMode(.inline)
+            // シート表示時に名前フィールドへ自動でカーソルを当てキーボードを表示する
+            .task {
+                try? await Task.sleep(nanoseconds: 300_000_000)
+                nameFocused = true
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(String(localized: "Cancel")) { dismiss() }
