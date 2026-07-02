@@ -38,16 +38,19 @@ struct BarChartView: View {
     }
 
     /// 斜め45度で表示する名前ラベルに必要な縦方向の高さ。
-    /// 表示中の最長の名前を実測し、回転後の外接矩形の高さから求める。
-    private func diagonalLabelHeight(for entries: [BarEntry]) -> CGFloat {
+    /// 表示中の最長の名前を実測し、maxWidth で頭打ち（＝2行折り返し）した幅・高さから求める。
+    private func diagonalLabelHeight(for entries: [BarEntry], maxWidth: CGFloat) -> CGFloat {
         let font = UIFont.preferredFont(forTextStyle: .caption1)
         let attrs: [NSAttributedString.Key: Any] = [.font: font]
-        let maxWidth = entries
+        let rawMaxWidth = entries
             .map { (String(localized: String.LocalizationValue($0.name)) as NSString).size(withAttributes: attrs).width }
             .max() ?? 0
-        let textHeight = font.lineHeight
+        // maxWidth を超える名前は2行に折り返るため、幅は頭打ち・行数は最大2行で見積もる。
+        let effectiveWidth = min(rawMaxWidth, maxWidth)
+        let lines: CGFloat = rawMaxWidth > maxWidth ? 2 : 1
+        let textHeight = font.lineHeight * lines
         // 45度回転後の外接矩形の高さ = (幅 + 高さ) / √2 ＋ 余白
-        return (maxWidth + textHeight) / 1.41421356 + 8
+        return (effectiveWidth + textHeight) / 1.41421356 + 8
     }
 
     init(fileId: String, chartType: Binding<ChartType>, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
@@ -72,8 +75,9 @@ struct BarChartView: View {
         let displayedEntries = isEmpty ? blankEntries : entries
         // 軸の index("0","1"...) から名前へ変換する辞書。棒の直下/横に名前を表示するために使う。
         let nameByID = Dictionary(uniqueKeysWithValues: displayedEntries.map { (String($0.id), $0.name) })
-        // 縦棒の斜めラベルに必要な高さを最長名から動的に算出する。
-        let labelHeight = diagonalLabelHeight(for: displayedEntries)
+        // 縦棒の斜めラベルの最大幅（これを超える名前は2行に折り返す）と、必要な高さ。
+        let labelMaxWidth = width * 0.28
+        let labelHeight = diagonalLabelHeight(for: displayedEntries, maxWidth: labelMaxWidth)
 
         VStack(spacing: 0) {
             HStack(alignment: .center, spacing: 4) {
@@ -208,7 +212,7 @@ struct BarChartView: View {
                 if orientation == .vertical {
                     GeometryReader { geo in
                         ForEach(displayedEntries) { entry in
-                            DiagonalLabel(text: entry.name, color: setting.textColor)
+                            DiagonalLabel(text: entry.name, color: setting.textColor, maxWidth: labelMaxWidth)
                                 // 各棒の中心・プロット下端を基準に、右下へ斜めに垂らす
                                 .offset(x: barCenterX(id: entry.id, in: displayedEntries, width: geo.size.width),
                                         y: geo.size.height + 4)
@@ -355,15 +359,20 @@ struct BarChartView: View {
 
 /// 棒の直下に斜め45度で表示する名前ラベル。
 /// 起点(offsetで指定した棒の中心・下端)から右下へ文字を垂らす。
+/// maxWidth を超える名前は2行まで折り返す。
 private struct DiagonalLabel: View {
     let text: String
     let color: Color
+    let maxWidth: CGFloat
 
     var body: some View {
         Text(LocalizedStringKey(text))
             .font(.caption)
             .foregroundColor(color)
-            .fixedSize()
+            .lineLimit(2)
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: maxWidth, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
             // 起点(先頭文字の左上)を軸に時計回り45度。文字は右下へ伸び、隣の棒とは下方向にずれる。
             .rotationEffect(.degrees(45), anchor: .topLeading)
     }
