@@ -370,6 +370,7 @@ private struct DiagonalLabel: View {
             .font(.caption)
             .foregroundColor(color)
             .lineLimit(2)
+            .lineSpacing(-2)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: maxWidth, alignment: .leading)
             .fixedSize(horizontal: false, vertical: true)
