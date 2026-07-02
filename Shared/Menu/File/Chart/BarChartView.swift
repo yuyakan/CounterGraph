@@ -28,6 +28,13 @@ struct BarChartView: View {
 
     private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
+    /// カテゴリ軸で等間隔に並ぶ棒の中心X座標（プロット幅 width 内）。
+    private func barCenterX(id: Int, in entries: [BarEntry], width: CGFloat) -> CGFloat {
+        guard let idx = entries.firstIndex(where: { $0.id == id }), !entries.isEmpty else { return 0 }
+        let step = width / CGFloat(entries.count)
+        return step * (CGFloat(idx) + 0.5)
+    }
+
     init(fileId: String, chartType: Binding<ChartType>, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
         _chartType = chartType
@@ -160,25 +167,10 @@ struct BarChartView: View {
                     }
                 }
             }
-            .chartXAxis {
-                // 縦棒: X軸(カテゴリ)に名前を表示。横棒: X軸は値なので非表示。
-                if orientation == .vertical {
-                    AxisMarks(position: .bottom) { value in
-                        AxisValueLabel {
-                            if let key = value.as(String.self), let name = nameByID[key] {
-                                Text(LocalizedStringKey(name))
-                                    .font(.caption)
-                                    .foregroundColor(setting.textColor)
-                                    .fixedSize()
-                                    .rotationEffect(.degrees(-45), anchor: .topLeading)
-                                    .offset(x: 4, y: 4)
-                            }
-                        }
-                    }
-                }
-            }
+            // 縦棒: 軸は両方非表示（名前は自前オーバーレイで斜め表示、値は棒の上に表示）。
+            // 横棒: Y軸(カテゴリ)に名前を表示、X軸(値)は非表示。
+            .chartXAxis(.hidden)
             .chartYAxis {
-                // 横棒: Y軸(カテゴリ)に名前を表示。縦棒: Y軸は値なので非表示。
                 if orientation == .horizontal {
                     AxisMarks(position: .leading) { value in
                         AxisValueLabel {
@@ -191,8 +183,25 @@ struct BarChartView: View {
                     }
                 }
             }
+            // 縦棒の名前は棒の直下に斜め45度で重ねる。
+            // AxisValueLabel は回転後の外接矩形をレイアウトに確保できず隣の棒と衝突するため、
+            // chartXAxis を使わず overlay + プロット座標で各棒の真下に配置する。
+            .chartXScale(range: .plotDimension(padding: 0))
+            .overlay(alignment: .topLeading) {
+                if orientation == .vertical {
+                    GeometryReader { geo in
+                        ForEach(displayedEntries) { entry in
+                            DiagonalLabel(text: entry.name, color: setting.textColor)
+                                // 各棒の中心・プロット下端を基準に、右下へ斜めに垂らす
+                                .offset(x: barCenterX(id: entry.id, in: displayedEntries, width: geo.size.width),
+                                        y: geo.size.height + 4)
+                        }
+                    }
+                }
+            }
             .frame(height: height * 0.40)
             .padding(.horizontal, width * 0.06)
+            .padding(.bottom, orientation == .vertical ? height * 0.07 : 0)
             .padding(.vertical, height * 0.015)
 
             if isEditing {
@@ -294,6 +303,22 @@ struct BarChartView: View {
                 }
             }
         }
+    }
+}
+
+/// 棒の直下に斜め45度で表示する名前ラベル。
+/// 起点(offsetで指定した棒の中心・下端)から右下へ文字を垂らす。
+private struct DiagonalLabel: View {
+    let text: String
+    let color: Color
+
+    var body: some View {
+        Text(LocalizedStringKey(text))
+            .font(.caption)
+            .foregroundColor(color)
+            .fixedSize()
+            // 起点(先頭文字の左上)を軸に時計回り45度。文字は右下へ伸び、隣の棒とは下方向にずれる。
+            .rotationEffect(.degrees(45), anchor: .topLeading)
     }
 }
 
