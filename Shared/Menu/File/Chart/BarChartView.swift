@@ -37,6 +37,19 @@ struct BarChartView: View {
         return step * (CGFloat(idx) + 0.5)
     }
 
+    /// 斜め45度で表示する名前ラベルに必要な縦方向の高さ。
+    /// 表示中の最長の名前を実測し、回転後の外接矩形の高さから求める。
+    private func diagonalLabelHeight(for entries: [BarEntry]) -> CGFloat {
+        let font = UIFont.preferredFont(forTextStyle: .caption1)
+        let attrs: [NSAttributedString.Key: Any] = [.font: font]
+        let maxWidth = entries
+            .map { (String(localized: String.LocalizationValue($0.name)) as NSString).size(withAttributes: attrs).width }
+            .max() ?? 0
+        let textHeight = font.lineHeight
+        // 45度回転後の外接矩形の高さ = (幅 + 高さ) / √2 ＋ 余白
+        return (maxWidth + textHeight) / 1.41421356 + 8
+    }
+
     init(fileId: String, chartType: Binding<ChartType>, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
         _chartType = chartType
@@ -59,6 +72,8 @@ struct BarChartView: View {
         let displayedEntries = isEmpty ? blankEntries : entries
         // 軸の index("0","1"...) から名前へ変換する辞書。棒の直下/横に名前を表示するために使う。
         let nameByID = Dictionary(uniqueKeysWithValues: displayedEntries.map { (String($0.id), $0.name) })
+        // 縦棒の斜めラベルに必要な高さを最長名から動的に算出する。
+        let labelHeight = diagonalLabelHeight(for: displayedEntries)
 
         VStack(spacing: 0) {
             HStack(alignment: .center, spacing: 4) {
@@ -203,7 +218,7 @@ struct BarChartView: View {
             }
             .frame(height: height * 0.40)
             .padding(.horizontal, width * 0.06)
-            .padding(.bottom, orientation == .vertical ? height * 0.07 : 0)
+            .padding(.bottom, orientation == .vertical ? labelHeight : 0)
             .padding(.vertical, height * 0.015)
 
             if isEditing {
