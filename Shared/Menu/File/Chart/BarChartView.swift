@@ -43,7 +43,7 @@ struct BarChartView: View {
         let font = UIFont.preferredFont(forTextStyle: .caption1)
         let attrs: [NSAttributedString.Key: Any] = [.font: font]
         let rawMaxWidth = entries
-            .map { (String(localized: String.LocalizationValue($0.name)) as NSString).size(withAttributes: attrs).width }
+            .map { ($0.name as NSString).size(withAttributes: attrs).width }
             .max() ?? 0
         // maxWidth を超える名前は2行に折り返るため、幅は頭打ち・行数は最大2行で見積もる。
         let effectiveWidth = min(rawMaxWidth, maxWidth)
@@ -196,7 +196,7 @@ struct BarChartView: View {
                     AxisMarks(position: .leading) { value in
                         AxisValueLabel {
                             if let key = value.as(String.self), let name = nameByID[key] {
-                                Text(LocalizedStringKey(name))
+                                Text(name)
                                     .font(.caption)
                                     .foregroundColor(setting.textColor)
                             }
@@ -238,7 +238,7 @@ struct BarChartView: View {
                                 if !isEmpty { editingEntryID = entry.id }
                             } label: {
                                 HStack(spacing: 8) {
-                                    Text(LocalizedStringKey(entry.name))
+                                    Text(entry.name)
                                         .font(.body)
                                         .foregroundColor(setting.textColor)
                                         .lineLimit(2)
@@ -366,7 +366,7 @@ private struct DiagonalLabel: View {
     let maxWidth: CGFloat
 
     var body: some View {
-        Text(LocalizedStringKey(text))
+        Text(text)
             .font(.caption)
             .foregroundColor(color)
             .lineLimit(2)

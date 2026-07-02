@@ -155,7 +155,7 @@ struct PieChartView: View {
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(entry.color)
                                 .frame(width: 16, height: 16)
-                            Text(LocalizedStringKey(entry.name))
+                            Text(entry.name)
                                 .font(.body)
                                 .foregroundColor(setting.textColor)
                                 .lineLimit(1)
