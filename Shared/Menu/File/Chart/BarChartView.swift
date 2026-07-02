@@ -21,7 +21,9 @@ struct BarChartView: View {
     @State private var showAddSheet = false
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
-    @FocusState private var isFieldFocused: Bool
+    /// フォーカス中のフィールド識別子（entry.id と name/value の組）。nil でキーボード非表示。
+    enum Field: Hashable { case name(Int), value(Int) }
+    @FocusState private var focusedField: Field?
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     /// メニューへ戻る処理（FileView から渡される）。
@@ -200,13 +202,14 @@ struct BarChartView: View {
                     }
                 }
             }
-            .frame(height: height * 0.40)
+            .frame(height: height * (isEditing ? 0.24 : 0.40))
             .padding(.horizontal, width * 0.06)
             .padding(.bottom, orientation == .vertical ? height * 0.07 : 0)
             .padding(.vertical, height * 0.015)
 
             if isEditing {
                 // 編集モード: 名前＋値＋±ボタン、左スワイプで削除
+                ScrollViewReader { proxy in
                 List {
                     ForEach(displayedEntries) { entry in
                         HStack(spacing: 12) {
@@ -220,7 +223,7 @@ struct BarChartView: View {
                             ))
                             .font(.body)
                             .foregroundColor(setting.textColor)
-                            .focused($isFieldFocused)
+                            .focused($focusedField, equals: .name(entry.id))
                             .disabled(isEmpty)
                             Spacer(minLength: 8)
                             // 値を直接編集
@@ -233,7 +236,7 @@ struct BarChartView: View {
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.numberPad)
                             .frame(width: 64)
-                            .focused($isFieldFocused)
+                            .focused($focusedField, equals: .value(entry.id))
                             .disabled(isEmpty)
 
                             if !isEmpty {
@@ -255,6 +258,7 @@ struct BarChartView: View {
                                 .buttonStyle(.plain)
                             }
                         }
+                        .id(entry.id)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets(top: 4, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
                         .swipeActions(edge: .trailing) {
@@ -270,6 +274,16 @@ struct BarChartView: View {
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
+                // フォーカスが移ったら、その行をキーボードの上へスクロールして隠れないようにする
+                .onChange(of: focusedField) { field in
+                    guard let field else { return }
+                    let id: Int
+                    switch field {
+                    case .name(let i), .value(let i): id = i
+                    }
+                    withAnimation { proxy.scrollTo(id, anchor: .center) }
+                }
+                }
             } else {
                 // 表示モード: 名前は棒の下(軸)に表示済みのため凡例は不要
                 Spacer()
@@ -304,13 +318,13 @@ struct BarChartView: View {
         // フィールド以外をタップしたらキーボード(カーソル)を閉じる。
         // simultaneousGesture なのでボタンやリストの操作は妨げない。
         .simultaneousGesture(
-            TapGesture().onEnded { isFieldFocused = false }
+            TapGesture().onEnded { focusedField = nil }
         )
         // 数字キーパッドには確定キーがないため、キーボード上部に「完了」を出す。
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button(String(localized: "Done")) { isFieldFocused = false }
+                Button(String(localized: "Done")) { focusedField = nil }
                     .foregroundColor(brandColor)
             }
         }
