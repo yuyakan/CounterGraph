@@ -21,6 +21,7 @@ struct BarChartView: View {
     @State private var showAddSheet = false
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
+    @FocusState private var isFieldFocused: Bool
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     /// メニューへ戻る処理（FileView から渡される）。
@@ -219,6 +220,7 @@ struct BarChartView: View {
                             ))
                             .font(.body)
                             .foregroundColor(setting.textColor)
+                            .focused($isFieldFocused)
                             .disabled(isEmpty)
                             Spacer(minLength: 8)
                             // 値を直接編集
@@ -231,6 +233,7 @@ struct BarChartView: View {
                             .multilineTextAlignment(.trailing)
                             .keyboardType(.numberPad)
                             .frame(width: 64)
+                            .focused($isFieldFocused)
                             .disabled(isEmpty)
 
                             if !isEmpty {
@@ -298,6 +301,19 @@ struct BarChartView: View {
             }
         }
         .background(setting.backColor)
+        // フィールド以外をタップしたらキーボード(カーソル)を閉じる。
+        // simultaneousGesture なのでボタンやリストの操作は妨げない。
+        .simultaneousGesture(
+            TapGesture().onEnded { isFieldFocused = false }
+        )
+        // 数字キーパッドには確定キーがないため、キーボード上部に「完了」を出す。
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button(String(localized: "Done")) { isFieldFocused = false }
+                    .foregroundColor(brandColor)
+            }
+        }
         .sheet(isPresented: $showAddSheet) {
             AddItemSheet(barChart: barChart, buttonColor: brandColor)
                 .presentationDetents([.height(220)])
