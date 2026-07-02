@@ -212,15 +212,26 @@ struct BarChartView: View {
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(entry.color)
                                 .frame(width: 16, height: 16)
-                            Text(LocalizedStringKey(entry.name))
-                                .font(.body)
-                                .foregroundColor(setting.textColor)
-                                .lineLimit(1)
-                            Spacer()
-                            Text("\(entry.value)")
-                                .font(.body.weight(.semibold).monospacedDigit())
-                                .foregroundColor(setting.textColor)
-                                .frame(minWidth: 56, alignment: .trailing)
+                            // 名前を直接編集
+                            TextField(String(localized: "Jack"), text: Binding(
+                                get: { barChart.name(index: entry.id) },
+                                set: { barChart.updateName(index: entry.id, name: $0) }
+                            ))
+                            .font(.body)
+                            .foregroundColor(setting.textColor)
+                            .disabled(isEmpty)
+                            Spacer(minLength: 8)
+                            // 値を直接編集
+                            TextField("", value: Binding(
+                                get: { Int(barChart.value(index: entry.id)) },
+                                set: { barChart.updateValue(index: entry.id, value: $0) }
+                            ), format: .number)
+                            .font(.body.weight(.semibold).monospacedDigit())
+                            .foregroundColor(setting.textColor)
+                            .multilineTextAlignment(.trailing)
+                            .keyboardType(.numberPad)
+                            .frame(width: 64)
+                            .disabled(isEmpty)
 
                             if !isEmpty {
                                 Button {

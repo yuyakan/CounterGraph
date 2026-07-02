@@ -105,6 +105,20 @@ struct DataList {
         dataList.append(PersonalData(value: value, name: name))
         save(dataList: dataList)
     }
+
+    /// 指定indexの名前を変更する。
+    mutating func updateName(index: Int, name: String) {
+        guard dataList.indices.contains(index) else { return }
+        dataList[index] = PersonalData(value: dataList[index].value, name: name)
+        save(dataList: dataList)
+    }
+
+    /// 指定indexの値を変更する。
+    mutating func updateValue(index: Int, value: Int) {
+        guard dataList.indices.contains(index) else { return }
+        dataList[index] = PersonalData(value: value, name: dataList[index].name)
+        save(dataList: dataList)
+    }
     
     mutating func removeData(index: Int) {
         dataList.remove(at: index)

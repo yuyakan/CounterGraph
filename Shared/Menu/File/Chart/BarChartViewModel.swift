@@ -77,6 +77,20 @@ class BarChartViewModel: ObservableObject {
     func removeData(index: Int) {
         dataList.removeData(index: index)
     }
+
+    /// 指定indexの名前を変更する。空文字は無視する。
+    func updateName(index: Int, name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        dataList.updateName(index: index, name: trimmed)
+        objectWillChange.send()
+    }
+
+    /// 指定indexの値を変更する。
+    func updateValue(index: Int, value: Int) {
+        dataList.updateValue(index: index, value: value)
+        objectWillChange.send()
+    }
     
     func addData() {
         if dataList.count() >= DataList.maxDataCount {
