@@ -21,9 +21,8 @@ struct BarChartView: View {
     @State private var showAddSheet = false
     @State private var showRenameAlert = false
     @State private var draftTitle = ""
-    /// フォーカス中のフィールド識別子（entry.id と name/value の組）。nil でキーボード非表示。
-    enum Field: Hashable { case name(Int), value(Int) }
-    @FocusState private var focusedField: Field?
+    /// 編集シートを開いている項目の index（nil で非表示）。
+    @State private var editingEntryID: Int?
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     /// メニューへ戻る処理（FileView から渡される）。
@@ -202,41 +201,38 @@ struct BarChartView: View {
                     }
                 }
             }
-            .frame(height: height * (isEditing ? 0.24 : 0.40))
+            .frame(height: height * 0.40)
             .padding(.horizontal, width * 0.06)
             .padding(.bottom, orientation == .vertical ? height * 0.07 : 0)
             .padding(.vertical, height * 0.015)
 
             if isEditing {
-                // 編集モード: 名前＋値＋±ボタン、左スワイプで削除
-                ScrollViewReader { proxy in
+                // 編集モード: 名前・値をタップで編集シート、±ボタン、左スワイプで削除
                 List {
                     ForEach(displayedEntries) { entry in
                         HStack(spacing: 12) {
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(entry.color)
                                 .frame(width: 16, height: 16)
-                            // 名前を直接編集
-                            TextField(String(localized: "Jack"), text: Binding(
-                                get: { barChart.name(index: entry.id) },
-                                set: { barChart.updateName(index: entry.id, name: $0) }
-                            ))
-                            .font(.body)
-                            .foregroundColor(setting.textColor)
-                            .focused($focusedField, equals: .name(entry.id))
-                            .disabled(isEmpty)
-                            Spacer(minLength: 8)
-                            // 値を直接編集
-                            TextField("", value: Binding(
-                                get: { Int(barChart.value(index: entry.id)) },
-                                set: { barChart.updateValue(index: entry.id, value: $0) }
-                            ), format: .number)
-                            .font(.body.weight(.semibold).monospacedDigit())
-                            .foregroundColor(setting.textColor)
-                            .multilineTextAlignment(.trailing)
-                            .keyboardType(.numberPad)
-                            .frame(width: 64)
-                            .focused($focusedField, equals: .value(entry.id))
+                            // 名前・値はタップで専用シートを開いて編集（キーボードに隠れない）
+                            Button {
+                                if !isEmpty { editingEntryID = entry.id }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Text(LocalizedStringKey(entry.name))
+                                        .font(.body)
+                                        .foregroundColor(setting.textColor)
+                                        .lineLimit(1)
+                                    Spacer(minLength: 8)
+                                    Text("\(entry.value)")
+                                        .font(.body.weight(.semibold).monospacedDigit())
+                                        .foregroundColor(setting.textColor)
+                                    Image(systemName: "pencil")
+                                        .font(.footnote)
+                                        .foregroundColor(brandColor.opacity(0.6))
+                                }
+                            }
+                            .buttonStyle(.plain)
                             .disabled(isEmpty)
 
                             if !isEmpty {
@@ -258,7 +254,6 @@ struct BarChartView: View {
                                 .buttonStyle(.plain)
                             }
                         }
-                        .id(entry.id)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets(top: 4, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
                         .swipeActions(edge: .trailing) {
@@ -274,16 +269,6 @@ struct BarChartView: View {
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
-                // フォーカスが移ったら、その行をキーボードの上へスクロールして隠れないようにする
-                .onChange(of: focusedField) { field in
-                    guard let field else { return }
-                    let id: Int
-                    switch field {
-                    case .name(let i), .value(let i): id = i
-                    }
-                    withAnimation { proxy.scrollTo(id, anchor: .center) }
-                }
-                }
             } else {
                 // 表示モード: 名前は棒の下(軸)に表示済みのため凡例は不要
                 Spacer()
@@ -315,22 +300,25 @@ struct BarChartView: View {
             }
         }
         .background(setting.backColor)
-        // フィールド以外をタップしたらキーボード(カーソル)を閉じる。
-        // simultaneousGesture なのでボタンやリストの操作は妨げない。
-        .simultaneousGesture(
-            TapGesture().onEnded { focusedField = nil }
-        )
-        // 数字キーパッドには確定キーがないため、キーボード上部に「完了」を出す。
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button(String(localized: "Done")) { focusedField = nil }
-                    .foregroundColor(brandColor)
-            }
-        }
         .sheet(isPresented: $showAddSheet) {
             AddItemSheet(barChart: barChart, buttonColor: brandColor)
                 .presentationDetents([.height(220)])
+        }
+        // 名前・値の編集シート（キーボードはシート内に出るため隠れ問題が起きない）
+        .sheet(item: Binding(
+            get: { editingEntryID.map { EditTarget(id: $0) } },
+            set: { editingEntryID = $0?.id }
+        )) { target in
+            ItemEditSheet(
+                initialName: barChart.name(index: target.id),
+                initialValue: Int(barChart.value(index: target.id)),
+                buttonColor: brandColor,
+                onSave: { name, value in
+                    barChart.updateName(index: target.id, name: name)
+                    barChart.updateValue(index: target.id, value: value)
+                }
+            )
+            .presentationDetents([.height(260)])
         }
         .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
         .alert(String(localized: "title"), isPresented: $showRenameAlert) {
@@ -360,6 +348,54 @@ private struct DiagonalLabel: View {
             .fixedSize()
             // 起点(先頭文字の左上)を軸に時計回り45度。文字は右下へ伸び、隣の棒とは下方向にずれる。
             .rotationEffect(.degrees(45), anchor: .topLeading)
+    }
+}
+
+/// 編集対象の項目（sheet(item:) 用の Identifiable ラッパ）。
+private struct EditTarget: Identifiable { let id: Int }
+
+/// 既存項目の名前・値を編集するシート。
+private struct ItemEditSheet: View {
+    @Environment(\.dismiss) var dismiss
+    let initialName: String
+    let initialValue: Int
+    let buttonColor: Color
+    let onSave: (String, Int) -> Void
+
+    @State private var name: String
+    @State private var value: Int
+
+    init(initialName: String, initialValue: Int, buttonColor: Color, onSave: @escaping (String, Int) -> Void) {
+        self.initialName = initialName
+        self.initialValue = initialValue
+        self.buttonColor = buttonColor
+        self.onSave = onSave
+        _name = State(initialValue: initialName)
+        _value = State(initialValue: initialValue)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField(String(localized: "Jack"), text: $name)
+                TextField(String(localized: "Value"), value: $value, format: .number)
+                    .keyboardType(.numberPad)
+            }
+            .navigationTitle(String(localized: "Edit"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cancel")) { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(String(localized: "Done")) {
+                        onSave(name, value)
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
     }
 }
 
