@@ -30,9 +30,9 @@ struct BarChartView: View {
 
     private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
-    /// グラフの高さ比率。編集モードは控えめ、表示モードは大きめ（横棒はさらに大きく）。
+    /// グラフの高さ比率。編集モードは編集領域を広げるため小さめ、表示モードは大きめ（横棒はさらに大きく）。
     private var chartHeightRatio: CGFloat {
-        if isEditing { return 0.40 }
+        if isEditing { return 0.26 }
         return orientation == .horizontal ? 0.55 : 0.46
     }
 
