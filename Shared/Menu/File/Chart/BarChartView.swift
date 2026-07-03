@@ -154,7 +154,7 @@ struct BarChartView: View {
 
             HStack(spacing: 6) {
                 Text(setting.title)
-                    .font(.largeTitle.bold())
+                    .font((isEditing ? Font.title : Font.largeTitle).bold())
                     .foregroundColor(brandColor)
                 if isEditing {
                     Image(systemName: "pencil")
