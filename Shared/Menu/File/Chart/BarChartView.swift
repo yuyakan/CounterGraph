@@ -237,7 +237,7 @@ struct BarChartView: View {
                     }
                 }
             }
-            .frame(height: height * (isEditing ? 0.40 : 0.52))
+            .frame(height: height * (isEditing ? 0.40 : 0.46))
             .padding(.horizontal, width * 0.06)
             .padding(.bottom, orientation == .vertical ? labelHeight : 0)
             .padding(.vertical, height * 0.015)
