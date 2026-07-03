@@ -30,6 +30,12 @@ struct BarChartView: View {
 
     private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
+    /// グラフの高さ比率。編集モードは控えめ、表示モードは大きめ（横棒はさらに大きく）。
+    private var chartHeightRatio: CGFloat {
+        if isEditing { return 0.40 }
+        return orientation == .horizontal ? 0.55 : 0.46
+    }
+
     /// カテゴリ軸で等間隔に並ぶ棒の中心X座標（プロット幅 width 内）。
     private func barCenterX(id: Int, in entries: [BarEntry], width: CGFloat) -> CGFloat {
         guard let idx = entries.firstIndex(where: { $0.id == id }), !entries.isEmpty else { return 0 }
@@ -237,7 +243,8 @@ struct BarChartView: View {
                     }
                 }
             }
-            .frame(height: height * (isEditing ? 0.40 : 0.46))
+            // 横棒は項目が縦に積まれるため、表示モードでは高さを大きめに取る。
+            .frame(height: height * chartHeightRatio)
             .padding(.horizontal, width * 0.06)
             .padding(.bottom, orientation == .vertical ? labelHeight : 0)
             .padding(.vertical, height * 0.015)
