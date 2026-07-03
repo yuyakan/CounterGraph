@@ -82,7 +82,7 @@ struct PieChartView: View {
 
             HStack(spacing: 6) {
                 Text(setting.title)
-                    .font(.largeTitle.bold())
+                    .font((isEditing ? Font.title : Font.largeTitle).bold())
                     .foregroundColor(brandColor)
                 if isEditing {
                     Image(systemName: "pencil")
@@ -96,8 +96,8 @@ struct PieChartView: View {
                 draftTitle = setting.title
                 showRenameAlert = true
             }
-            .padding(.top, height * 0.06)
-            .padding(.bottom, height * 0.01)
+            .padding(.top, height * (isEditing ? 0.015 : 0.04))
+            .padding(.bottom, height * (isEditing ? 0.01 : 0.005))
 
             // ドーナツチャート＋中央に合計値
             Chart(displayedEntries) { entry in
