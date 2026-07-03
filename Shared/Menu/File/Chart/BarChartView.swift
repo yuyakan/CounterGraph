@@ -37,10 +37,22 @@ struct BarChartView: View {
         return step * (CGFloat(idx) + 0.5)
     }
 
+    /// 名前ラベルのフォントサイズを項目数でスケールする（少ないほど大きく）。下限・上限あり。
+    private func labelFontSize(count: Int) -> CGFloat {
+        let maxSize: CGFloat = 17   // 項目が少ないとき（上限）
+        let minSize: CGFloat = 11   // 項目が多いとき（下限）
+        let fewCount = 3            // これ以下は maxSize
+        let manyCount = 10          // これ以上は minSize
+        if count <= fewCount { return maxSize }
+        if count >= manyCount { return minSize }
+        let t = CGFloat(count - fewCount) / CGFloat(manyCount - fewCount)
+        return maxSize - (maxSize - minSize) * t
+    }
+
     /// 斜め45度で表示する名前ラベルに必要な縦方向の高さ。
     /// 表示中の最長の名前を実測し、maxWidth で頭打ち（＝2行折り返し）した幅・高さから求める。
     private func diagonalLabelHeight(for entries: [BarEntry], maxWidth: CGFloat) -> CGFloat {
-        let font = UIFont.preferredFont(forTextStyle: .caption1)
+        let font = UIFont.systemFont(ofSize: labelFontSize(count: entries.count))
         let attrs: [NSAttributedString.Key: Any] = [.font: font]
         let rawMaxWidth = entries
             .map { ($0.name as NSString).size(withAttributes: attrs).width }
@@ -75,8 +87,9 @@ struct BarChartView: View {
         let displayedEntries = isEmpty ? blankEntries : entries
         // 軸の index("0","1"...) から名前へ変換する辞書。棒の直下/横に名前を表示するために使う。
         let nameByID = Dictionary(uniqueKeysWithValues: displayedEntries.map { (String($0.id), $0.name) })
-        // 縦棒の斜めラベルの最大幅（これを超える名前は2行に折り返す）と、必要な高さ。
+        // 縦棒の斜めラベルの最大幅（これを超える名前は2行に折り返す）と、必要な高さ・フォントサイズ。
         let labelMaxWidth = width * 0.28
+        let labelFont = labelFontSize(count: displayedEntries.count)
         let labelHeight = diagonalLabelHeight(for: displayedEntries, maxWidth: labelMaxWidth)
 
         VStack(spacing: 0) {
@@ -152,8 +165,9 @@ struct BarChartView: View {
             .padding(.top, height * 0.035)
             .padding(.bottom, height * 0.01)
 
-            // 表示モードはグラフを縦方向の中央に寄せる
-            if !isEditing { Spacer(minLength: 0) }
+            // 表示モードはタイトルとグラフの間に控えめな余白を入れつつ、
+            // 下側を Spacer で広めに取ってグラフをやや中央寄り〜下寄りに配置する。
+            if !isEditing { Spacer(minLength: 0).frame(maxHeight: height * 0.04) }
 
             // 棒グラフ（縦棒 / 横棒）。X/Y は一意な index を軸にし、同名項目が積み上がるのを防ぐ。
             Chart(displayedEntries) { entry in
@@ -215,7 +229,7 @@ struct BarChartView: View {
                 if orientation == .vertical {
                     GeometryReader { geo in
                         ForEach(displayedEntries) { entry in
-                            DiagonalLabel(text: entry.name, color: setting.textColor, maxWidth: labelMaxWidth)
+                            DiagonalLabel(text: entry.name, color: setting.textColor, maxWidth: labelMaxWidth, fontSize: labelFont)
                                 // 各棒の中心・プロット下端を基準に、右下へ斜めに垂らす
                                 .offset(x: barCenterX(id: entry.id, in: displayedEntries, width: geo.size.width),
                                         y: geo.size.height + 4)
@@ -367,10 +381,11 @@ private struct DiagonalLabel: View {
     let text: String
     let color: Color
     let maxWidth: CGFloat
+    let fontSize: CGFloat
 
     var body: some View {
         Text(text)
-            .font(.caption)
+            .font(.system(size: fontSize))
             .foregroundColor(color)
             .lineLimit(2)
             .lineSpacing(-4)
