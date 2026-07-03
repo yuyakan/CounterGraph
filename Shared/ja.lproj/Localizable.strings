@@ -49,3 +49,6 @@
 "sortEntry" = "登録順";
 "sortDescending" = "大きい順";
 "sortAscending" = "小さい順";
+
+"Bar chart" = "棒グラフ";
+"Pie chart" = "円グラフ";

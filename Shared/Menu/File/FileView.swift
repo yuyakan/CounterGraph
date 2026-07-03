@@ -22,15 +22,24 @@ struct FileView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            if chartType.isBar() {
-                BarChartView(fileId: fileId, chartType: $chartType, orientation: $orientation, goBack: { dismiss() })
-                    .environmentObject(setting)
-            } else {
-                PieChartView(fileId: fileId, chartType: $chartType, orientation: $orientation, interstitial: interstitial, goBack: { dismiss() })
-                    .environmentObject(setting)
-            }
+        // 棒グラフ / 円グラフをボトムタブで対等な2モードに分ける。
+        // 棒グラフタブ内では縦/横の向きをヘッダーで切り替える。
+        TabView(selection: $chartType) {
+            BarChartView(fileId: fileId, orientation: $orientation, goBack: { dismiss() })
+                .environmentObject(setting)
+                .tabItem {
+                    Label(String(localized: "Bar chart"), systemImage: "chart.bar.fill")
+                }
+                .tag(ChartType.bar)
+
+            PieChartView(fileId: fileId, interstitial: interstitial, goBack: { dismiss() })
+                .environmentObject(setting)
+                .tabItem {
+                    Label(String(localized: "Pie chart"), systemImage: "chart.pie.fill")
+                }
+                .tag(ChartType.pie)
         }
+        .tint(Color.brand)
         .onDisappear(perform: {
             menu.refresh.toggle()
             interstitial.interstitialAdLoaded.toggle()

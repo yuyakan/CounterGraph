@@ -49,3 +49,6 @@
 "sortEntry" = "Default order";
 "sortDescending" = "Highest first";
 "sortAscending" = "Lowest first";
+
+"Bar chart" = "Bar";
+"Pie chart" = "Pie";

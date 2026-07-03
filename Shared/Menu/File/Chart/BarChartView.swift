@@ -13,7 +13,6 @@ struct BarChartView: View {
     @EnvironmentObject var setting: Setting
     @Environment(\.colorScheme) private var colorScheme
     @StateObject var barChart: BarChartViewModel
-    @Binding var chartType: ChartType
     @Binding var orientation: BarOrientation
     @State var unit: Int = 10
     @State private var sortOrder: ChartSortOrder = .entry
@@ -71,9 +70,8 @@ struct BarChartView: View {
         return (effectiveWidth + textHeight) / 1.41421356 + 8
     }
 
-    init(fileId: String, chartType: Binding<ChartType>, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
+    init(fileId: String, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
-        _chartType = chartType
         _orientation = orientation
         self.goBack = goBack
     }
@@ -109,21 +107,13 @@ struct BarChartView: View {
                         .frame(width: 44, height: 44)
                 })
                 Spacer()
-                // 現在の形式以外の2つへ直接切り替える
+                // 棒グラフの向き（縦棒 ⇔ 横棒）を切り替える
                 Button(action: {
                     withAnimation {
                         orientation = (orientation == .vertical) ? .horizontal : .vertical
                     }
                 }, label: {
                     Image(systemName: orientation == .vertical ? "text.alignleft" : "chart.bar.fill")
-                        .font(.system(size: 24, weight: .semibold))
-                        .foregroundColor(brandColor)
-                        .frame(width: 44, height: 44)
-                })
-                Button(action: {
-                    chartType = .pie
-                }, label: {
-                    Image(systemName: "chart.pie.fill")
                         .font(.system(size: 24, weight: .semibold))
                         .foregroundColor(brandColor)
                         .frame(width: 44, height: 44)
