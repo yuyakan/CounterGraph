@@ -168,7 +168,7 @@ struct BarChartView: View {
                 draftTitle = setting.title
                 showRenameAlert = true
             }
-            .padding(.top, height * 0.06)
+            .padding(.top, height * (isEditing ? 0.015 : 0.06))
             .padding(.bottom, height * 0.01)
 
             // 表示モードはタイトルとグラフの間に控えめな余白を入れつつ、
