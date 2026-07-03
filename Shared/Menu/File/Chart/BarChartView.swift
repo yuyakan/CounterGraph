@@ -152,6 +152,9 @@ struct BarChartView: View {
             .padding(.top, height * 0.035)
             .padding(.bottom, height * 0.01)
 
+            // 表示モードはグラフを縦方向の中央に寄せる
+            if !isEditing { Spacer(minLength: 0) }
+
             // 棒グラフ（縦棒 / 横棒）。X/Y は一意な index を軸にし、同名項目が積み上がるのを防ぐ。
             Chart(displayedEntries) { entry in
                 if orientation == .vertical {
@@ -220,7 +223,7 @@ struct BarChartView: View {
                     }
                 }
             }
-            .frame(height: height * 0.40)
+            .frame(height: height * (isEditing ? 0.40 : 0.52))
             .padding(.horizontal, width * 0.06)
             .padding(.bottom, orientation == .vertical ? labelHeight : 0)
             .padding(.vertical, height * 0.015)
