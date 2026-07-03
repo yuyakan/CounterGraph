@@ -119,7 +119,7 @@ struct PieChartView: View {
                 draftTitle = setting.title
                 showRenameAlert = true
             }
-            .padding(.top, height * 0.035)
+            .padding(.top, height * 0.06)
             .padding(.bottom, height * 0.01)
 
             // ドーナツチャート＋中央に合計値
