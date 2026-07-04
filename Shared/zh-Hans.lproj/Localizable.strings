@@ -36,3 +36,31 @@
 
 "Menu" = "菜单";
 "Main" = "图表";
+
+"Add" = "添加";
+"Delete" = "删除";
+"Value" = "数值";
+"Cancel" = "取消";
+"Edit" = "编辑";
+"Done" = "完成";
+"Total" = "合计";
+"Duplicate" = "复制";
+
+"sortEntry" = "默认顺序";
+"sortDescending" = "从高到低";
+"sortAscending" = "从低到高";
+
+"Bar chart" = "柱状";
+"Pie chart" = "饼图";
+"Ranking" = "排名";
+
+"saveAsTemplate" = "将名称保存为模板";
+"templates" = "模板";
+"deleteTemplate" = "删除";
+
+"groups" = "分组";
+"newGroup" = "新建分组";
+"groupName" = "分组名称";
+"assignItems" = "分配项目";
+"noGroup" = "无分组";
+"noGroupsYet" = "请在编辑模式下创建分组并分配项目。";

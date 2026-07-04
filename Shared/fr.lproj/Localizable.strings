@@ -36,3 +36,31 @@
 
 "Menu" = "Menu" ;
 "Main" = "Graphique" ;
+
+"Add" = "Ajouter";
+"Delete" = "Supprimer";
+"Value" = "Valeur";
+"Cancel" = "Annuler";
+"Edit" = "Modifier";
+"Done" = "Terminé";
+"Total" = "Total";
+"Duplicate" = "Dupliquer";
+
+"sortEntry" = "Ordre par défaut";
+"sortDescending" = "Décroissant";
+"sortAscending" = "Croissant";
+
+"Bar chart" = "Barres";
+"Pie chart" = "Secteurs";
+"Ranking" = "Classement";
+
+"saveAsTemplate" = "Enregistrer le nom comme modèle";
+"templates" = "Modèles";
+"deleteTemplate" = "Supprimer";
+
+"groups" = "Groupes";
+"newGroup" = "Nouveau groupe";
+"groupName" = "Nom du groupe";
+"assignItems" = "Assigner les éléments";
+"noGroup" = "Aucun groupe";
+"noGroupsYet" = "Créez un groupe et assignez des éléments en mode édition.";

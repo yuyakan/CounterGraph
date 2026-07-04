@@ -36,3 +36,31 @@
 
 "Menu" = "Menü";
 "Main" = "Diagramm";
+
+"Add" = "Hinzufügen";
+"Delete" = "Löschen";
+"Value" = "Wert";
+"Cancel" = "Abbrechen";
+"Edit" = "Bearbeiten";
+"Done" = "Fertig";
+"Total" = "Gesamt";
+"Duplicate" = "Duplizieren";
+
+"sortEntry" = "Standardreihenfolge";
+"sortDescending" = "Höchste zuerst";
+"sortAscending" = "Niedrigste zuerst";
+
+"Bar chart" = "Balken";
+"Pie chart" = "Kreis";
+"Ranking" = "Rangliste";
+
+"saveAsTemplate" = "Name als Vorlage speichern";
+"templates" = "Vorlagen";
+"deleteTemplate" = "Löschen";
+
+"groups" = "Gruppen";
+"newGroup" = "Neue Gruppe";
+"groupName" = "Gruppenname";
+"assignItems" = "Einträge zuweisen";
+"noGroup" = "Keine Gruppe";
+"noGroupsYet" = "Erstelle eine Gruppe und weise im Bearbeitungsmodus Einträge zu.";

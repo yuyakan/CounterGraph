@@ -36,3 +36,31 @@
 
 "Menu" = "Menu";
 "Main" = "Chart";
+
+"Add" = "新增";
+"Delete" = "刪除";
+"Value" = "數值";
+"Cancel" = "取消";
+"Edit" = "編輯";
+"Done" = "完成";
+"Total" = "合計";
+"Duplicate" = "複製";
+
+"sortEntry" = "預設順序";
+"sortDescending" = "由高至低";
+"sortAscending" = "由低至高";
+
+"Bar chart" = "長條";
+"Pie chart" = "圓餅";
+"Ranking" = "排名";
+
+"saveAsTemplate" = "將名稱儲存為範本";
+"templates" = "範本";
+"deleteTemplate" = "刪除";
+
+"groups" = "群組";
+"newGroup" = "新增群組";
+"groupName" = "群組名稱";
+"assignItems" = "指派項目";
+"noGroup" = "無群組";
+"noGroupsYet" = "請在編輯模式下建立群組並指派項目。";
