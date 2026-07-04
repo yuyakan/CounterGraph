@@ -10,6 +10,7 @@ import Foundation
 enum ChartType {
     case bar
     case pie
+    case ranking
 
     func isBar() -> Bool {
         return self == .bar

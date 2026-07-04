@@ -38,6 +38,13 @@ struct FileView: View {
                     Label(String(localized: "Pie chart"), systemImage: "chart.pie.fill")
                 }
                 .tag(ChartType.pie)
+
+            RankingView(fileId: fileId, goBack: { dismiss() })
+                .environmentObject(setting)
+                .tabItem {
+                    Label(String(localized: "Ranking"), systemImage: "list.number")
+                }
+                .tag(ChartType.ranking)
         }
         .tint(Color.brand)
         .onDisappear(perform: {
