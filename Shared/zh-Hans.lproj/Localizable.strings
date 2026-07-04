@@ -64,3 +64,8 @@
 "assignItems" = "分配项目";
 "noGroup" = "无分组";
 "noGroupsYet" = "请在编辑模式下创建分组并分配项目。";
+
+"reviewTitle" = "喜欢这款应用吗？";
+"reviewMessage" = "您的评价对我们很有帮助。谢谢！";
+"reviewRate" = "评价";
+"reviewLater" = "稍后";

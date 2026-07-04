@@ -67,3 +67,8 @@
 "deleteTemplate" = "Delete";
 
 "Duplicate" = "Duplicate";
+
+"reviewTitle" = "Enjoying the app?";
+"reviewMessage" = "Your review helps us a lot. Thank you!";
+"reviewRate" = "Rate";
+"reviewLater" = "Later";

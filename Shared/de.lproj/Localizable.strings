@@ -64,3 +64,8 @@
 "assignItems" = "Einträge zuweisen";
 "noGroup" = "Keine Gruppe";
 "noGroupsYet" = "Erstelle eine Gruppe und weise im Bearbeitungsmodus Einträge zu.";
+
+"reviewTitle" = "Gefällt dir die App?";
+"reviewMessage" = "Deine Bewertung hilft uns sehr. Danke!";
+"reviewRate" = "Bewerten";
+"reviewLater" = "Später";

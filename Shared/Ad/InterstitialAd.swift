@@ -12,9 +12,21 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
 
     var interstitialAd: InterstitialAd?
 
-    private let adUnitID = "ca-app-pub-3940256099942544/4411468910"//テスト
+    /// テスト広告を使うかどうかの切替フラグ。
+    /// - false: 本番の広告ユニットIDを使う（デバッグ・リリースとも本番）。
+    /// - true : Google公式のテストIDを使う（開発時に切り替える）。
+    /// ⚠️ false のまま開発ビルドで自分の端末に広告を表示・タップすると無効トラフィックに
+    /// なる恐れがあるため、実機テスト時は true にするか AdMob でテストデバイス登録を行うこと。
+    static let useTestAd = true
 
-    /// 広告の有効/無効。現在はデバッグ時も含め常に有効（テストIDのためテスト広告が表示される）。
+    /// 実際に使う広告ユニットID。
+    private var adUnitID: String {
+        Interstitial.useTestAd
+            ? "ca-app-pub-3940256099942544/4411468910" // テスト
+            : "ca-app-pub-3155724310732667/4658363529" // 本番
+    }
+
+    /// 広告の有効/無効。常に有効。広告IDは useTestAd フラグで本番/テストを切り替える。
     private let isAdDisabled = false
 
     /// 読み込み失敗時のリトライ回数（成功で0に戻す）。指数バックオフの算出に使う。
@@ -26,6 +38,17 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
 
     /// 広告が表示可能な状態か。
     var isReady: Bool { interstitialAd != nil }
+
+    /// 前回広告を表示した時刻。クールダウン判定に使う。
+    private var lastPresentedAt: Date?
+    /// 広告表示のクールダウン（秒）。一度表示したらこの時間は次の広告を出さない。
+    private let cooldown: TimeInterval = 90
+
+    /// クールダウン中か（前回表示から cooldown 秒未満）。
+    private var isInCooldown: Bool {
+        guard let last = lastPresentedAt else { return false }
+        return Date().timeIntervalSince(last) < cooldown
+    }
 
     override init() {
         super.init()
@@ -72,13 +95,29 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
 
     /// カウンターがしきい値に達していて、かつ広告が準備できていれば表示する。
     /// 広告が未ロードのときはカウントを消費せず、次の機会に持ち越して読み込みを仕込む。
-    func presentIfReady(counter: AdCounter) {
+    /// review が未実施なら、1回目の表示タイミングでは広告の代わりにレビュー依頼を表示する。
+    func presentIfReady(counter: AdCounter, review: ReviewManager) {
+        // 前回表示から一定時間（cooldown）は次を出さない。
+        // カウントは消費せず持ち越し、クールダウン明けの機会に表示できるようにする。
+        guard !isInCooldown else { return }
+
+        // 表示条件（カウントしきい値）を満たすか確認。満たさなければ何もしない。
+        // ここでは消費せず、「広告 or レビュー」を確定してから消費する。
+        guard counter.count >= AdCounter.threshold else { return }
+
+        // 1回目の表示タイミングでは広告の代わりにレビュー依頼を出す。
+        if review.requestReviewIfNeeded() {
+            _ = counter.consumeIfReady()   // 表示機会を使ったのでカウントをリセット
+            lastPresentedAt = Date()       // レビューも全画面のためクールダウン対象にする
+            return
+        }
+
+        // 通常の広告表示。未ロードならカウントは消費せず読み込みだけ促す。
         guard isReady else {
-            // 表示機会を無駄にしないよう、カウントは消費せず読み込みだけ促す。
             loadInterstitial()
             return
         }
-        guard counter.consumeIfReady() else { return }
+        _ = counter.consumeIfReady()
         presentInterstitial()
     }
 
@@ -97,6 +136,8 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
             return
         }
         ad.present(from: root)
+        // 表示時刻を記録し、以後 cooldown 秒は次の広告を出さない。
+        lastPresentedAt = Date()
         // InterstitialAd は使い捨て。表示したら参照を破棄し、閉じたあと次を読み込む。
         self.interstitialAd = nil
         self.interstitialAdLoaded = false

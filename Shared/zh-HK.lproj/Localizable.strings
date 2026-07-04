@@ -64,3 +64,8 @@
 "assignItems" = "指派項目";
 "noGroup" = "無群組";
 "noGroupsYet" = "請在編輯模式下建立群組並指派項目。";
+
+"reviewTitle" = "喜歡這款應用程式嗎？";
+"reviewMessage" = "您的評價對我們很有幫助。謝謝！";
+"reviewRate" = "評價";
+"reviewLater" = "稍後";

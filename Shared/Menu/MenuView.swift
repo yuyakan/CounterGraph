@@ -12,6 +12,7 @@ struct MenuView: View {
     // 広告は1インスタンスをアプリ全体で共有し、先読みしておく。
     @StateObject private var interstitial = Interstitial()
     @StateObject private var adCounter = AdCounter()
+    @StateObject private var reviewManager = ReviewManager()
     @State private var editMode: EditMode = .inactive
 
     var body: some View {
@@ -43,7 +44,8 @@ struct MenuView: View {
                             NavigationLink(destination: FileView(fileId: file.id)
                                 .environmentObject(menu)
                                 .environmentObject(interstitial)
-                                .environmentObject(adCounter)) {
+                                .environmentObject(adCounter)
+                                .environmentObject(reviewManager)) {
                                 EmptyView()
                             }
                             .opacity(0)
@@ -60,7 +62,7 @@ struct MenuView: View {
                     // 新規追加カード
                     Button(action: {
                         menu.add()
-                        adCounter.increment()
+                        adCounter.increment(by: 2)   // 追加は2回分
                     }, label: {
                         addCard
                     })
@@ -81,6 +83,21 @@ struct MenuView: View {
             // 詳細画面遷移時にすぐ表示できるよう広告を先読みしておく。
             interstitial.loadInterstitial()
         }
+        // レビュー依頼ダイアログ（1回目の広告表示タイミングで表示）。
+        // NavigationStack 全体に重ねることで、詳細画面の上にも表示される。
+        .overlay {
+            if reviewManager.showReviewDialog {
+                ReviewDialogView(
+                    onRate: {
+                        reviewManager.openAppStoreReview()
+                        withAnimation { reviewManager.showReviewDialog = false }
+                    },
+                    onDismiss: {
+                        withAnimation { reviewManager.showReviewDialog = false }
+                    }
+                )
+            }
+        }
     }
 
     /// ファイル1件分のカード。編集モードでは複製ボタン、通常時は遷移矢印を表示する。
@@ -100,7 +117,7 @@ struct MenuView: View {
                 // 編集モード中はカードを複製できる。
                 Button {
                     menu.duplicate(file: file)
-                    adCounter.increment()
+                    adCounter.increment(by: 2)   // 複製は2回分
                 } label: {
                     Image(systemName: "plus.square.on.square")
                         .font(.system(size: 18, weight: .semibold))

@@ -17,6 +17,7 @@ struct BarChartView: View {
     @StateObject private var nameTemplates = NameTemplateStore()
     @EnvironmentObject var interstitial: Interstitial
     @EnvironmentObject var adCounter: AdCounter
+    @EnvironmentObject var reviewManager: ReviewManager
     @Binding var orientation: BarOrientation
     @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
@@ -146,7 +147,7 @@ struct BarChartView: View {
                     withAnimation { isEditing.toggle() }
                     if wasEditing {
                         adCounter.increment()
-                        interstitial.presentIfReady(counter: adCounter)
+                        interstitial.presentIfReady(counter: adCounter, review: reviewManager)
                     }
                 }, label: {
                     Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))

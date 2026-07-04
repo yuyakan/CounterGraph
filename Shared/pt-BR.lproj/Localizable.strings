@@ -64,3 +64,8 @@
 "assignItems" = "Atribuir itens";
 "noGroup" = "Sem grupo";
 "noGroupsYet" = "Crie um grupo e atribua itens no modo de edição.";
+
+"reviewTitle" = "Está gostando do app?";
+"reviewMessage" = "Sua avaliação nos ajuda muito. Obrigado!";
+"reviewRate" = "Avaliar";
+"reviewLater" = "Depois";

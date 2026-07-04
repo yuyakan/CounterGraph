@@ -67,3 +67,8 @@
 "deleteTemplate" = "削除";
 
 "Duplicate" = "複製";
+
+"reviewTitle" = "アプリは気に入りましたか？";
+"reviewMessage" = "レビューが励みになります。ありがとうございます！";
+"reviewRate" = "評価する";
+"reviewLater" = "あとで";

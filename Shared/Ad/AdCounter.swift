@@ -4,7 +4,8 @@
 //
 //  広告表示のための操作回数カウンター（アプリ全体で共通）。
 //  詳細画面の編集「完了」・メニューの「追加」・「複製」を同じカウントで数え、
-//  3回以上たまったら広告を表示し、表示後は0にリセットする。
+//  しきい値以上たまったら広告を表示し、表示後は0にリセットする。
+//  メニューの「追加」「複製」は2回分、編集「完了」は1回分として数える。
 //
 
 import Foundation
@@ -12,7 +13,7 @@ import Foundation
 final class AdCounter: ObservableObject {
     private static let storageKey = "adActionCount"
     /// 広告を表示する操作回数のしきい値。
-    static let threshold = 3
+    static let threshold = 5
 
     @Published private(set) var count: Int
 
@@ -20,9 +21,9 @@ final class AdCounter: ObservableObject {
         self.count = UserDefaults.standard.integer(forKey: AdCounter.storageKey)
     }
 
-    /// 対象操作を1回ぶん加算する。
-    func increment() {
-        count += 1
+    /// 対象操作を加算する。amount で重み（回数分）を指定する（既定1）。
+    func increment(by amount: Int = 1) {
+        count += amount
         save()
     }
 

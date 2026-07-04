@@ -64,3 +64,8 @@
 "assignItems" = "항목 지정";
 "noGroup" = "그룹 없음";
 "noGroupsYet" = "편집 모드에서 그룹을 만들고 항목을 지정하세요.";
+
+"reviewTitle" = "앱이 마음에 드시나요?";
+"reviewMessage" = "리뷰가 큰 힘이 됩니다. 감사합니다!";
+"reviewRate" = "평가하기";
+"reviewLater" = "나중에";
