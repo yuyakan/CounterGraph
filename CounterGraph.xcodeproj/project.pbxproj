@@ -40,6 +40,12 @@
 		AA0000000000000000000023 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000021 /* RankingView.swift */; };
 		AA0000000000000000000032 /* NameTemplateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000031 /* NameTemplateStore.swift */; };
 		AA0000000000000000000033 /* NameTemplateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000031 /* NameTemplateStore.swift */; };
+		AA0000000000000000000062 /* CountGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000061 /* CountGroup.swift */; };
+		AA0000000000000000000063 /* CountGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000061 /* CountGroup.swift */; };
+		AA0000000000000000000072 /* GroupChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000071 /* GroupChartViewModel.swift */; };
+		AA0000000000000000000073 /* GroupChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000071 /* GroupChartViewModel.swift */; };
+		AA0000000000000000000082 /* GroupChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000081 /* GroupChartView.swift */; };
+		AA0000000000000000000083 /* GroupChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000081 /* GroupChartView.swift */; };
 		4BD17D882B0220F700120E96 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D872B0220F700120E96 /* File.swift */; };
 		4BD17D892B0220F700120E96 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D872B0220F700120E96 /* File.swift */; };
 		4BD17D8F2B02612000120E96 /* InterstitialAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8E2B02612000120E96 /* InterstitialAd.swift */; };
@@ -94,6 +100,9 @@
 		AA0000000000000000000011 /* CountUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountUnit.swift; sourceTree = "<group>"; };
 		AA0000000000000000000021 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
 		AA0000000000000000000031 /* NameTemplateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTemplateStore.swift; sourceTree = "<group>"; };
+		AA0000000000000000000061 /* CountGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountGroup.swift; sourceTree = "<group>"; };
+		AA0000000000000000000071 /* GroupChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChartViewModel.swift; sourceTree = "<group>"; };
+		AA0000000000000000000081 /* GroupChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChartView.swift; sourceTree = "<group>"; };
 		4BD17D872B0220F700120E96 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		4BD17D8E2B02612000120E96 /* InterstitialAd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialAd.swift; sourceTree = "<group>"; };
 		4BD17D912B038F3000120E96 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -202,9 +211,20 @@
 				4BD17D842B00826900120E96 /* ChartType.swift */,
 				4B1A83D12AFCF387002F1BFE /* Data */,
 				4B1A83CA2AFCE230002F1BFE /* Chart */,
+				AA0000000000000000000091 /* Group */,
 				4B7D4B8C2AFDF87800858ED9 /* Setting */,
 			);
 			path = File;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000091 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000061 /* CountGroup.swift */,
+				AA0000000000000000000071 /* GroupChartViewModel.swift */,
+				AA0000000000000000000081 /* GroupChartView.swift */,
+			);
+			path = Group;
 			sourceTree = "<group>";
 		};
 		4BD17D8A2B025DE500120E96 /* Ad */ = {
@@ -471,6 +491,9 @@
 				AA0000000000000000000012 /* CountUnit.swift in Sources */,
 				AA0000000000000000000022 /* RankingView.swift in Sources */,
 				AA0000000000000000000032 /* NameTemplateStore.swift in Sources */,
+				AA0000000000000000000062 /* CountGroup.swift in Sources */,
+				AA0000000000000000000072 /* GroupChartViewModel.swift in Sources */,
+				AA0000000000000000000082 /* GroupChartView.swift in Sources */,
 				4BD17D772AFF910200120E96 /* extensionColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -497,6 +520,9 @@
 				AA0000000000000000000013 /* CountUnit.swift in Sources */,
 				AA0000000000000000000023 /* RankingView.swift in Sources */,
 				AA0000000000000000000033 /* NameTemplateStore.swift in Sources */,
+				AA0000000000000000000063 /* CountGroup.swift in Sources */,
+				AA0000000000000000000073 /* GroupChartViewModel.swift in Sources */,
+				AA0000000000000000000083 /* GroupChartView.swift in Sources */,
 				4BD17D782AFF910200120E96 /* extensionColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

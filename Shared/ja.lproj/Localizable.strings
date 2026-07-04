@@ -55,6 +55,13 @@
 "Pie chart" = "円グラフ";
 "Ranking" = "ランキング";
 
+"groups" = "グループ";
+"newGroup" = "新しいグループ";
+"groupName" = "グループ名";
+"assignItems" = "項目を割り当て";
+"noGroup" = "グループなし";
+"noGroupsYet" = "編集モードでグループを作成し、項目を割り当ててください。";
+
 "saveAsTemplate" = "名前をテンプレートに登録";
 "templates" = "テンプレート";
 "deleteTemplate" = "削除";

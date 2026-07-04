@@ -55,6 +55,13 @@
 "Pie chart" = "Pie";
 "Ranking" = "Ranking";
 
+"groups" = "Groups";
+"newGroup" = "New group";
+"groupName" = "Group name";
+"assignItems" = "Assign items";
+"noGroup" = "No group";
+"noGroupsYet" = "Create a group and assign items in edit mode.";
+
 "saveAsTemplate" = "Save name as template";
 "templates" = "Templates";
 "deleteTemplate" = "Delete";

@@ -11,6 +11,7 @@ enum ChartType {
     case bar
     case pie
     case ranking
+    case group
 
     func isBar() -> Bool {
         return self == .bar

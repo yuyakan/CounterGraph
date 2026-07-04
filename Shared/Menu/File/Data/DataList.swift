@@ -77,7 +77,11 @@ struct DataList {
     func names() -> [String] {
         return dataList.map { $0.name }
     }
-    
+
+    func groupId(index: Int) -> String? {
+        return dataList[index].groupId
+    }
+
     func getRatio() -> [Double] {
         let sum = sum()
         return dataList.map {Double($0.value) / sum}
@@ -88,19 +92,17 @@ struct DataList {
     }
     
     mutating func plus(index: Int, value: Int) {
-        let newValue = dataList[index].value + value
-        let newName = dataList[index].name
-        dataList[index] = PersonalData(value: newValue, name: newName)
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value + value, name: old.name, groupId: old.groupId)
         save(dataList: dataList)
     }
-    
+
     mutating func minus(index: Int, value: Int) {
-        let newValue = dataList[index].value - value
-        let newName = dataList[index].name
-        dataList[index] = PersonalData(value: newValue, name: newName)
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value - value, name: old.name, groupId: old.groupId)
         save(dataList: dataList)
     }
-    
+
     mutating func add(value: Int, name: String) {
         dataList.append(PersonalData(value: value, name: name))
         save(dataList: dataList)
@@ -109,14 +111,24 @@ struct DataList {
     /// 指定indexの名前を変更する。
     mutating func updateName(index: Int, name: String) {
         guard dataList.indices.contains(index) else { return }
-        dataList[index] = PersonalData(value: dataList[index].value, name: name)
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value, name: name, groupId: old.groupId)
         save(dataList: dataList)
     }
 
     /// 指定indexの値を変更する。
     mutating func updateValue(index: Int, value: Int) {
         guard dataList.indices.contains(index) else { return }
-        dataList[index] = PersonalData(value: value, name: dataList[index].name)
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: value, name: old.name, groupId: old.groupId)
+        save(dataList: dataList)
+    }
+
+    /// 指定indexのグループを変更する（nil で未所属に戻す）。
+    mutating func updateGroup(index: Int, groupId: String?) {
+        guard dataList.indices.contains(index) else { return }
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value, name: old.name, groupId: groupId)
         save(dataList: dataList)
     }
     

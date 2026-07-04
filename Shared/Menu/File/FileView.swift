@@ -45,6 +45,13 @@ struct FileView: View {
                     Label(String(localized: "Ranking"), systemImage: "list.number")
                 }
                 .tag(ChartType.ranking)
+
+            GroupChartView(fileId: fileId, goBack: { dismiss() })
+                .environmentObject(setting)
+                .tabItem {
+                    Label(String(localized: "groups"), systemImage: "square.grid.2x2.fill")
+                }
+                .tag(ChartType.group)
         }
         .tint(Color.brand)
         .onDisappear(perform: {
