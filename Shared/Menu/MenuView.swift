@@ -9,7 +9,12 @@ import SwiftUI
 
 struct MenuView: View {
     @StateObject var menu = MenuViewModel()
+    @StateObject private var setTemplates = SetTemplateStore()
     @State private var editMode: EditMode = .inactive
+    /// Add カード押下時の「空 / テンプレから」選択ダイアログ。
+    @State private var showAddChoice = false
+    /// テンプレート選択シートの表示。
+    @State private var showTemplatePicker = false
 
     var body: some View {
         NavigationStack {
@@ -47,13 +52,26 @@ struct MenuView: View {
                         .listRowSeparator(.hidden)
                         .listRowInsets(EdgeInsets(top: 6, leading: 20, bottom: 6, trailing: 20))
                         .listRowBackground(Color.clear)
+                        // 左スワイプで現在の項目セットをテンプレート化する。
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                setTemplates.saveTemplate(fromFileId: file.id)
+                            } label: {
+                                Label(String(localized: "saveSetAsTemplate"), systemImage: "square.and.arrow.down")
+                            }
+                            .tint(Color.brand)
+                        }
                     }
                     .onMove(perform: menu.moveRow)
                     .onDelete(perform: menu.removeRow)
 
-                    // 新規追加カード
+                    // 新規追加カード。テンプレートがあれば「空 / テンプレから」を選ばせる。
                     Button(action: {
-                        menu.add()
+                        if setTemplates.templates.isEmpty {
+                            menu.add()
+                        } else {
+                            showAddChoice = true
+                        }
                     }, label: {
                         addCard
                     })
@@ -69,6 +87,18 @@ struct MenuView: View {
             .tint(Color.brand)
         }.onChange(of: menu.refresh) { _ in
             menu.rebuildFiles()
+        }
+        // Add カード押下時の作成方法の選択。
+        .confirmationDialog(String(localized: "Add"), isPresented: $showAddChoice, titleVisibility: .visible) {
+            Button(String(localized: "emptyNew")) { menu.add() }
+            Button(String(localized: "newFromTemplate")) { showTemplatePicker = true }
+            Button(String(localized: "Cancel"), role: .cancel) {}
+        }
+        // テンプレート選択シート。
+        .sheet(isPresented: $showTemplatePicker) {
+            TemplatePickerSheet(store: setTemplates) { template in
+                menu.addFromTemplate(template, using: setTemplates)
+            }
         }
     }
 
@@ -119,5 +149,51 @@ struct MenuView: View {
             RoundedRectangle(cornerRadius: 16)
                 .strokeBorder(Color.brand.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
         )
+    }
+}
+
+/// 保存済みの項目セットテンプレートから1つ選ぶシート。
+private struct TemplatePickerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var store: SetTemplateStore
+    /// 選択されたテンプレートを親へ渡す。
+    let onSelect: (SetTemplate) -> Void
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(store.templates) { template in
+                    Button {
+                        onSelect(template)
+                        dismiss()
+                    } label: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(template.title)
+                                .font(.body.weight(.medium))
+                                .foregroundColor(.primary)
+                            // 含まれる項目名をプレビュー表示。
+                            Text(template.itemNames.joined(separator: "・"))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            store.remove(template)
+                        } label: {
+                            Label(String(localized: "deleteTemplate"), systemImage: "trash")
+                        }
+                    }
+                }
+            }
+            .navigationTitle(String(localized: "chooseTemplate"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cancel")) { dismiss() }
+                }
+            }
+        }
     }
 }

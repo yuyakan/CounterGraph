@@ -43,6 +43,14 @@ class MenuViewModel: ObservableObject {
         files.append(File(fileId: UUID().uuidString))
         save()
     }
+
+    /// テンプレートから新規ファイルを作成する。項目（名前）を復元し値は0で始まる。
+    func addFromTemplate(_ template: SetTemplate, using store: SetTemplateStore) {
+        let fileId = UUID().uuidString
+        store.apply(template, toFileId: fileId)
+        files.append(File(fileId: fileId))
+        save()
+    }
      
     func moveRow(from source: IndexSet, to destination: Int) {
         files.move(fromOffsets: source, toOffset: destination)
