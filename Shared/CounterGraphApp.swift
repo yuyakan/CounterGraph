@@ -22,9 +22,24 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct CounterGraphApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    /// スプラッシュ表示中かどうか。表示が終わるとメニューへフェード遷移する。
+    @State private var showSplash = true
+
     var body: some Scene {
         WindowGroup {
-            MenuView()
+            ZStack {
+                MenuView()
+
+                if showSplash {
+                    SplashView {
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            showSplash = false
+                        }
+                    }
+                    .transition(.opacity)
+                    .zIndex(1)
+                }
+            }
         }
     }
 }

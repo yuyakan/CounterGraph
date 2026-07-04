@@ -60,6 +60,8 @@
 		4BD213DB27C0E484004280DA /* Tests_macOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213DA27C0E484004280DA /* Tests_macOSLaunchTests.swift */; };
 		4BD213DC27C0E484004280DA /* CounterGraphApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213B427C0E483004280DA /* CounterGraphApp.swift */; };
 		4BD213DD27C0E484004280DA /* CounterGraphApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213B427C0E483004280DA /* CounterGraphApp.swift */; };
+		AA00000000000000000000C2 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000C1 /* SplashView.swift */; };
+		AA00000000000000000000C3 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000C1 /* SplashView.swift */; };
 		4BD213DE27C0E484004280DA /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213B527C0E483004280DA /* FileView.swift */; };
 		4BD213DF27C0E484004280DA /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213B527C0E483004280DA /* FileView.swift */; };
 		4BD213E027C0E484004280DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BD213B627C0E484004280DA /* Assets.xcassets */; };
@@ -119,6 +121,7 @@
 		4BD17D982B03958600120E96 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4BD17D992B0395B200120E96 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4BD213B427C0E483004280DA /* CounterGraphApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterGraphApp.swift; sourceTree = "<group>"; };
+		AA00000000000000000000C1 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		4BD213B527C0E483004280DA /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
 		4BD213B627C0E484004280DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4BD213BB27C0E484004280DA /* CounterGraph.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CounterGraph.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -260,6 +263,7 @@
 			children = (
 				4B8782A727C633340057DF32 /* GoogleService-Info.plist */,
 				4BD213B427C0E483004280DA /* CounterGraphApp.swift */,
+				AA00000000000000000000C1 /* SplashView.swift */,
 				4BD17D7C2AFFBEC000120E96 /* Menu */,
 				4BD17D8A2B025DE500120E96 /* Ad */,
 				4B1A83C82AFCC536002F1BFE /* Localizable.strings */,
@@ -492,6 +496,7 @@
 				4BD213DE27C0E484004280DA /* FileView.swift in Sources */,
 				4BD17D7A2AFFB4BF00120E96 /* MenuView.swift in Sources */,
 				4BD213DC27C0E484004280DA /* CounterGraphApp.swift in Sources */,
+				AA00000000000000000000C2 /* SplashView.swift in Sources */,
 				4B1A83D32AFCF3AE002F1BFE /* Data.swift in Sources */,
 				4B7D4B842AFD31CF00858ED9 /* Setting.swift in Sources */,
 				4B7D4B8A2AFDF84900858ED9 /* PieChartView.swift in Sources */,
@@ -523,6 +528,7 @@
 				4BD213DF27C0E484004280DA /* FileView.swift in Sources */,
 				4BD17D7B2AFFB4BF00120E96 /* MenuView.swift in Sources */,
 				4BD213DD27C0E484004280DA /* CounterGraphApp.swift in Sources */,
+				AA00000000000000000000C3 /* SplashView.swift in Sources */,
 				4B1A83D42AFCF3AE002F1BFE /* Data.swift in Sources */,
 				4B7D4B852AFD31CF00858ED9 /* Setting.swift in Sources */,
 				4B7D4B8B2AFDF84900858ED9 /* PieChartView.swift in Sources */,
