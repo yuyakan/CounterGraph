@@ -50,6 +50,8 @@
 		4BD17D892B0220F700120E96 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D872B0220F700120E96 /* File.swift */; };
 		4BD17D8F2B02612000120E96 /* InterstitialAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8E2B02612000120E96 /* InterstitialAd.swift */; };
 		4BD17D902B02612000120E96 /* InterstitialAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8E2B02612000120E96 /* InterstitialAd.swift */; };
+		AA00000000000000000000A2 /* AdCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000A1 /* AdCounter.swift */; };
+		AA00000000000000000000A3 /* AdCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000A1 /* AdCounter.swift */; };
 		4BD213CD27C0E484004280DA /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213CC27C0E484004280DA /* Tests_iOS.swift */; };
 		4BD213CF27C0E484004280DA /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213CE27C0E484004280DA /* Tests_iOSLaunchTests.swift */; };
 		4BD213D927C0E484004280DA /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213D827C0E484004280DA /* Tests_macOS.swift */; };
@@ -105,6 +107,7 @@
 		AA0000000000000000000081 /* GroupChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChartView.swift; sourceTree = "<group>"; };
 		4BD17D872B0220F700120E96 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		4BD17D8E2B02612000120E96 /* InterstitialAd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialAd.swift; sourceTree = "<group>"; };
+		AA00000000000000000000A1 /* AdCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdCounter.swift; sourceTree = "<group>"; };
 		4BD17D912B038F3000120E96 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		4BD17D922B038F6D00120E96 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4BD17D942B038FB100120E96 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -231,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				4BD17D8E2B02612000120E96 /* InterstitialAd.swift */,
+				AA00000000000000000000A1 /* AdCounter.swift */,
 			);
 			path = Ad;
 			sourceTree = "<group>";
@@ -480,6 +484,7 @@
 				4B1A83CF2AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
 				4BD213FD27C1307B004280DA /* BarChartView.swift in Sources */,
 				4BD17D8F2B02612000120E96 /* InterstitialAd.swift in Sources */,
+				AA00000000000000000000A2 /* AdCounter.swift in Sources */,
 				4BD213DE27C0E484004280DA /* FileView.swift in Sources */,
 				4BD17D7A2AFFB4BF00120E96 /* MenuView.swift in Sources */,
 				4BD213DC27C0E484004280DA /* CounterGraphApp.swift in Sources */,
@@ -509,6 +514,7 @@
 				4B1A83D02AFCE54A002F1BFE /* BarChartViewModel.swift in Sources */,
 				4BD213FE27C1307B004280DA /* BarChartView.swift in Sources */,
 				4BD17D902B02612000120E96 /* InterstitialAd.swift in Sources */,
+				AA00000000000000000000A3 /* AdCounter.swift in Sources */,
 				4BD213DF27C0E484004280DA /* FileView.swift in Sources */,
 				4BD17D7B2AFFB4BF00120E96 /* MenuView.swift in Sources */,
 				4BD213DD27C0E484004280DA /* CounterGraphApp.swift in Sources */,
@@ -954,7 +960,7 @@
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 12.0.0;
+				minimumVersion = 13.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

@@ -11,7 +11,6 @@ import Charts
 struct PieChartView: View {
     @EnvironmentObject var setting: Setting
     @StateObject var pieChart: PieChartViewModel
-    @ObservedObject var interstitial: Interstitial
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
     @Environment(\.colorScheme) private var colorScheme
@@ -24,10 +23,9 @@ struct PieChartView: View {
 
     private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
-    init (fileId: String, interstitial: Interstitial, goBack: @escaping () -> Void){
+    init (fileId: String, goBack: @escaping () -> Void){
         _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
         self.goBack = goBack
-        self.interstitial = interstitial
     }
 
     /// データ未登録時に表示するサンプルの扇形。
@@ -157,7 +155,6 @@ struct PieChartView: View {
         .onAppear(){
             // 他タブ（棒グラフ等）での変更を反映するため最新データを読み直す。
             pieChart.reload()
-            interstitial.presentInterstitial()
         }
         .onDisappear(perform: {
             pieChart.save()

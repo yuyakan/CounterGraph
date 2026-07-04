@@ -9,6 +9,9 @@ import SwiftUI
 
 struct MenuView: View {
     @StateObject var menu = MenuViewModel()
+    // 広告は1インスタンスをアプリ全体で共有し、先読みしておく。
+    @StateObject private var interstitial = Interstitial()
+    @StateObject private var adCounter = AdCounter()
     @State private var editMode: EditMode = .inactive
 
     var body: some View {
@@ -37,7 +40,10 @@ struct MenuView: View {
                     ForEach(menu.files, id:\.self) { file in
                         ZStack {
                             // カード全体をタップでグラフへ（NavigationLinkの矢印は隠す）
-                            NavigationLink(destination: FileView(fileId: file.id).environmentObject(menu)) {
+                            NavigationLink(destination: FileView(fileId: file.id)
+                                .environmentObject(menu)
+                                .environmentObject(interstitial)
+                                .environmentObject(adCounter)) {
                                 EmptyView()
                             }
                             .opacity(0)
@@ -54,6 +60,7 @@ struct MenuView: View {
                     // 新規追加カード
                     Button(action: {
                         menu.add()
+                        adCounter.increment()
                     }, label: {
                         addCard
                     })
@@ -69,6 +76,10 @@ struct MenuView: View {
             .tint(Color.brand)
         }.onChange(of: menu.refresh) { _ in
             menu.rebuildFiles()
+        }
+        .onAppear {
+            // 詳細画面遷移時にすぐ表示できるよう広告を先読みしておく。
+            interstitial.loadInterstitial()
         }
     }
 
@@ -89,6 +100,7 @@ struct MenuView: View {
                 // 編集モード中はカードを複製できる。
                 Button {
                     menu.duplicate(file: file)
+                    adCounter.increment()
                 } label: {
                     Image(systemName: "plus.square.on.square")
                         .font(.system(size: 18, weight: .semibold))

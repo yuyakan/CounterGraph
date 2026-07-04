@@ -9,7 +9,8 @@ import SwiftUI
 import GoogleMobileAds
 
 struct FileView: View {
-    @ObservedObject var interstitial = Interstitial()
+    @EnvironmentObject var interstitial: Interstitial
+    @EnvironmentObject var adCounter: AdCounter
     @Environment(\.dismiss) var dismiss //iOS15
     @EnvironmentObject var menu: MenuViewModel
     @StateObject var setting: Setting
@@ -27,12 +28,14 @@ struct FileView: View {
         TabView(selection: $chartType) {
             BarChartView(fileId: fileId, orientation: $orientation, goBack: { dismiss() })
                 .environmentObject(setting)
+                .environmentObject(interstitial)
+                .environmentObject(adCounter)
                 .tabItem {
                     Label(String(localized: "Bar chart"), systemImage: "chart.bar.fill")
                 }
                 .tag(ChartType.bar)
 
-            PieChartView(fileId: fileId, interstitial: interstitial, goBack: { dismiss() })
+            PieChartView(fileId: fileId, goBack: { dismiss() })
                 .environmentObject(setting)
                 .tabItem {
                     Label(String(localized: "Pie chart"), systemImage: "chart.pie.fill")
@@ -56,11 +59,11 @@ struct FileView: View {
         .tint(Color.brand)
         .onDisappear(perform: {
             menu.refresh.toggle()
-            interstitial.interstitialAdLoaded.toggle()
         })
         .onAppear(perform: {
-            interstitial.loadInterstitial()
             setting.save()
+            // メニューから詳細画面へ遷移した直後。条件を満たせば広告を表示する。
+            interstitial.presentIfReady(counter: adCounter)
         })
         .navigationTitle(String(localized: "Main"))
         .navigationBarBackButtonHidden(true)
@@ -72,5 +75,8 @@ struct FileView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         FileView(fileId: "0")
+            .environmentObject(MenuViewModel())
+            .environmentObject(Interstitial())
+            .environmentObject(AdCounter())
     }
 }

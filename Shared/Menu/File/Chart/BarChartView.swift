@@ -15,6 +15,8 @@ struct BarChartView: View {
     @StateObject var barChart: BarChartViewModel
     @StateObject var countUnit: CountUnit
     @StateObject private var nameTemplates = NameTemplateStore()
+    @EnvironmentObject var interstitial: Interstitial
+    @EnvironmentObject var adCounter: AdCounter
     @Binding var orientation: BarOrientation
     @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
@@ -133,7 +135,13 @@ struct BarChartView: View {
                         .frame(width: 44, height: 44)
                 }
                 Button(action: {
+                    // 編集モードから「完了」を押したときにカウントし、条件を満たせば広告を表示する。
+                    let wasEditing = isEditing
                     withAnimation { isEditing.toggle() }
+                    if wasEditing {
+                        adCounter.increment()
+                        interstitial.presentIfReady(counter: adCounter)
+                    }
                 }, label: {
                     Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
                         .font(.body.weight(.semibold))
