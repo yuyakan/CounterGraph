@@ -242,16 +242,17 @@ struct BarChartView: View {
             .padding(.vertical, height * 0.015)
 
             if isEditing {
-                // 編集モード: 名前・値をタップで編集シート、±ボタン、左スワイプで削除
+                // 編集モード: 名前・値をタップで編集シート、±ボタン、左スワイプで削除。
+                // プレースホルダー（blankEntries）は表示せず実データ(entries)のみ並べる。
                 List {
-                    ForEach(displayedEntries) { entry in
+                    ForEach(entries) { entry in
                         HStack(spacing: 12) {
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(entry.color)
                                 .frame(width: 16, height: 16)
                             // 名前・値はタップで専用シートを開いて編集（キーボードに隠れない）
                             Button {
-                                if !isEmpty { editingEntryID = entry.id }
+                                editingEntryID = entry.id
                             } label: {
                                 HStack(spacing: 8) {
                                     Text(entry.name)
@@ -271,36 +272,31 @@ struct BarChartView: View {
                                 }
                             }
                             .buttonStyle(.plain)
-                            .disabled(isEmpty)
 
-                            if !isEmpty {
-                                Button {
-                                    barChart.minus(index: entry.id, value: countUnit.value)
-                                } label: {
-                                    Image(systemName: "minus.circle.fill")
-                                        .font(.system(size: 28))
-                                        .foregroundColor(brandColor)
-                                }
-                                .buttonStyle(.plain)
-                                Button {
-                                    barChart.plus(index: entry.id, value: countUnit.value)
-                                } label: {
-                                    Image(systemName: "plus.circle.fill")
-                                        .font(.system(size: 28))
-                                        .foregroundColor(brandColor)
-                                }
-                                .buttonStyle(.plain)
+                            Button {
+                                barChart.minus(index: entry.id, value: countUnit.value)
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(brandColor)
                             }
+                            .buttonStyle(.plain)
+                            Button {
+                                barChart.plus(index: entry.id, value: countUnit.value)
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(brandColor)
+                            }
+                            .buttonStyle(.plain)
                         }
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets(top: 4, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
                         .swipeActions(edge: .trailing) {
-                            if !isEmpty {
-                                Button(role: .destructive) {
-                                    barChart.removeData(index: entry.id)
-                                } label: {
-                                    Label(String(localized: "Delete"), systemImage: "trash")
-                                }
+                            Button(role: .destructive) {
+                                barChart.removeData(index: entry.id)
+                            } label: {
+                                Label(String(localized: "Delete"), systemImage: "trash")
                             }
                         }
                     }

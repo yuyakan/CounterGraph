@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 class Setting: ObservableObject{
-    @Published var title: String = String(localized: "newData")
+    @Published var title: String = ""
     @Published var titleColor: Color = Color.brand
     @Published var textColor: Color = UITraitCollection.current.userInterfaceStyle == .dark ? Color.white : Color.black
     @Published var graphColor = Color.brand
