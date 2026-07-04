@@ -14,6 +14,7 @@ struct BarChartView: View {
     @Environment(\.colorScheme) private var colorScheme
     @StateObject var barChart: BarChartViewModel
     @StateObject var countUnit: CountUnit
+    @StateObject private var nameTemplates = NameTemplateStore()
     @Binding var orientation: BarOrientation
     @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
@@ -338,8 +339,8 @@ struct BarChartView: View {
         }
         .background(setting.backColor)
         .sheet(isPresented: $showAddSheet) {
-            AddItemSheet(barChart: barChart, buttonColor: brandColor)
-                .presentationDetents([.height(220)])
+            AddItemSheet(barChart: barChart, templates: nameTemplates, buttonColor: brandColor)
+                .presentationDetents([.medium])
         }
         // 名前・値の編集シート（キーボードはシート内に出るため隠れ問題が起きない）
         .sheet(item: Binding(
@@ -451,17 +452,62 @@ private struct ItemEditSheet: View {
 }
 
 /// 新規項目を追加するためのシート。
+/// よく使う名前（テンプレート）をチップで呼び出せ、任意でこの名前をテンプレ登録できる。
 private struct AddItemSheet: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var barChart: BarChartViewModel
+    @ObservedObject var templates: NameTemplateStore
     let buttonColor: Color
+
+    /// Add 時にこの名前をテンプレートへ登録するか。既定でON。
+    @State private var saveAsTemplate = true
 
     var body: some View {
         NavigationStack {
             Form {
-                TextField(String(localized: "Jack"), text: $barChart.name)
-                TextField(String(localized: "Value"), value: $barChart.value, format: .number)
-                    .keyboardType(.numberPad)
+                Section {
+                    TextField(String(localized: "Jack"), text: $barChart.name)
+                    TextField(String(localized: "Value"), value: $barChart.value, format: .number)
+                        .keyboardType(.numberPad)
+                    Toggle(String(localized: "saveAsTemplate"), isOn: $saveAsTemplate)
+                        .tint(buttonColor)
+                }
+
+                // 登録済みテンプレート（よく使う名前）をワンタップで名前欄に入れる。
+                if !templates.names.isEmpty {
+                    Section(String(localized: "templates")) {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(templates.names, id: \.self) { name in
+                                    Button {
+                                        barChart.name = name
+                                    } label: {
+                                        Text(name)
+                                            .font(.subheadline.weight(.medium))
+                                            .foregroundColor(buttonColor)
+                                            .lineLimit(1)
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 7)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .fill(buttonColor.opacity(0.12))
+                                            )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            templates.remove(name)
+                                        } label: {
+                                            Label(String(localized: "deleteTemplate"), systemImage: "trash")
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 2)
+                        }
+                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                    }
+                }
             }
             .navigationTitle(String(localized: "Add"))
             .navigationBarTitleDisplayMode(.inline)
@@ -471,6 +517,9 @@ private struct AddItemSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(String(localized: "Add")) {
+                        if saveAsTemplate {
+                            templates.add(barChart.name)
+                        }
                         barChart.addData()
                         dismiss()
                     }

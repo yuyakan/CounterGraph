@@ -54,3 +54,7 @@
 "Bar chart" = "Bar";
 "Pie chart" = "Pie";
 "Ranking" = "Ranking";
+
+"saveAsTemplate" = "Save name as template";
+"templates" = "Templates";
+"deleteTemplate" = "Delete";

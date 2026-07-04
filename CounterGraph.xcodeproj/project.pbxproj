@@ -38,6 +38,8 @@
 		AA0000000000000000000013 /* CountUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000011 /* CountUnit.swift */; };
 		AA0000000000000000000022 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000021 /* RankingView.swift */; };
 		AA0000000000000000000023 /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000021 /* RankingView.swift */; };
+		AA0000000000000000000032 /* NameTemplateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000031 /* NameTemplateStore.swift */; };
+		AA0000000000000000000033 /* NameTemplateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000031 /* NameTemplateStore.swift */; };
 		4BD17D882B0220F700120E96 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D872B0220F700120E96 /* File.swift */; };
 		4BD17D892B0220F700120E96 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D872B0220F700120E96 /* File.swift */; };
 		4BD17D8F2B02612000120E96 /* InterstitialAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8E2B02612000120E96 /* InterstitialAd.swift */; };
@@ -91,6 +93,7 @@
 		AA0000000000000000000001 /* ChartSortOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSortOrder.swift; sourceTree = "<group>"; };
 		AA0000000000000000000011 /* CountUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountUnit.swift; sourceTree = "<group>"; };
 		AA0000000000000000000021 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000031 /* NameTemplateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameTemplateStore.swift; sourceTree = "<group>"; };
 		4BD17D872B0220F700120E96 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		4BD17D8E2B02612000120E96 /* InterstitialAd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialAd.swift; sourceTree = "<group>"; };
 		4BD17D912B038F3000120E96 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -158,6 +161,7 @@
 				AA0000000000000000000001 /* ChartSortOrder.swift */,
 				AA0000000000000000000011 /* CountUnit.swift */,
 				AA0000000000000000000021 /* RankingView.swift */,
+				AA0000000000000000000031 /* NameTemplateStore.swift */,
 			);
 			path = Chart;
 			sourceTree = "<group>";
@@ -466,6 +470,7 @@
 				AA0000000000000000000002 /* ChartSortOrder.swift in Sources */,
 				AA0000000000000000000012 /* CountUnit.swift in Sources */,
 				AA0000000000000000000022 /* RankingView.swift in Sources */,
+				AA0000000000000000000032 /* NameTemplateStore.swift in Sources */,
 				4BD17D772AFF910200120E96 /* extensionColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -491,6 +496,7 @@
 				AA0000000000000000000003 /* ChartSortOrder.swift in Sources */,
 				AA0000000000000000000013 /* CountUnit.swift in Sources */,
 				AA0000000000000000000023 /* RankingView.swift in Sources */,
+				AA0000000000000000000033 /* NameTemplateStore.swift in Sources */,
 				4BD17D782AFF910200120E96 /* extensionColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

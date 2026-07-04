@@ -54,3 +54,7 @@
 "Bar chart" = "棒グラフ";
 "Pie chart" = "円グラフ";
 "Ranking" = "ランキング";
+
+"saveAsTemplate" = "名前をテンプレートに登録";
+"templates" = "テンプレート";
+"deleteTemplate" = "削除";
