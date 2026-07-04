@@ -44,11 +44,34 @@ class MenuViewModel: ObservableObject {
         save()
     }
 
-    /// テンプレートから新規ファイルを作成する。項目（名前）を復元し値は0で始まる。
-    func addFromTemplate(_ template: SetTemplate, using store: SetTemplateStore) {
-        let fileId = UUID().uuidString
-        store.apply(template, toFileId: fileId)
-        files.append(File(fileId: fileId))
+    /// 指定ファイルを複製する。タイトル・項目（名前と値）・円グラフの色をコピーし、
+    /// 複製元の直後に挿入する。
+    func duplicate(file: File) {
+        guard let sourceIndex = files.firstIndex(of: file) else { return }
+        let newId = UUID().uuidString
+        let defaults = UserDefaults.standard
+
+        // タイトルをコピー（「(コピー)」等は付けず元のまま。編集で変えられる）。
+        if let title = defaults.string(forKey: "Title_file\(file.id)") {
+            defaults.set(title, forKey: "Title_file\(newId)")
+        }
+        // 項目データ（data{index}_file{id}）をコピー。
+        for index in 0..<DataList.maxDataCount {
+            let key = "data\(index)_file\(file.id)"
+            guard let value = defaults.object(forKey: key) else { break }
+            defaults.set(value, forKey: "data\(index)_file\(newId)")
+        }
+        // 円グラフの色設定があればコピー。
+        if let colors = defaults.object(forKey: "pieColors_file\(file.id)") {
+            defaults.set(colors, forKey: "pieColors_file\(newId)")
+        }
+        // カウント幅があればコピー。
+        let unit = defaults.integer(forKey: "CountUnit_file\(file.id)")
+        if unit > 0 {
+            defaults.set(unit, forKey: "CountUnit_file\(newId)")
+        }
+
+        files.insert(File(fileId: newId), at: sourceIndex + 1)
         save()
     }
      

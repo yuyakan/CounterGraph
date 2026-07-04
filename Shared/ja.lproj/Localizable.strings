@@ -59,8 +59,4 @@
 "templates" = "テンプレート";
 "deleteTemplate" = "削除";
 
-"saveSetAsTemplate" = "テンプレートとして保存";
-"newFromTemplate" = "テンプレートから作成";
-"emptyNew" = "空で作成";
-"chooseTemplate" = "テンプレートを選択";
-"templateSaved" = "テンプレートに保存しました";
+"Duplicate" = "複製";

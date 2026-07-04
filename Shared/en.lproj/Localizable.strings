@@ -59,8 +59,4 @@
 "templates" = "Templates";
 "deleteTemplate" = "Delete";
 
-"saveSetAsTemplate" = "Save as template";
-"newFromTemplate" = "Create from template";
-"emptyNew" = "Empty";
-"chooseTemplate" = "Choose a template";
-"templateSaved" = "Saved as template";
+"Duplicate" = "Duplicate";
