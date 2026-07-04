@@ -164,11 +164,9 @@ struct PieChartView: View {
             TextField("", text: $draftTitle)
             Button(String(localized: "Cancel"), role: .cancel) {}
             Button("OK") {
-                let trimmed = draftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-                if !trimmed.isEmpty {
-                    setting.title = trimmed
-                    setting.save()
-                }
+                // 空タイトルも許容する（前後の空白は除去してから保存）。
+                setting.title = draftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                setting.save()
             }
         }
     }

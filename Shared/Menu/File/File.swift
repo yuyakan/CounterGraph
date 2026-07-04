@@ -14,10 +14,9 @@ struct File: Hashable {
     init(fileId: String) {
         self.id = fileId
         
-        // 保存済みタイトルが空（新規作成直後など）の場合もメニューカードでは
-        // プレースホルダー文言を表示する。
-        if let title = UserDefaults.standard.string(forKey: "Title_file\(fileId)"),
-           !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        // 保存済みタイトルがあればそのまま表示する（ユーザーが意図的に空にした場合は空のまま）。
+        // タイトルキー自体が無い旧データ等のときだけプレースホルダー文言を出す。
+        if let title = UserDefaults.standard.string(forKey: "Title_file\(fileId)") {
             self.title = title
         } else {
             title = String(localized: "newData")

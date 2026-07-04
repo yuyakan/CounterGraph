@@ -40,8 +40,23 @@ class MenuViewModel: ObservableObject {
     }
     
     func add() {
-        files.append(File(fileId: UUID().uuidString))
+        let fileId = UUID().uuidString
+        // 「結果2」「結果3」…と作成のたびに連番でデフォルトタイトルを付ける。
+        // 1つ目(fileId 0)は「結果」なので、新規は2から始める。
+        let title = "\(String(localized: "Result"))\(nextResultNumber())"
+        UserDefaults.standard.set(title, forKey: "Title_file\(fileId)")
+        files.append(File(fileId: fileId))
         save()
+    }
+
+    /// デフォルトタイトル用の連番を返し、次回のために+1する。削除しても番号は戻さない。
+    private func nextResultNumber() -> Int {
+        let key = "nextResultNumber"
+        // 未設定時は2から始める（1つ目の「結果」の次）。
+        var number = UserDefaults.standard.integer(forKey: key)
+        if number < 2 { number = 2 }
+        UserDefaults.standard.set(number + 1, forKey: key)
+        return number
     }
 
     /// 指定ファイルを複製する。タイトル・項目（名前と値）・円グラフの色をコピーし、
