@@ -31,6 +31,13 @@ class BarChartViewModel: ObservableObject {
         self.dataList = DataList(fileId: fileId)
         self.alertType = .maxData
     }
+
+    /// UserDefaults から最新のデータを読み直す。
+    /// 複数タブが別インスタンスを持つため、タブ表示時に呼んで他タブの変更を反映する。
+    func reload() {
+        dataList = DataList(fileId: dataList.fileId)
+        objectWillChange.send()
+    }
     
     func maxValue() -> CGFloat{
         return CGFloat(dataList.max())

@@ -77,6 +77,10 @@ struct RankingView: View {
             }
         }
         .background(setting.backColor)
+        .onAppear {
+            // 他タブでの変更を反映するため最新データを読み直す。
+            barChart.reload()
+        }
     }
 
     /// ランキング1行。番号 → 色ドット → 名前 → 値。

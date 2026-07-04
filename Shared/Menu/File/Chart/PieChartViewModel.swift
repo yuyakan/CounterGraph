@@ -19,7 +19,7 @@ struct SectorEntry: Identifiable {
 
 class PieChartViewModel: ObservableObject {
     @Published var colors: [Color]
-    private let dataList: DataList
+    private var dataList: DataList
     
 
     /// 凡例の既定色（データ件数の上限ぶん用意しておく）。
@@ -39,6 +39,13 @@ class PieChartViewModel: ObservableObject {
         // 保存色が古く、データ件数より少ない場合に備えて不足ぶんを既定色で補う。
         // これがないと colors[index] が範囲外アクセスでクラッシュする。
         ensureColorCount(dataList.count())
+    }
+
+    /// UserDefaults から最新のデータを読み直す。タブ表示時に呼び他タブの変更を反映する。
+    func reload() {
+        dataList = DataList(fileId: dataList.fileId)
+        ensureColorCount(dataList.count())
+        objectWillChange.send()
     }
 
     /// colors の要素数が少なくとも `count` になるよう、不足ぶんを既定色で補完する。

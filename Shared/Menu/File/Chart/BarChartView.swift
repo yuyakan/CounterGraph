@@ -334,6 +334,10 @@ struct BarChartView: View {
             }
         }
         .background(setting.backColor)
+        .onAppear {
+            // 他タブから戻ったときに最新データを反映する。
+            barChart.reload()
+        }
         .sheet(isPresented: $showAddSheet) {
             AddItemSheet(barChart: barChart, templates: nameTemplates, buttonColor: brandColor)
                 .presentationDetents([.medium])

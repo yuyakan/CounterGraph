@@ -155,6 +155,8 @@ struct PieChartView: View {
             }
         }
         .onAppear(){
+            // 他タブ（棒グラフ等）での変更を反映するため最新データを読み直す。
+            pieChart.reload()
             interstitial.presentInterstitial()
         }
         .onDisappear(perform: {
