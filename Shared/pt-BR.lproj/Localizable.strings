@@ -21,6 +21,7 @@
 "Button" = "Botão";
 
 "1unit:" = "1unidade:";
+"countWidth" = "Incremento";
 
 "sameAlertText" = "O nome já está sendo usado";
 "sameAlertMessage" = "Por favor, dê a ele um nome diferente";

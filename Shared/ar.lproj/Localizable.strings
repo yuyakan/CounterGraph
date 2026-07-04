@@ -21,6 +21,7 @@
 "Button" = "Button";
 
 "1unit:" = "1unit:";
+"countWidth" = "مقدار العد";
 
 "sameAlertText" = "The name is already used";
 "sameAlertMessage" = "Please give it a different name";

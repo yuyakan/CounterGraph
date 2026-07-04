@@ -21,6 +21,7 @@
 "Button" = "Кнопка";
 
 "1unit:" = "1блок:";
+"countWidth" = "Шаг счёта";
 
 "sameAlertText" = "Имя уже используется";
 "sameAlertMessage" = "Пожалуйста, дайте ему другое имя";

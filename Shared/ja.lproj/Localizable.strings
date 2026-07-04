@@ -21,6 +21,7 @@
 "Button" = "ボタン";
 
 "1unit:" = "1単位:";
+"countWidth" = "カウント幅";
 
 "sameAlertText" = "その名前はすでに使われています";
 "sameAlertMessage" = "違う名前を入力してください";

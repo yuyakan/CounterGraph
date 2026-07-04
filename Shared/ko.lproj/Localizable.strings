@@ -21,6 +21,7 @@
 "Button" = "버튼";
 
 "1unit:" = "1단위:";
+"countWidth" = "카운트 폭";
 
 "sameAlertText" = "이름이 이미 사용되었습니다";
 "sameAlertMessage" = "다른 이름을 지정해 주세요";

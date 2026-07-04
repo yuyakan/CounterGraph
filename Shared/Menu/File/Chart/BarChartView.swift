@@ -13,8 +13,8 @@ struct BarChartView: View {
     @EnvironmentObject var setting: Setting
     @Environment(\.colorScheme) private var colorScheme
     @StateObject var barChart: BarChartViewModel
+    @StateObject var countUnit: CountUnit
     @Binding var orientation: BarOrientation
-    @State var unit: Int = 10
     @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
     @State private var showAddSheet = false
@@ -72,6 +72,7 @@ struct BarChartView: View {
 
     init(fileId: String, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
         _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
+        _countUnit = StateObject(wrappedValue: CountUnit(fileId: fileId))
         _orientation = orientation
         self.goBack = goBack
     }
@@ -273,7 +274,7 @@ struct BarChartView: View {
 
                             if !isEmpty {
                                 Button {
-                                    barChart.minus(index: entry.id, value: unit)
+                                    barChart.minus(index: entry.id, value: countUnit.value)
                                 } label: {
                                     Image(systemName: "minus.circle.fill")
                                         .font(.system(size: 28))
@@ -281,7 +282,7 @@ struct BarChartView: View {
                                 }
                                 .buttonStyle(.plain)
                                 Button {
-                                    barChart.plus(index: entry.id, value: unit)
+                                    barChart.plus(index: entry.id, value: countUnit.value)
                                 } label: {
                                     Image(systemName: "plus.circle.fill")
                                         .font(.system(size: 28))
@@ -302,6 +303,24 @@ struct BarChartView: View {
                             }
                         }
                     }
+
+                    // 項目リストの最下部に「＋ 項目を追加」行を置く（カウント幅とは独立）。
+                    Button {
+                        showAddSheet = true
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 22))
+                                .foregroundColor(brandColor)
+                            Text(String(localized: "Add"))
+                                .font(.body.weight(.semibold))
+                                .foregroundColor(brandColor)
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 8, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
                 }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
@@ -310,29 +329,11 @@ struct BarChartView: View {
                 Spacer()
             }
 
-            // 増減単位の設定＋新規項目追加（編集モードのみ）
+            // カウント幅の設定（編集モードのみ）。項目追加はリスト最下部の行に分離した。
             if isEditing {
-                HStack(spacing: 16) {
-                    HStack(spacing: 6) {
-                        Text(LocalizedStringKey("1unit:"))
-                            .font(.subheadline)
-                            .foregroundColor(setting.textColor.opacity(0.7))
-                        TextField("", value: $unit, format: .number)
-                            .textFieldStyle(.roundedBorder)
-                            .keyboardType(.numberPad)
-                            .frame(width: 60)
-                    }
-                    Spacer()
-                    Button {
-                        showAddSheet = true
-                    } label: {
-                        Label(String(localized: "Add"), systemImage: "plus.circle.fill")
-                            .font(.body.weight(.semibold))
-                            .foregroundColor(brandColor)
-                    }
-                }
-                .padding(.horizontal, width * 0.06)
-                .padding(.vertical, 10)
+                CountUnitPicker(unit: countUnit, tint: brandColor)
+                    .padding(.horizontal, width * 0.06)
+                    .padding(.vertical, 10)
             }
         }
         .background(setting.backColor)

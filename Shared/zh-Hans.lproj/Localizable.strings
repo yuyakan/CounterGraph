@@ -21,6 +21,7 @@
 "Button" = "按钮";
 
 "1unit:" = "1单位:";
+"countWidth" = "计数步长";
 
 "sameAlertText" = "该名称已被使用";
 "sameAlertMessage" = "请为它取一个不同的名称";

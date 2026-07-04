@@ -21,6 +21,7 @@
 "Button" = "Schaltfläche";
 
 "1unit:" = "1Einheit:";
+"countWidth" = "Zählschritt";
 
 "sameAlertText" = "Der Name wird bereits verwendet";
 "sameAlertMessage" = "Bitte geben Sie einen anderen Namen an";
