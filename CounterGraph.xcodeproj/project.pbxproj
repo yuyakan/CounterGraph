@@ -52,6 +52,8 @@
 		4BD17D902B02612000120E96 /* InterstitialAd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD17D8E2B02612000120E96 /* InterstitialAd.swift */; };
 		AA00000000000000000000A2 /* AdCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000A1 /* AdCounter.swift */; };
 		AA00000000000000000000A3 /* AdCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000A1 /* AdCounter.swift */; };
+		AA00000000000000000000B2 /* DiagonalLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000B1 /* DiagonalLabel.swift */; };
+		AA00000000000000000000B3 /* DiagonalLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000000B1 /* DiagonalLabel.swift */; };
 		4BD213CD27C0E484004280DA /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213CC27C0E484004280DA /* Tests_iOS.swift */; };
 		4BD213CF27C0E484004280DA /* Tests_iOSLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213CE27C0E484004280DA /* Tests_iOSLaunchTests.swift */; };
 		4BD213D927C0E484004280DA /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD213D827C0E484004280DA /* Tests_macOS.swift */; };
@@ -108,6 +110,7 @@
 		4BD17D872B0220F700120E96 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		4BD17D8E2B02612000120E96 /* InterstitialAd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialAd.swift; sourceTree = "<group>"; };
 		AA00000000000000000000A1 /* AdCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdCounter.swift; sourceTree = "<group>"; };
+		AA00000000000000000000B1 /* DiagonalLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagonalLabel.swift; sourceTree = "<group>"; };
 		4BD17D912B038F3000120E96 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		4BD17D922B038F6D00120E96 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4BD17D942B038FB100120E96 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -173,6 +176,7 @@
 				AA0000000000000000000001 /* ChartSortOrder.swift */,
 				AA0000000000000000000011 /* CountUnit.swift */,
 				AA0000000000000000000021 /* RankingView.swift */,
+				AA00000000000000000000B1 /* DiagonalLabel.swift */,
 				AA0000000000000000000031 /* NameTemplateStore.swift */,
 			);
 			path = Chart;
@@ -496,6 +500,7 @@
 				AA0000000000000000000012 /* CountUnit.swift in Sources */,
 				AA0000000000000000000022 /* RankingView.swift in Sources */,
 				AA0000000000000000000032 /* NameTemplateStore.swift in Sources */,
+				AA00000000000000000000B2 /* DiagonalLabel.swift in Sources */,
 				AA0000000000000000000062 /* CountGroup.swift in Sources */,
 				AA0000000000000000000072 /* GroupChartViewModel.swift in Sources */,
 				AA0000000000000000000082 /* GroupChartView.swift in Sources */,
@@ -526,6 +531,7 @@
 				AA0000000000000000000013 /* CountUnit.swift in Sources */,
 				AA0000000000000000000023 /* RankingView.swift in Sources */,
 				AA0000000000000000000033 /* NameTemplateStore.swift in Sources */,
+				AA00000000000000000000B3 /* DiagonalLabel.swift in Sources */,
 				AA0000000000000000000063 /* CountGroup.swift in Sources */,
 				AA0000000000000000000073 /* GroupChartViewModel.swift in Sources */,
 				AA0000000000000000000083 /* GroupChartView.swift in Sources */,

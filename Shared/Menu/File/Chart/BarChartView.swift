@@ -45,32 +45,38 @@ struct BarChartView: View {
         return step * (CGFloat(idx) + 0.5)
     }
 
+    /// iPad ではラベル・数値を大きく表示するための倍率。iPhone は等倍。
+    private var deviceScale: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .pad ? 1.5 : 1.0
+    }
+
+    /// 棒の上に表示する数値のフォントサイズ（iPad では拡大）。
+    private var valueFontSize: CGFloat { 12 * deviceScale }
+
     /// 名前ラベルのフォントサイズを項目数でスケールする（少ないほど大きく）。下限・上限あり。
+    /// iPad ではさらに deviceScale を掛けて大きくする。
     private func labelFontSize(count: Int) -> CGFloat {
         let maxSize: CGFloat = 17   // 項目が少ないとき（上限）
         let minSize: CGFloat = 11   // 項目が多いとき（下限）
         let fewCount = 3            // これ以下は maxSize
         let manyCount = 10          // これ以上は minSize
-        if count <= fewCount { return maxSize }
-        if count >= manyCount { return minSize }
-        let t = CGFloat(count - fewCount) / CGFloat(manyCount - fewCount)
-        return maxSize - (maxSize - minSize) * t
+        let base: CGFloat
+        if count <= fewCount {
+            base = maxSize
+        } else if count >= manyCount {
+            base = minSize
+        } else {
+            let t = CGFloat(count - fewCount) / CGFloat(manyCount - fewCount)
+            base = maxSize - (maxSize - minSize) * t
+        }
+        return base * deviceScale
     }
 
-    /// 斜め45度で表示する名前ラベルに必要な縦方向の高さ。
-    /// 表示中の最長の名前を実測し、maxWidth で頭打ち（＝2行折り返し）した幅・高さから求める。
+    /// 斜め45度で表示する名前ラベルに必要な縦方向の高さ（共通関数に委譲）。
     private func diagonalLabelHeight(for entries: [BarEntry], maxWidth: CGFloat) -> CGFloat {
-        let font = UIFont.systemFont(ofSize: labelFontSize(count: entries.count))
-        let attrs: [NSAttributedString.Key: Any] = [.font: font]
-        let rawMaxWidth = entries
-            .map { ($0.name as NSString).size(withAttributes: attrs).width }
-            .max() ?? 0
-        // maxWidth を超える名前は2行に折り返るため、幅は頭打ち・行数は最大2行で見積もる。
-        let effectiveWidth = min(rawMaxWidth, maxWidth)
-        let lines: CGFloat = rawMaxWidth > maxWidth ? 2 : 1
-        let textHeight = font.lineHeight * lines
-        // 45度回転後の外接矩形の高さ = (幅 + 高さ) / √2 ＋ 余白
-        return (effectiveWidth + textHeight) / 1.41421356 + 8
+        estimatedDiagonalLabelHeight(names: entries.map { $0.name },
+                                     fontSize: labelFontSize(count: entries.count),
+                                     maxWidth: maxWidth)
     }
 
     init(fileId: String, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
@@ -190,7 +196,7 @@ struct BarChartView: View {
                     .opacity(isEmpty ? 0.5 : 1)
                     .annotation(position: .top) {
                         Text("\(entry.value)")
-                            .font(.caption.weight(.semibold))
+                            .font(.system(size: valueFontSize, weight: .semibold))
                             .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
                     }
                 } else {
@@ -206,7 +212,7 @@ struct BarChartView: View {
                     .opacity(isEmpty ? 0.5 : 1)
                     .annotation(position: .trailing) {
                         Text("\(entry.value)")
-                            .font(.caption.weight(.semibold))
+                            .font(.system(size: valueFontSize, weight: .semibold))
                             .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
                     }
                 }
@@ -220,7 +226,7 @@ struct BarChartView: View {
                         AxisValueLabel {
                             if let key = value.as(String.self), let name = nameByID[key] {
                                 Text(name)
-                                    .font(.caption)
+                                    .font(.system(size: labelFontSize(count: displayedEntries.count)))
                                     .foregroundColor(setting.textColor)
                             }
                         }
@@ -378,29 +384,6 @@ struct BarChartView: View {
                 }
             }
         }
-    }
-}
-
-/// 棒の直下に斜め45度で表示する名前ラベル。
-/// 起点(offsetで指定した棒の中心・下端)から右下へ文字を垂らす。
-/// maxWidth を超える名前は2行まで折り返す。
-private struct DiagonalLabel: View {
-    let text: String
-    let color: Color
-    let maxWidth: CGFloat
-    let fontSize: CGFloat
-
-    var body: some View {
-        Text(text)
-            .font(.system(size: fontSize))
-            .foregroundColor(color)
-            .lineLimit(2)
-            .lineSpacing(-4)
-            .multilineTextAlignment(.leading)
-            .frame(maxWidth: maxWidth, alignment: .leading)
-            .fixedSize(horizontal: false, vertical: true)
-            // 起点(先頭文字の左上)を軸に時計回り45度。文字は右下へ伸び、隣の棒とは下方向にずれる。
-            .rotationEffect(.degrees(45), anchor: .topLeading)
     }
 }
 

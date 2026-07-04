@@ -24,6 +24,11 @@ struct GroupChartView: View {
 
     private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
 
+    /// iPad ではラベル・数値を少し大きく表示するための倍率。iPhone は等倍。
+    private var deviceScale: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .pad ? 1.5 : 1.0
+    }
+
     init(fileId: String, goBack: @escaping () -> Void) {
         _model = StateObject(wrappedValue: GroupChartViewModel(fileId: fileId))
         _groupStore = StateObject(wrappedValue: GroupStore(fileId: fileId))
@@ -101,11 +106,14 @@ struct GroupChartView: View {
     // MARK: - Display
 
     /// グループ合計の棒グラフ（グループ色のグラデーション縦棒）。
-    /// 既存の棒グラフとトーンを揃えつつ、角丸を大きめ・値ラベルを rounded にしてモダンに。
+    /// グループ名は棒グラフタブと同じく棒の直下に斜め45度で表示する。
     private func chart(bars: [GroupBar]) -> some View {
-        // 同名グループでも一意に並ぶよう、棒はグループIDを軸にし、名前は自前ラベルで表示する。
-        let nameByID = Dictionary(uniqueKeysWithValues: bars.map { ($0.id, $0.name) })
-        let colorByID = Dictionary(uniqueKeysWithValues: bars.map { ($0.id, $0.color) })
+        // 斜めラベルの最大幅（これを超える名前は2行に折り返す）と、必要な高さ・フォントサイズ。
+        let labelFont = groupLabelFontSize
+        let labelMaxWidth = width * 0.28
+        let labelHeight = estimatedDiagonalLabelHeight(names: bars.map { $0.name },
+                                                       fontSize: labelFont,
+                                                       maxWidth: labelMaxWidth)
 
         return Chart(bars) { bar in
             BarMark(
@@ -120,31 +128,38 @@ struct GroupChartView: View {
             )
             .annotation(position: .top, spacing: 6) {
                 Text("\(bar.value)")
-                    .font(.system(.callout, design: .rounded).weight(.bold))
+                    .font(.system(size: 16 * deviceScale, weight: .bold, design: .rounded))
                     .foregroundColor(setting.textColor)
             }
         }
+        // 軸は非表示にし、名前は棒の直下へ斜め45度で自前オーバーレイ表示する。
         .chartYAxis(.hidden)
-        .chartXAxis {
-            AxisMarks { value in
-                AxisValueLabel {
-                    if let id = value.as(String.self) {
-                        HStack(spacing: 5) {
-                            Circle()
-                                .fill(colorByID[id] ?? .gray)
-                                .frame(width: 8, height: 8)
-                            Text(nameByID[id] ?? "")
-                                .font(.footnote.weight(.medium))
-                                .foregroundColor(setting.textColor)
-                                .lineLimit(1)
-                        }
-                    }
+        .chartXAxis(.hidden)
+        .chartXScale(range: .plotDimension(padding: 0))
+        .overlay(alignment: .topLeading) {
+            GeometryReader { geo in
+                ForEach(bars) { bar in
+                    DiagonalLabel(text: bar.name, color: setting.textColor,
+                                  maxWidth: labelMaxWidth, fontSize: labelFont)
+                        .offset(x: barCenterX(id: bar.id, in: bars, width: geo.size.width),
+                                y: geo.size.height + 4)
                 }
             }
         }
         .frame(height: height * 0.5)
         .padding(.horizontal, width * 0.08)
+        .padding(.bottom, labelHeight)
         .padding(.vertical, height * 0.02)
+    }
+
+    /// 斜めラベルのフォントサイズ（iPad では拡大）。
+    private var groupLabelFontSize: CGFloat { 14 * deviceScale }
+
+    /// カテゴリ軸で等間隔に並ぶ棒の中心X座標（プロット幅 width 内）。
+    private func barCenterX(id: String, in bars: [GroupBar], width: CGFloat) -> CGFloat {
+        guard let idx = bars.firstIndex(where: { $0.id == id }), !bars.isEmpty else { return 0 }
+        let step = width / CGFloat(bars.count)
+        return step * (CGFloat(idx) + 0.5)
     }
 
     private var emptyPlaceholder: some View {
