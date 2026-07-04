@@ -21,6 +21,7 @@
 "Button" = "Botón";
 
 "1unit:" = "1unidad:";
+"countWidth" = "Incremento";
 
 "sameAlertText" = "El nombre ya está usado";
 "sameAlertMessage" = "Por favor, póngale otro nombre";
@@ -35,3 +36,36 @@
 
 "Menu" = "Menú";
 "Main" = "Gráfico";
+
+"Add" = "Añadir";
+"Delete" = "Eliminar";
+"Value" = "Valor";
+"Cancel" = "Cancelar";
+"Edit" = "Editar";
+"Done" = "Listo";
+"Total" = "Total";
+"Duplicate" = "Duplicar";
+
+"sortEntry" = "Orden predeterminado";
+"sortDescending" = "Mayor primero";
+"sortAscending" = "Menor primero";
+
+"Bar chart" = "Barras";
+"Pie chart" = "Circular";
+"Ranking" = "Clasificación";
+
+"saveAsTemplate" = "Guardar nombre como plantilla";
+"templates" = "Plantillas";
+"deleteTemplate" = "Eliminar";
+
+"groups" = "Grupos";
+"newGroup" = "Nuevo grupo";
+"groupName" = "Nombre del grupo";
+"assignItems" = "Asignar elementos";
+"noGroup" = "Sin grupo";
+"noGroupsYet" = "Crea un grupo y asigna elementos en el modo de edición.";
+
+"reviewTitle" = "¿Te gusta la app?";
+"reviewMessage" = "Tu reseña nos ayuda mucho. ¡Gracias!";
+"reviewRate" = "Valorar";
+"reviewLater" = "Más tarde";

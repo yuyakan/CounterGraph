@@ -21,6 +21,7 @@
 "Button" = "按钮";
 
 "1unit:" = "1单位:";
+"countWidth" = "计数步长";
 
 "sameAlertText" = "该名称已被使用";
 "sameAlertMessage" = "请为它取一个不同的名称";
@@ -35,3 +36,36 @@
 
 "Menu" = "菜单";
 "Main" = "图表";
+
+"Add" = "添加";
+"Delete" = "删除";
+"Value" = "数值";
+"Cancel" = "取消";
+"Edit" = "编辑";
+"Done" = "完成";
+"Total" = "合计";
+"Duplicate" = "复制";
+
+"sortEntry" = "默认顺序";
+"sortDescending" = "从高到低";
+"sortAscending" = "从低到高";
+
+"Bar chart" = "柱状";
+"Pie chart" = "饼图";
+"Ranking" = "排名";
+
+"saveAsTemplate" = "将名称保存为模板";
+"templates" = "模板";
+"deleteTemplate" = "删除";
+
+"groups" = "分组";
+"newGroup" = "新建分组";
+"groupName" = "分组名称";
+"assignItems" = "分配项目";
+"noGroup" = "无分组";
+"noGroupsYet" = "请在编辑模式下创建分组并分配项目。";
+
+"reviewTitle" = "喜欢这款应用吗？";
+"reviewMessage" = "您的评价对我们很有帮助。谢谢！";
+"reviewRate" = "评价";
+"reviewLater" = "稍后";

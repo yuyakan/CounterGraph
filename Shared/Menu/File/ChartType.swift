@@ -10,8 +10,16 @@ import Foundation
 enum ChartType {
     case bar
     case pie
-    
+    case ranking
+    case group
+
     func isBar() -> Bool {
         return self == .bar
     }
+}
+
+/// 棒グラフの向き（縦棒 / 横棒）。
+enum BarOrientation {
+    case vertical
+    case horizontal
 }

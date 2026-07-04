@@ -13,7 +13,7 @@
 "Jack" = "小林";
 
 "Result" = "結果";
-"title" = "Title";
+"title" = "タイトル";
 "color" = "Color";
 "Text" = "テキスト";
 "Graph" = "グラフ";
@@ -21,6 +21,7 @@
 "Button" = "ボタン";
 
 "1unit:" = "1単位:";
+"countWidth" = "カウント幅";
 
 "sameAlertText" = "その名前はすでに使われています";
 "sameAlertMessage" = "違う名前を入力してください";
@@ -35,3 +36,39 @@
 
 "Menu" = "メニュー";
 "Main" = "グラフ";
+
+"Total" = "合計";
+
+"Add" = "追加";
+"Delete" = "削除";
+"Value" = "数値";
+"Cancel" = "キャンセル";
+
+"Edit" = "編集";
+"Done" = "完了";
+
+"sortEntry" = "登録順";
+"sortDescending" = "大きい順";
+"sortAscending" = "小さい順";
+
+"Bar chart" = "棒グラフ";
+"Pie chart" = "円グラフ";
+"Ranking" = "ランキング";
+
+"groups" = "グループ";
+"newGroup" = "新しいグループ";
+"groupName" = "グループ名";
+"assignItems" = "項目を割り当て";
+"noGroup" = "グループなし";
+"noGroupsYet" = "編集モードでグループを作成し、項目を割り当ててください。";
+
+"saveAsTemplate" = "名前をテンプレートに登録";
+"templates" = "テンプレート";
+"deleteTemplate" = "削除";
+
+"Duplicate" = "複製";
+
+"reviewTitle" = "アプリは気に入りましたか？";
+"reviewMessage" = "レビューが励みになります。ありがとうございます！";
+"reviewRate" = "評価する";
+"reviewLater" = "あとで";

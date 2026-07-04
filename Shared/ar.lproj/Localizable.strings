@@ -21,6 +21,7 @@
 "Button" = "Button";
 
 "1unit:" = "1unit:";
+"countWidth" = "مقدار العد";
 
 "sameAlertText" = "The name is already used";
 "sameAlertMessage" = "Please give it a different name";
@@ -35,3 +36,36 @@
 
 "Menu" = "Menu";
 "Main" = "Chart";
+
+"Add" = "إضافة";
+"Delete" = "حذف";
+"Value" = "القيمة";
+"Cancel" = "إلغاء";
+"Edit" = "تعديل";
+"Done" = "تم";
+"Total" = "المجموع";
+"Duplicate" = "تكرار";
+
+"sortEntry" = "الترتيب الافتراضي";
+"sortDescending" = "الأعلى أولاً";
+"sortAscending" = "الأدنى أولاً";
+
+"Bar chart" = "أعمدة";
+"Pie chart" = "دائري";
+"Ranking" = "الترتيب";
+
+"saveAsTemplate" = "حفظ الاسم كقالب";
+"templates" = "القوالب";
+"deleteTemplate" = "حذف";
+
+"groups" = "المجموعات";
+"newGroup" = "مجموعة جديدة";
+"groupName" = "اسم المجموعة";
+"assignItems" = "تعيين العناصر";
+"noGroup" = "بدون مجموعة";
+"noGroupsYet" = "أنشئ مجموعة وعيّن العناصر في وضع التعديل.";
+
+"reviewTitle" = "هل تستمتع بالتطبيق؟";
+"reviewMessage" = "تقييمك يساعدنا كثيرًا. شكرًا لك!";
+"reviewRate" = "تقييم";
+"reviewLater" = "لاحقًا";

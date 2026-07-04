@@ -8,6 +8,9 @@
 import Foundation
 
 struct DataList {
+    /// 1ファイルあたりに保持できるデータの最大件数
+    static let maxDataCount = 10
+
     let fileId: String
     private var dataList: [PersonalData] = []
     
@@ -32,7 +35,7 @@ struct DataList {
     }
     
     private mutating func createDataList(fileId: String) {
-        for index in 0..<10 {
+        for index in 0..<DataList.maxDataCount {
             guard let personalData = UserDefaults.standard.object(forKey: "data\(String(index))_file\(fileId)") as? Data else {
                 break
             }
@@ -56,7 +59,7 @@ struct DataList {
     }
     
     func max() -> Int {
-        return dataList.reduce(dataList[0].value, { Swift.max($0, $1.value) })
+        return dataList.map { $0.value }.max() ?? 0
     }
     
     func count() -> Int {
@@ -74,7 +77,11 @@ struct DataList {
     func names() -> [String] {
         return dataList.map { $0.name }
     }
-    
+
+    func groupId(index: Int) -> String? {
+        return dataList[index].groupId
+    }
+
     func getRatio() -> [Double] {
         let sum = sum()
         return dataList.map {Double($0.value) / sum}
@@ -85,27 +92,49 @@ struct DataList {
     }
     
     mutating func plus(index: Int, value: Int) {
-        let newValue = dataList[index].value + value
-        let newName = dataList[index].name
-        dataList[index] = PersonalData(value: newValue, name: newName)
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value + value, name: old.name, groupId: old.groupId)
         save(dataList: dataList)
     }
-    
+
     mutating func minus(index: Int, value: Int) {
-        let newValue = dataList[index].value - value
-        let newName = dataList[index].name
-        dataList[index] = PersonalData(value: newValue, name: newName)
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value - value, name: old.name, groupId: old.groupId)
         save(dataList: dataList)
     }
-    
+
     mutating func add(value: Int, name: String) {
         dataList.append(PersonalData(value: value, name: name))
+        save(dataList: dataList)
+    }
+
+    /// 指定indexの名前を変更する。
+    mutating func updateName(index: Int, name: String) {
+        guard dataList.indices.contains(index) else { return }
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value, name: name, groupId: old.groupId)
+        save(dataList: dataList)
+    }
+
+    /// 指定indexの値を変更する。
+    mutating func updateValue(index: Int, value: Int) {
+        guard dataList.indices.contains(index) else { return }
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: value, name: old.name, groupId: old.groupId)
+        save(dataList: dataList)
+    }
+
+    /// 指定indexのグループを変更する（nil で未所属に戻す）。
+    mutating func updateGroup(index: Int, groupId: String?) {
+        guard dataList.indices.contains(index) else { return }
+        let old = dataList[index]
+        dataList[index] = PersonalData(value: old.value, name: old.name, groupId: groupId)
         save(dataList: dataList)
     }
     
     mutating func removeData(index: Int) {
         dataList.remove(at: index)
-        for index in dataList.count..<10 {
+        for index in dataList.count..<DataList.maxDataCount {
             UserDefaults.standard.removeObject(forKey: "data\(index)_file\(fileId)")
         }
         save(dataList: dataList)

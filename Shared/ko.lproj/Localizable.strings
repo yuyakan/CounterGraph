@@ -21,6 +21,7 @@
 "Button" = "버튼";
 
 "1unit:" = "1단위:";
+"countWidth" = "카운트 폭";
 
 "sameAlertText" = "이름이 이미 사용되었습니다";
 "sameAlertMessage" = "다른 이름을 지정해 주세요";
@@ -35,3 +36,36 @@
 
 "Menu" = "메뉴";
 "Main" = "그래프";
+
+"Add" = "추가";
+"Delete" = "삭제";
+"Value" = "값";
+"Cancel" = "취소";
+"Edit" = "편집";
+"Done" = "완료";
+"Total" = "합계";
+"Duplicate" = "복제";
+
+"sortEntry" = "기본 순서";
+"sortDescending" = "높은 순";
+"sortAscending" = "낮은 순";
+
+"Bar chart" = "막대";
+"Pie chart" = "원형";
+"Ranking" = "순위";
+
+"saveAsTemplate" = "이름을 템플릿으로 저장";
+"templates" = "템플릿";
+"deleteTemplate" = "삭제";
+
+"groups" = "그룹";
+"newGroup" = "새 그룹";
+"groupName" = "그룹 이름";
+"assignItems" = "항목 지정";
+"noGroup" = "그룹 없음";
+"noGroupsYet" = "편집 모드에서 그룹을 만들고 항목을 지정하세요.";
+
+"reviewTitle" = "앱이 마음에 드시나요?";
+"reviewMessage" = "리뷰가 큰 힘이 됩니다. 감사합니다!";
+"reviewRate" = "평가하기";
+"reviewLater" = "나중에";

@@ -21,6 +21,7 @@
 "Button" = "Button";
 
 "1unit:" = "1unit:";
+"countWidth" = "Count width";
 
 "sameAlertText" = "The name is already used";
 "sameAlertMessage" = "Please give it a different name";
@@ -35,3 +36,39 @@
 
 "Menu" = "Menu";
 "Main" = "Chart";
+
+"Total" = "Total";
+
+"Add" = "Add";
+"Delete" = "Delete";
+"Value" = "Value";
+"Cancel" = "Cancel";
+
+"Edit" = "Edit";
+"Done" = "Done";
+
+"sortEntry" = "Default order";
+"sortDescending" = "Highest first";
+"sortAscending" = "Lowest first";
+
+"Bar chart" = "Bar";
+"Pie chart" = "Pie";
+"Ranking" = "Ranking";
+
+"groups" = "Groups";
+"newGroup" = "New group";
+"groupName" = "Group name";
+"assignItems" = "Assign items";
+"noGroup" = "No group";
+"noGroupsYet" = "Create a group and assign items in edit mode.";
+
+"saveAsTemplate" = "Save name as template";
+"templates" = "Templates";
+"deleteTemplate" = "Delete";
+
+"Duplicate" = "Duplicate";
+
+"reviewTitle" = "Enjoying the app?";
+"reviewMessage" = "Your review helps us a lot. Thank you!";
+"reviewRate" = "Rate";
+"reviewLater" = "Later";

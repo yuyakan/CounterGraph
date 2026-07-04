@@ -6,242 +6,516 @@
 //
 
 import SwiftUI
+import Charts
 
 
 struct BarChartView: View {
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var setting: Setting
+    @Environment(\.colorScheme) private var colorScheme
     @StateObject var barChart: BarChartViewModel
-    @Binding var chartType: ChartType
-    @State var unit: Int = 10
-    @State var isVisibleSetting : Bool = false
-    
-    init(fileId: String, chartType:  Binding<ChartType>) {
-        _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
-        _chartType = chartType
+    @StateObject var countUnit: CountUnit
+    @StateObject private var nameTemplates = NameTemplateStore()
+    @EnvironmentObject var interstitial: Interstitial
+    @EnvironmentObject var adCounter: AdCounter
+    @EnvironmentObject var reviewManager: ReviewManager
+    @Binding var orientation: BarOrientation
+    @State private var sortOrder: ChartSortOrder = .entry
+    @State private var isEditing = false
+    @State private var showAddSheet = false
+    @State private var showRenameAlert = false
+    @State private var draftTitle = ""
+    /// 編集シートを開いている項目の index（nil で非表示）。
+    @State private var editingEntryID: Int?
+    let height = Double(UIScreen.main.bounds.height)
+    let width = Double(UIScreen.main.bounds.width)
+    /// メニューへ戻る処理（FileView から渡される）。
+    let goBack: () -> Void
+
+    private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
+
+    /// グラフの高さ比率。編集モードは編集領域を広げるため小さめ、表示モードは大きめ（横棒はさらに大きく）。
+    private var chartHeightRatio: CGFloat {
+        if isEditing { return 0.26 }
+        return orientation == .horizontal ? 0.55 : 0.46
     }
-    
+
+    /// カテゴリ軸で等間隔に並ぶ棒の中心X座標（プロット幅 width 内）。
+    private func barCenterX(id: Int, in entries: [BarEntry], width: CGFloat) -> CGFloat {
+        guard let idx = entries.firstIndex(where: { $0.id == id }), !entries.isEmpty else { return 0 }
+        let step = width / CGFloat(entries.count)
+        return step * (CGFloat(idx) + 0.5)
+    }
+
+    /// iPad ではラベル・数値を大きく表示するための倍率。iPhone は等倍。
+    private var deviceScale: CGFloat {
+        UIDevice.current.userInterfaceIdiom == .pad ? 1.5 : 1.0
+    }
+
+    /// 棒の上に表示する数値のフォントサイズ（iPad では拡大）。
+    private var valueFontSize: CGFloat { 12 * deviceScale }
+
+    /// 名前ラベルのフォントサイズを項目数でスケールする（少ないほど大きく）。下限・上限あり。
+    /// iPad ではさらに deviceScale を掛けて大きくする。
+    private func labelFontSize(count: Int) -> CGFloat {
+        let maxSize: CGFloat = 17   // 項目が少ないとき（上限）
+        let minSize: CGFloat = 11   // 項目が多いとき（下限）
+        let fewCount = 3            // これ以下は maxSize
+        let manyCount = 10          // これ以上は minSize
+        let base: CGFloat
+        if count <= fewCount {
+            base = maxSize
+        } else if count >= manyCount {
+            base = minSize
+        } else {
+            let t = CGFloat(count - fewCount) / CGFloat(manyCount - fewCount)
+            base = maxSize - (maxSize - minSize) * t
+        }
+        return base * deviceScale
+    }
+
+    /// 斜め45度で表示する名前ラベルに必要な縦方向の高さ（共通関数に委譲）。
+    private func diagonalLabelHeight(for entries: [BarEntry], maxWidth: CGFloat) -> CGFloat {
+        estimatedDiagonalLabelHeight(names: entries.map { $0.name },
+                                     fontSize: labelFontSize(count: entries.count),
+                                     maxWidth: maxWidth)
+    }
+
+    init(fileId: String, orientation: Binding<BarOrientation>, goBack: @escaping () -> Void) {
+        _barChart = StateObject(wrappedValue: BarChartViewModel(fileId: fileId))
+        _countUnit = StateObject(wrappedValue: CountUnit(fileId: fileId))
+        _orientation = orientation
+        self.goBack = goBack
+    }
+
+    /// データ未登録時に表示するサンプル（淡色プレースホルダ）。
+    private let blankEntries: [BarEntry] = [
+        BarEntry(id: 0, name: String(localized: "Ann"),   value: 80,  color: .gray.opacity(0.3)),
+        BarEntry(id: 1, name: String(localized: "Tom"),   value: 230, color: .gray.opacity(0.3)),
+        BarEntry(id: 2, name: String(localized: "Bob"),   value: 500, color: .gray.opacity(0.3)),
+        BarEntry(id: 3, name: String(localized: "Casey"), value: 320, color: .gray.opacity(0.3)),
+        BarEntry(id: 4, name: String(localized: "Brian"), value: 120, color: .gray.opacity(0.3))
+    ]
+
     var body: some View {
-        let bars = barChart.count()
-        let bounds = UIScreen.main.bounds
-        let height = Double(bounds.height)
-        let width = Double(bounds.width)
-        let fixedHeight = height * 0.5
-        let fixedWidth = width * 0.8
-        let baseframeWidth = fixedWidth / Double(bars)
-        let blankList = [
-            PersonalData(value: 80, name: String(localized: "Ann")),
-            PersonalData(value: 230, name: String(localized: "Tom")),
-            PersonalData(value: 500, name: String(localized: "Bob")),
-            PersonalData(value: 320, name: String(localized: "Casey")),
-            PersonalData(value: 120, name: String(localized: "Brian"))
-        ]
-        
-        VStack{
-            HStack(alignment: .top , spacing: 0) {
+        let entries = barChart.entries(sortedBy: sortOrder)
+        let isEmpty = entries.isEmpty
+        let displayedEntries = isEmpty ? blankEntries : entries
+        // 軸の index("0","1"...) から名前へ変換する辞書。棒の直下/横に名前を表示するために使う。
+        let nameByID = Dictionary(uniqueKeysWithValues: displayedEntries.map { (String($0.id), $0.name) })
+        // 縦棒の斜めラベルの最大幅（これを超える名前は2行に折り返す）と、必要な高さ・フォントサイズ。
+        let labelMaxWidth = width * 0.28
+        let labelFont = labelFontSize(count: displayedEntries.count)
+        let labelHeight = diagonalLabelHeight(for: displayedEntries, maxWidth: labelMaxWidth)
+
+        VStack(spacing: 0) {
+            HStack(alignment: .center, spacing: 4) {
                 Button(action: {
-                    dismiss()
+                    goBack()
                 }, label: {
                     Image(systemName: "list.bullet")
-                        .accentColor(setting.buttonColor)
-                        .font(.system(size: 30))
-                        .padding()
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
                 })
                 Spacer()
-                VStack(spacing: 0) {
-                    Button(action: {
-                        chartType = .pie
-                    }, label: {
-                        Image(systemName: "chart.pie")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding(.top, 13)
-                            .padding(.bottom, 7)
-                            .padding(.trailing, 8)
-                    })
-                    if #available(iOS 16.0, *) {
-                        Button(action: {
-                            isVisibleSetting.toggle()
-                        }, label: {
-                            Image(systemName: isVisibleSetting ? "square.and.pencil.circle.fill" : "square.and.pencil.circle")
-                                .accentColor(setting.buttonColor)
-                                .font(.system(size: 30))
-                                .padding(.trailing, 8)
-                        })
-                    } else {
-                        Button(action: {
-                            isVisibleSetting.toggle()
-                        }, label: {
-                            Image(systemName: isVisibleSetting ? "pencil.circle.fill" : "pencil.circle")
-                                .accentColor(setting.buttonColor)
-                                .font(.system(size: 30))
-                                .padding(.trailing, 8)
-                        })
-                    }
-                }
-            }
-            
-            if isVisibleSetting {
-                HStack{
-                    Text(LocalizedStringKey("1unit:"))
-                    TextField("", value: $unit, formatter: NumberFormatter())
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .keyboardType(.default)
-                        .frame(width: fixedWidth * 0.2)
-                    Spacer()
-                }.padding(.horizontal)
-                Spacer()
-            }
-            
-            if(!isVisibleSetting){
-                Text(setting.title).foregroundColor(setting.titleColor)
-                    .font(.largeTitle)
-                    .padding(.top, height*0.03)
-                    .padding(.bottom, height*0.075)
-                
-                if height > 1000 {
-                    Spacer()
-                }
-            }
-            
-            if bars == 0 {
-                HStack(alignment: .bottom, spacing: fixedWidth/40){
-                    ForEach(0..<5, id: \.self){ index in
-                        ZStack (alignment: .bottom) {
-                            VStack(spacing:0) {
-                                Text("\(Int(blankList[index].value))")
-                                    .frame(width: fixedWidth/5)
-                                    .foregroundColor(Color.gray.opacity(0.4))
-                                    .padding(.bottom, fixedHeight * 0.02)
-                                RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0))
-                                    .fill(Color.gray.opacity(0.3))
-                                    .frame(width: fixedWidth/10, height: (Double(blankList[index].value) / 500)*fixedHeight*0.5)
-                            }
-                        }
-                    }
-                }
-            } else {
-                HStack(alignment: .bottom, spacing: baseframeWidth/8){
-                    ForEach(0..<bars, id: \.self){ index in
-                        ZStack (alignment: .bottom) {
-                            VStack(spacing:0) {
-                                Button(action: {
-                                    barChart.removeData(index: index)
-                                }) {
-                                    if(isVisibleSetting){
-                                        Image(systemName: "trash")
-                                            .accentColor(Color.red)
-                                            .padding(.bottom, 6)
-                                    }
-                                }
-                                Text("\(Int(barChart.value(index: index)))")
-                                    .frame(width: baseframeWidth)
-                                    .foregroundColor(setting.textColor)
-                                    .padding(.bottom, fixedHeight * 0.02)
-                                RoundedRectangle(cornerRadius: CGFloat(integerLiteral:  0))
-                                    .fill(LinearGradient(gradient: Gradient(colors: [setting.graphColor, setting.graphColor.opacity(0.7), setting.graphColor.opacity(0.4)]), startPoint: .top, endPoint: .bottom))
-                                    .frame(width: baseframeWidth/2, height: barChart.value(index: index) <= CGFloat(0) ? 0 :  (barChart.value(index: index)/barChart.maxValue())*fixedHeight*0.5)
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if bars == 0 {
-                HStack(alignment: .center, spacing: fixedWidth/40){
-                    ForEach(0..<5, id: \.self){ index in
-                        VStack {
-                            Text("\(blankList[index].name)")
-                                .frame(height: fixedHeight/8)
-                                .frame(maxWidth: fixedWidth/5)
-                                .foregroundColor(Color.gray.opacity(0.4))
-                                .padding(.top, height * 0.015)
-                                .padding(.bottom, height * 0.01)
-                        }
-                    }
-                }
-                
-                if(isVisibleSetting){
-                    ZStack {
-                        VStack(spacing: 0){
-                            Image(systemName: "minus.circle")
-                                .font(.system(size: 30))
-                                .padding(.vertical, 10)
-                            Image(systemName: "minus.circle")
-                                .font(.system(size: 30))
-                                .padding(.vertical, 10)
-                        }.opacity(0)
-                        Text(LocalizedStringKey("blankBar"))
-                            .padding(.bottom)
-                    }
-                }
-            } else {
-                HStack(alignment: .center, spacing: baseframeWidth/8){
-                    ForEach(0..<bars, id: \.self){ index in
-                        VStack {
-                            Text(LocalizedStringKey(barChart.name(index: index)))
-                                .frame(height: fixedHeight/8)
-                                .frame(maxWidth: baseframeWidth)
-                                .foregroundColor(setting.textColor)
-                                .padding(.top, height > 800 ? height * 0.005 : 0)
-                                .padding(.bottom, height > 800 ? height * 0.005 : 0)
-                            VStack(spacing: 0){
-                                Button(action: {
-                                    barChart.plus(index: index, value: unit)
-                                }) {
-                                    if(isVisibleSetting){
-                                        Image(systemName: "plus.circle")
-                                            .accentColor(setting.buttonColor)
-                                            .font(.system(size: 30))
-                                    }
-                                }
-                                
-                                Button(action: {
-                                    barChart.minus(index: index, value: unit)
-                                }) {
-                                    if(isVisibleSetting){
-                                        Image(systemName: "minus.circle")
-                                            .accentColor(setting.buttonColor)
-                                            .font(.system(size: 30))
-                                            .padding(.vertical, height > 800 ? 10 : 6)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            Spacer()
-            if height > 800 {
-                Divider()
-                    .opacity(isVisibleSetting ? 1:0).frame(width: width*0.85)
-            }
-            
-            HStack(spacing: 0){
-                Spacer()
-                TextField("Jack", text: $barChart.name)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: fixedWidth * 0.3)
-                    .padding(.trailing)
-                TextField("", value: $barChart.value, formatter: NumberFormatter())
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .keyboardType(.default)
-                            .frame(width: fixedWidth * 0.3)
-                Spacer()
+                // 棒グラフの向き（縦棒 ⇔ 横棒）を切り替える
                 Button(action: {
-                    barChart.addData()
+                    withAnimation {
+                        orientation = (orientation == .vertical) ? .horizontal : .vertical
+                    }
                 }, label: {
-                    Image(systemName: "plus.square.on.square")
-                        .accentColor(setting.buttonColor)
-                        .font(.system(size: 30))
+                    Image(systemName: orientation == .vertical ? "text.alignleft" : "chart.bar.fill")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
                 })
+                Menu {
+                    Picker("", selection: $sortOrder) {
+                        ForEach(ChartSortOrder.allCases) { order in
+                            Label(order.label, systemImage: order.systemImage).tag(order)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
+                }
+                Button(action: {
+                    // 編集モードから「完了」を押したときにカウントし、条件を満たせば広告を表示する。
+                    let wasEditing = isEditing
+                    withAnimation { isEditing.toggle() }
+                    if wasEditing {
+                        adCounter.increment()
+                        interstitial.presentIfReady(counter: adCounter, review: reviewManager)
+                    }
+                }, label: {
+                    Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
+                        .font(.body.weight(.semibold))
+                        .foregroundColor(brandColor)
+                        .frame(height: 44)
+                        .padding(.horizontal, 8)
+                })
+            }
+            .padding(.horizontal, 8)
+
+            HStack(spacing: 6) {
+                Text(setting.title)
+                    .font((isEditing ? Font.title : Font.largeTitle).bold())
+                    .foregroundColor(brandColor)
+                if isEditing {
+                    Image(systemName: "pencil")
+                        .font(.subheadline)
+                        .foregroundColor(brandColor.opacity(0.5))
+                }
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard isEditing else { return }
+                draftTitle = setting.title
+                showRenameAlert = true
+            }
+            .padding(.top, height * (isEditing ? 0.015 : 0.04))
+            .padding(.bottom, height * (isEditing ? 0.01 : 0.005))
+
+            // 表示モードはタイトルとグラフの間に控えめな余白を入れつつ、
+            // 下側を Spacer で広めに取ってグラフをやや中央寄り〜下寄りに配置する。
+            if !isEditing { Spacer(minLength: 0).frame(maxHeight: height * 0.04) }
+
+            // 棒グラフ（縦棒 / 横棒）。X/Y は一意な index を軸にし、同名項目が積み上がるのを防ぐ。
+            Chart(displayedEntries) { entry in
+                if orientation == .vertical {
+                    BarMark(
+                        x: .value("Index", String(entry.id)),
+                        y: .value("Value", max(entry.value, 0))
+                    )
+                    .cornerRadius(6)
+                    .foregroundStyle(
+                        LinearGradient(colors: [entry.color, entry.color.opacity(0.55)],
+                                       startPoint: .top, endPoint: .bottom)
+                    )
+                    .opacity(isEmpty ? 0.5 : 1)
+                    .annotation(position: .top) {
+                        Text("\(entry.value)")
+                            .font(.system(size: valueFontSize, weight: .semibold))
+                            .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
+                    }
+                } else {
+                    BarMark(
+                        x: .value("Value", max(entry.value, 0)),
+                        y: .value("Index", String(entry.id))
+                    )
+                    .cornerRadius(6)
+                    .foregroundStyle(
+                        LinearGradient(colors: [entry.color, entry.color.opacity(0.55)],
+                                       startPoint: .leading, endPoint: .trailing)
+                    )
+                    .opacity(isEmpty ? 0.5 : 1)
+                    .annotation(position: .trailing) {
+                        Text("\(entry.value)")
+                            .font(.system(size: valueFontSize, weight: .semibold))
+                            .foregroundColor(isEmpty ? setting.textColor.opacity(0.4) : setting.textColor)
+                    }
+                }
+            }
+            // 縦棒: 軸は両方非表示（名前は自前オーバーレイで斜め表示、値は棒の上に表示）。
+            // 横棒: Y軸(カテゴリ)に名前を表示、X軸(値)は非表示。
+            .chartXAxis(.hidden)
+            .chartYAxis {
+                if orientation == .horizontal {
+                    AxisMarks(position: .leading) { value in
+                        AxisValueLabel {
+                            if let key = value.as(String.self), let name = nameByID[key] {
+                                Text(name)
+                                    .font(.system(size: labelFontSize(count: displayedEntries.count)))
+                                    .foregroundColor(setting.textColor)
+                            }
+                        }
+                    }
+                }
+            }
+            // 縦棒の名前は棒の直下に斜め45度で重ねる。
+            // AxisValueLabel は回転後の外接矩形をレイアウトに確保できず隣の棒と衝突するため、
+            // chartXAxis を使わず overlay + プロット座標で各棒の真下に配置する。
+            .chartXScale(range: .plotDimension(padding: 0))
+            .overlay(alignment: .topLeading) {
+                if orientation == .vertical {
+                    GeometryReader { geo in
+                        ForEach(displayedEntries) { entry in
+                            DiagonalLabel(text: entry.name, color: setting.textColor, maxWidth: labelMaxWidth, fontSize: labelFont)
+                                // 各棒の中心・プロット下端を基準に、右下へ斜めに垂らす
+                                .offset(x: barCenterX(id: entry.id, in: displayedEntries, width: geo.size.width),
+                                        y: geo.size.height + 4)
+                        }
+                    }
+                }
+            }
+            // 横棒は項目が縦に積まれるため、表示モードでは高さを大きめに取る。
+            .frame(height: height * chartHeightRatio)
+            .padding(.horizontal, width * 0.06)
+            .padding(.bottom, orientation == .vertical ? labelHeight : 0)
+            .padding(.vertical, height * 0.015)
+
+            if isEditing {
+                // 編集モード: 名前・値をタップで編集シート、±ボタン、左スワイプで削除。
+                // プレースホルダー（blankEntries）は表示せず実データ(entries)のみ並べる。
+                List {
+                    ForEach(entries) { entry in
+                        HStack(spacing: 12) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(entry.color)
+                                .frame(width: 16, height: 16)
+                            // 名前・値はタップで専用シートを開いて編集（キーボードに隠れない）
+                            Button {
+                                editingEntryID = entry.id
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Text(entry.name)
+                                        .font(.body)
+                                        .foregroundColor(setting.textColor)
+                                        .lineLimit(2)
+                                        .multilineTextAlignment(.leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    Spacer(minLength: 8)
+                                    Text("\(entry.value)")
+                                        .font(.body.weight(.semibold).monospacedDigit())
+                                        .foregroundColor(setting.textColor)
+                                        .layoutPriority(1)
+                                    Image(systemName: "pencil")
+                                        .font(.footnote)
+                                        .foregroundColor(brandColor.opacity(0.6))
+                                }
+                            }
+                            .buttonStyle(.plain)
+
+                            Button {
+                                barChart.minus(index: entry.id, value: countUnit.value)
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(brandColor)
+                            }
+                            .buttonStyle(.plain)
+                            Button {
+                                barChart.plus(index: entry.id, value: countUnit.value)
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(brandColor)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 4, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                barChart.removeData(index: entry.id)
+                            } label: {
+                                Label(String(localized: "Delete"), systemImage: "trash")
+                            }
+                        }
+                    }
+
+                    // 項目リストの最下部に「＋ 項目を追加」行を置く（カウント幅とは独立）。
+                    Button {
+                        showAddSheet = true
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 22))
+                                .foregroundColor(brandColor)
+                            Text(String(localized: "Add"))
+                                .font(.body.weight(.semibold))
+                                .foregroundColor(brandColor)
+                            Spacer()
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 8, leading: width * 0.06, bottom: 4, trailing: width * 0.06))
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+            } else {
+                // 表示モード: 名前は棒の下(軸)に表示済みのため凡例は不要
                 Spacer()
-            }.padding(.top, height > 800 ? 10 : 0)
-                .opacity(isVisibleSetting ? 1:0)
-                .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
-            Spacer()
+            }
+
+            // カウント幅の設定（編集モードのみ）。項目追加はリスト最下部の行に分離した。
+            if isEditing {
+                CountUnitPicker(unit: countUnit, tint: brandColor)
+                    .padding(.horizontal, width * 0.06)
+                    .padding(.vertical, 10)
+            }
         }
         .background(setting.backColor)
+        .onAppear {
+            // 他タブから戻ったときに最新データを反映する。
+            barChart.reload()
+        }
+        .sheet(isPresented: $showAddSheet) {
+            AddItemSheet(barChart: barChart, templates: nameTemplates, buttonColor: brandColor)
+                .presentationDetents([.medium])
+        }
+        // 名前・値の編集シート（キーボードはシート内に出るため隠れ問題が起きない）
+        .sheet(item: Binding(
+            get: { editingEntryID.map { EditTarget(id: $0) } },
+            set: { editingEntryID = $0?.id }
+        )) { target in
+            ItemEditSheet(
+                initialName: barChart.name(index: target.id),
+                initialValue: Int(barChart.value(index: target.id)),
+                buttonColor: brandColor,
+                onSave: { name, value in
+                    barChart.updateName(index: target.id, name: name)
+                    barChart.updateValue(index: target.id, value: value)
+                }
+            )
+            .presentationDetents([.height(260)])
+        }
+        .alert(isPresented: $barChart.isShowAlert) { barChart.alert() }
+        .alert(String(localized: "title"), isPresented: $showRenameAlert) {
+            TextField("", text: $draftTitle)
+            Button(String(localized: "Cancel"), role: .cancel) {}
+            Button("OK") {
+                // 空タイトルも許容する（前後の空白は除去してから保存）。
+                setting.title = draftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                setting.save()
+            }
+        }
+    }
+}
+
+/// 編集対象の項目（sheet(item:) 用の Identifiable ラッパ）。
+private struct EditTarget: Identifiable { let id: Int }
+
+/// 既存項目の名前・値を編集するシート。
+private struct ItemEditSheet: View {
+    @Environment(\.dismiss) var dismiss
+    let initialName: String
+    let initialValue: Int
+    let buttonColor: Color
+    let onSave: (String, Int) -> Void
+
+    @State private var name: String
+    @State private var value: Int
+    @FocusState private var nameFocused: Bool
+
+    init(initialName: String, initialValue: Int, buttonColor: Color, onSave: @escaping (String, Int) -> Void) {
+        self.initialName = initialName
+        self.initialValue = initialValue
+        self.buttonColor = buttonColor
+        self.onSave = onSave
+        _name = State(initialValue: initialName)
+        _value = State(initialValue: initialValue)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField(String(localized: "Jack"), text: $name)
+                    .focused($nameFocused)
+                TextField(String(localized: "Value"), value: $value, format: .number)
+                    .keyboardType(.numberPad)
+            }
+            .navigationTitle(String(localized: "Edit"))
+            .navigationBarTitleDisplayMode(.inline)
+            // シート表示時に名前フィールドへ自動でカーソルを当てキーボードを表示する
+            .task {
+                try? await Task.sleep(nanoseconds: 300_000_000)
+                nameFocused = true
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cancel")) { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(String(localized: "Done")) {
+                        onSave(name, value)
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
+    }
+}
+
+/// 新規項目を追加するためのシート。
+/// よく使う名前（テンプレート）をチップで呼び出せ、任意でこの名前をテンプレ登録できる。
+private struct AddItemSheet: View {
+    @Environment(\.dismiss) var dismiss
+    @ObservedObject var barChart: BarChartViewModel
+    @ObservedObject var templates: NameTemplateStore
+    let buttonColor: Color
+
+    /// Add 時にこの名前をテンプレートへ登録するか。既定でON。
+    @State private var saveAsTemplate = true
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField(String(localized: "Jack"), text: $barChart.name)
+                    TextField(String(localized: "Value"), value: $barChart.value, format: .number)
+                        .keyboardType(.numberPad)
+                    Toggle(String(localized: "saveAsTemplate"), isOn: $saveAsTemplate)
+                        .tint(buttonColor)
+                }
+
+                // 登録済みテンプレート（よく使う名前）をワンタップで名前欄に入れる。
+                if !templates.names.isEmpty {
+                    Section(String(localized: "templates")) {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(templates.names, id: \.self) { name in
+                                    Button {
+                                        barChart.name = name
+                                    } label: {
+                                        Text(name)
+                                            .font(.subheadline.weight(.medium))
+                                            .foregroundColor(buttonColor)
+                                            .lineLimit(1)
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 7)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .fill(buttonColor.opacity(0.12))
+                                            )
+                                    }
+                                    .buttonStyle(.plain)
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            templates.remove(name)
+                                        } label: {
+                                            Label(String(localized: "deleteTemplate"), systemImage: "trash")
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 2)
+                        }
+                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                    }
+                }
+            }
+            .navigationTitle(String(localized: "Add"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cancel")) { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(String(localized: "Add")) {
+                        if saveAsTemplate {
+                            templates.add(barChart.name)
+                        }
+                        barChart.addData()
+                        dismiss()
+                    }
+                    .disabled(barChart.name.isEmpty)
+                }
+            }
+        }
     }
 }

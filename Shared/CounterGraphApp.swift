@@ -14,8 +14,7 @@ import GoogleMobileAds
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         // Mobile Ads SDKを初期化する
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
-        // Use Firebase library to configure APIs
+        MobileAds.shared.start(completionHandler: nil)
         return true
     }
 }
@@ -23,9 +22,24 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct CounterGraphApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    /// スプラッシュ表示中かどうか。表示が終わるとメニューへフェード遷移する。
+    @State private var showSplash = true
+
     var body: some Scene {
         WindowGroup {
-            MenuView()
+            ZStack {
+                MenuView()
+
+                if showSplash {
+                    SplashView {
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            showSplash = false
+                        }
+                    }
+                    .transition(.opacity)
+                    .zIndex(1)
+                }
+            }
         }
     }
 }

@@ -6,183 +6,169 @@
 //
 
 import SwiftUI
+import Charts
 
 struct PieChartView: View {
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var setting: Setting
     @StateObject var pieChart: PieChartViewModel
-    @Binding var chartType: ChartType
-    @ObservedObject var interstitial: Interstitial
     let height = Double(UIScreen.main.bounds.height)
     let width = Double(UIScreen.main.bounds.width)
-    let centerX: Double
-    let centerY: Double
-    
-    init (fileId: String, chartType:  Binding<ChartType>, interstitial: Interstitial){
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var sortOrder: ChartSortOrder = .entry
+    @State private var isEditing = false
+    @State private var showRenameAlert = false
+    @State private var draftTitle = ""
+    /// メニューへ戻る処理（FileView から渡される）。
+    let goBack: () -> Void
+
+    private var brandColor: Color { colorScheme == .dark ? .brandDark : .brandLight }
+
+    init (fileId: String, goBack: @escaping () -> Void){
         _pieChart = StateObject(wrappedValue: PieChartViewModel(fileId: fileId))
-        _chartType = chartType
-        self.interstitial = interstitial
-        self.centerX = width/2
-        self.centerY = height>1000 ? height/3 : height/4
+        self.goBack = goBack
     }
-    
-    @State var isVisibleSetting = false
+
+    /// データ未登録時に表示するサンプルの扇形。
+    private let blankEntries: [SectorEntry] = [
+        SectorEntry(id: 0, name: String(localized: "Ann"),   value: 80,  color: .gray.opacity(0.2), percent: "6.4%"),
+        SectorEntry(id: 1, name: String(localized: "Tom"),   value: 230, color: .gray.opacity(0.3), percent: "18.4%"),
+        SectorEntry(id: 2, name: String(localized: "Bob"),   value: 500, color: .gray.opacity(0.2), percent: "40.0%"),
+        SectorEntry(id: 3, name: String(localized: "Casey"), value: 320, color: .gray.opacity(0.3), percent: "25.6%"),
+        SectorEntry(id: 4, name: String(localized: "Brian"), value: 120, color: .gray.opacity(0.2), percent: "9.6%")
+    ]
+
     var body: some View {
-        let radius: CGFloat = CGFloat(width/2.9)
-        let names = pieChart.names()
-        let angles = pieChart.angles()
-        let namePositions: [CGPoint] = pieChart.labelPositions(radius: width/2.5, centerX: centerX, centerY: centerY, angles: pieChart.angles())
-        let percents: [String] = pieChart.percents()
-        let percentPositions: [CGPoint] = pieChart.percentPositions(radius: width/2.5, centerX: centerX, centerY: centerY, angles: pieChart.angles())
-        
-        let blankList = [
-            PersonalData(value: 80, name: String(localized: "Ann")),
-            PersonalData(value: 230, name: String(localized: "Tom")),
-            PersonalData(value: 500, name: String(localized: "Bob")),
-            PersonalData(value: 320, name: String(localized: "Casey")),
-            PersonalData(value: 120, name: String(localized: "Brian"))
-        ]
-        let blankAngles = [0.0, 23.04, 89.28, 233.28, 325.44, 360.0]
-        let blankPercents = ["6.4%", "18.4%", "40.0%", "25.6%", "9.6%"]
-        let blankNamesPositions = pieChart.labelPositions(radius: width/2.5, centerX: centerX, centerY: centerY, angles: blankAngles)
-        let blankPercentPositions = pieChart.percentPositions(radius: width/2.5, centerX: centerX, centerY: centerY, angles: blankAngles)
-        
-        VStack {
-            HStack(alignment: .top, spacing: 0) {
+        let entries = pieChart.entries(sortedBy: sortOrder)
+        let isEmpty = entries.isEmpty
+        let displayedEntries = isEmpty ? blankEntries : entries
+        let total = displayedEntries.reduce(0) { $0 + $1.value }
+
+        VStack(spacing: 0) {
+            HStack(alignment: .center, spacing: 4) {
                 Button(action: {
-                    dismiss()
+                    goBack()
                 }, label: {
                     Image(systemName: "list.bullet")
-                        .accentColor(setting.buttonColor)
-                        .font(.system(size: 30))
-                        .padding()
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
                 })
                 Spacer()
+                Menu {
+                    Picker("", selection: $sortOrder) {
+                        ForEach(ChartSortOrder.allCases) { order in
+                            Label(order.label, systemImage: order.systemImage).tag(order)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundColor(brandColor)
+                        .frame(width: 44, height: 44)
+                }
+                Button(action: {
+                    withAnimation { isEditing.toggle() }
+                }, label: {
+                    Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
+                        .font(.body.weight(.semibold))
+                        .foregroundColor(brandColor)
+                        .frame(height: 44)
+                        .padding(.horizontal, 8)
+                })
+            }
+            .padding(.horizontal, 8)
+
+            HStack(spacing: 6) {
+                Text(setting.title)
+                    .font((isEditing ? Font.title : Font.largeTitle).bold())
+                    .foregroundColor(brandColor)
+                if isEditing {
+                    Image(systemName: "pencil")
+                        .font(.subheadline)
+                        .foregroundColor(brandColor.opacity(0.5))
+                }
+            }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard isEditing else { return }
+                draftTitle = setting.title
+                showRenameAlert = true
+            }
+            .padding(.top, height * (isEditing ? 0.015 : 0.04))
+            .padding(.bottom, height * (isEditing ? 0.01 : 0.005))
+
+            // ドーナツチャート＋中央に合計値
+            Chart(displayedEntries) { entry in
+                SectorMark(
+                    angle: .value("Value", entry.value),
+                    innerRadius: .ratio(0.62),
+                    angularInset: 1.5
+                )
+                .cornerRadius(4)
+                .foregroundStyle(entry.color)
+                .opacity(isEmpty ? 0.5 : 1)
+            }
+            .chartLegend(.hidden)
+            .frame(width: width * 0.72, height: width * 0.72)
+            .overlay {
+                VStack(spacing: 2) {
+                    Text(LocalizedStringKey("Total"))
+                        .font(.subheadline)
+                        .foregroundColor(setting.textColor.opacity(0.6))
+                    Text("\(total)")
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                        .foregroundColor(setting.textColor)
+                }
+            }
+            .padding(.vertical, height * 0.02)
+
+            // 凡例（色チップ＋名前＋値＋パーセント）
+            ScrollView {
                 VStack(spacing: 0) {
-                    Button(action: {
-                        chartType = .bar
-                    }, label: {
-                        Image(systemName: "chart.pie.fill")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 30))
-                            .padding(.top, 13)
-                            .padding(.bottom, 7)
-                            .padding(.trailing, 8)
-                    })
-                    Button(action: {
-                        isVisibleSetting.toggle()
-                    }, label: {
-                        Image(systemName: isVisibleSetting ? "paintbrush.fill" : "paintbrush")
-                            .accentColor(setting.buttonColor)
-                            .font(.system(size: 24))
-                            .padding(.trailing, 8)
-                    })
-                }
-            }
-            
-            if(!isVisibleSetting){
-                Text(setting.title).foregroundColor(setting.titleColor)
-                    .font(.largeTitle)
-                    .padding(.top, height*0.03)
-            }
-            
-            ZStack {
-                if names.count == 0 {
-                    ForEach(0..<(blankAngles.count - 1), id: \.self) { index in
-                        Path { path in
-                            path.move(to: CGPoint(x: centerX, y: centerY))
-                            path.addArc(center: .init(x: centerX, y: centerY),
-                                        radius: radius,
-                                        startAngle: Angle(degrees: blankAngles[index]),
-                                        endAngle: Angle(degrees: blankAngles[index+1]),
-                                        clockwise: false)
+                    ForEach(displayedEntries) { entry in
+                        HStack(spacing: 12) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(entry.color)
+                                .frame(width: 16, height: 16)
+                            Text(entry.name)
+                                .font(.body)
+                                .foregroundColor(setting.textColor)
+                                .lineLimit(1)
+                            Spacer()
+                            Text("\(entry.value)")
+                                .font(.body.weight(.semibold))
+                                .foregroundColor(setting.textColor)
+                            Text(entry.percent)
+                                .font(.subheadline)
+                                .foregroundColor(setting.textColor.opacity(0.6))
+                                .frame(width: 56, alignment: .trailing)
                         }
-                        .fill(Color.gray.opacity(0.2))
-                        if !isVisibleSetting {
-                            Canvas { context, size in
-                                context.draw(Text(LocalizedStringKey(blankList[index].name))
-                                    .font(.title2)
-                                    .foregroundColor(Color.gray.opacity(0.2)),
-                                             at: blankNamesPositions[index],
-                                             anchor: .bottom)
-                            }
-                            
-                            Canvas { context, size in
-                                context.draw(Text(blankPercents[index])
-                                    .font(.title2)
-                                    .foregroundColor(.white),
-                                             at: blankPercentPositions[index],
-                                             anchor: .bottom)
-                            }
-                        }
+                        .padding(.vertical, 10)
+                        .opacity(isEmpty ? 0.4 : 1)
+                        Divider()
                     }
                 }
-                
-                ForEach(0..<(angles.count - 1), id: \.self) { index in
-                    Path { path in
-                        path.move(to: CGPoint(x: centerX, y: centerY))
-                        path.addArc(center: .init(x: centerX, y: centerY),
-                                    radius: radius,
-                                    startAngle: Angle(degrees: angles[index]),
-                                    endAngle: Angle(degrees: angles[index+1]),
-                                    clockwise: false)
-                    }
-                    .fill(pieChart.colors[index])
-                    
-                    if !isVisibleSetting {
-                        Canvas { context, size in
-                            context.draw(Text(LocalizedStringKey(names[index]))
-                                                .font(.title2)
-                                                .foregroundColor(setting.textColor),
-                                         at: namePositions[index],
-                                         anchor: .bottom)
-                        }
-                        
-                        Canvas { context, size in
-                            context.draw(Text(percents[index])
-                                .font(.title2)
-                                            .foregroundColor(.white),
-                                         at: percentPositions[index],
-                                         anchor: .bottom)
-                        }
-                    }
-                }
+                .padding(.horizontal, width * 0.08)
+                .padding(.bottom, height * 0.04)
             }
-            
-            if(isVisibleSetting){
-                if names.count == 0 {
-                    Text(LocalizedStringKey("blank"))
-                }
-                HStack(alignment: .bottom, spacing: width * 0.1 / 5){
-                    ForEach(0..<min(names.count, 5), id: \.self){ index in
-                        VStack {
-                            Text(LocalizedStringKey(names[index]))
-                            ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
-                        }.frame(height: height * 0.063)
-                            .frame(maxWidth: width * 0.8 / 5)
-                            .foregroundColor(pieChart.colors[index])
-                    }
-                }.opacity(isVisibleSetting ? 1:0)
-                HStack(alignment: .bottom, spacing: width * 0.1 / 5){
-                    ForEach(5..<min(max(names.count,5), 10), id: \.self){ index in
-                        VStack {
-                            Text(LocalizedStringKey(names[index]))
-                            ColorPicker("",selection:$pieChart.colors[index]).frame(height: 10)
-                        }.frame(height: height * 0.063)
-                            .frame(maxWidth: width * 0.8 / 5)
-                            .foregroundColor(pieChart.colors[index])
-                    }
-                }.padding(.bottom, names.count>5 ? height*0.05 : height*0.1)
-            }
-            Spacer()
         }
         .onAppear(){
-            interstitial.presentInterstitial()
+            // 他タブ（棒グラフ等）での変更を反映するため最新データを読み直す。
+            pieChart.reload()
         }
         .onDisappear(perform: {
             pieChart.save()
         })
         .background(setting.backColor)
+        .alert(String(localized: "title"), isPresented: $showRenameAlert) {
+            TextField("", text: $draftTitle)
+            Button(String(localized: "Cancel"), role: .cancel) {}
+            Button("OK") {
+                // 空タイトルも許容する（前後の空白は除去してから保存）。
+                setting.title = draftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                setting.save()
+            }
+        }
     }
 }
 

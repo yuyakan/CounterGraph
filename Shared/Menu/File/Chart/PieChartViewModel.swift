@@ -8,21 +8,52 @@
 import Foundation
 import SwiftUI
 
+/// Swift Charts(SectorMark) へ渡す扇形1つぶんのデータ。
+struct SectorEntry: Identifiable {
+    let id: Int          // dataList 内の index
+    let name: String
+    let value: Int
+    let color: Color
+    let percent: String
+}
+
 class PieChartViewModel: ObservableObject {
     @Published var colors: [Color]
-    private let dataList: DataList
+    private var dataList: DataList
     
+
+    /// 凡例の既定色（データ件数の上限ぶん用意しておく）。
+    static let defaultColors: [Color] = [.orange, .green, .blue, .red, .yellow, .pink, .purple, .mint, .indigo, .cyan]
 
     init(fileId: String) {
         self.dataList = DataList(fileId: fileId)
-        
+
         let jsonDecoder = JSONDecoder()
-        guard let pieColors = UserDefaults.standard.object(forKey: "pieColors_file\(dataList.fileId)") as? Data,
-              let pieColors = try? jsonDecoder.decode([Color].self, from: pieColors) else {
-            self.colors = [Color.orange, Color.green, Color.blue, Color.red, Color.yellow, Color.pink, Color.purple, Color.mint, Color.indigo, Color.cyan]
-            return
+        if let saved = UserDefaults.standard.object(forKey: "pieColors_file\(dataList.fileId)") as? Data,
+           let pieColors = try? jsonDecoder.decode([Color].self, from: saved) {
+            self.colors = pieColors
+        } else {
+            self.colors = PieChartViewModel.defaultColors
         }
-        self.colors = pieColors
+
+        // 保存色が古く、データ件数より少ない場合に備えて不足ぶんを既定色で補う。
+        // これがないと colors[index] が範囲外アクセスでクラッシュする。
+        ensureColorCount(dataList.count())
+    }
+
+    /// UserDefaults から最新のデータを読み直す。タブ表示時に呼び他タブの変更を反映する。
+    func reload() {
+        dataList = DataList(fileId: dataList.fileId)
+        ensureColorCount(dataList.count())
+        objectWillChange.send()
+    }
+
+    /// colors の要素数が少なくとも `count` になるよう、不足ぶんを既定色で補完する。
+    private func ensureColorCount(_ count: Int) {
+        guard colors.count < count else { return }
+        for index in colors.count..<count {
+            colors.append(PieChartViewModel.defaultColors[index % PieChartViewModel.defaultColors.count])
+        }
     }
     
     func save() {
@@ -31,51 +62,29 @@ class PieChartViewModel: ObservableObject {
         UserDefaults.standard.set(colors, forKey: "pieColors_file\(dataList.fileId)")
     }
     
-    func angles() -> [Double] {
-        let ratio360List = dataList.getRatio().map {$0 * 360.0}
-        var angles: [Double] = [0.0]
-        for index in 0..<ratio360List.count {
-            angles.append(angles[index] + ratio360List[index])
-        }
-        return angles
-    }
-    
     func names() -> [String] {
         return dataList.names()
     }
-    
-    func labelPositions(radius: Double, centerX: Double, centerY: Double, angles: [Double]) -> [CGPoint] {
-        var labelPositions: [CGPoint] = []
-        coordinates(radius: radius, angles: angles).forEach { position in
-            labelPositions.append(CGPoint(x: centerX + position.0, y: centerY + position.1 + 15))
-        }
-        return labelPositions
-    }
-    
-    func percentPositions(radius: Double, centerX: Double, centerY: Double, angles: [Double]) -> [CGPoint] {
-        var percentPositions: [CGPoint] = []
-        coordinates(radius: radius/1.65, angles: angles).forEach { position in
-            percentPositions.append(CGPoint(x: centerX + position.0, y: centerY + position.1 + 12))
-        }
-        return percentPositions
-    }
-    
-    private func coordinates(radius: Double, angles: [Double]) -> Zip2Sequence<[Double], [Double]>{
-        let ratioRasianList = centerAngles(angles: angles).map {3.14 * $0 / 180.0}
-        let xList = ratioRasianList.map {cos($0) * radius}
-        let yList = ratioRasianList.map {sin($0) * radius}
-        return zip(xList, yList)
-    }
-    
-    private func centerAngles(angles: [Double]) -> [Double] {
-        var centerAngles: [Double] = []
-        for index in 0..<angles.count-1 {
-            centerAngles.append((angles[index] + angles[index+1])/2)
-        }
-        return centerAngles
-    }
-    
+
     func percents() ->[String] {
         return dataList.getRatio().map { String(format: "%.1f", $0 * 100) + "%" }
+    }
+
+    /// Swift Charts(SectorMark) 描画用のエントリ一覧。
+    /// id は元 index を保持する。
+    func entries(sortedBy order: ChartSortOrder = .entry) -> [SectorEntry] {
+        let percents = self.percents()
+        let base = (0..<dataList.count()).map { index in
+            SectorEntry(id: index,
+                        name: dataList.name(index: index),
+                        value: dataList.value(index: index),
+                        color: index < colors.count ? colors[index] : PieChartViewModel.defaultColors[index % PieChartViewModel.defaultColors.count],
+                        percent: index < percents.count ? percents[index] : "")
+        }
+        switch order {
+        case .entry:      return base
+        case .descending: return base.sorted { $0.value > $1.value }
+        case .ascending:  return base.sorted { $0.value < $1.value }
+        }
     }
 }
