@@ -1,0 +1,71 @@
+/*
+  Localizable.strings
+  CounterGraph
+*/
+"Ann" = "Maria";
+"Tom" = "João";
+"Bob" = "Pedro";
+"Casey" = "Ana";
+"Brian" = "Miguel";
+"Jack" = "Tiago";
+
+"Result" = "Resultado";
+"title" = "Título";
+"color" = "Cor";
+"Text" = "Texto";
+"Graph" = "Gráfico";
+"Background" = "Fundo";
+"Button" = "Botão";
+
+"1unit:" = "1 unidade:";
+"countWidth" = "Largura da contagem";
+
+"sameAlertText" = "O nome já está a ser utilizado";
+"sameAlertMessage" = "Atribua um nome diferente";
+
+"maxAlertText" = "Demasiados dados";
+"maxAlertMessage" = "Limite o número de dados a 10 ou menos.";
+
+"newData" = "Criar um novo gráfico";
+
+"blank" = "Adicionar dados ao gráfico de barras";
+"blankBar" = "Adicione os seus dados";
+
+"Menu" = "Menu";
+"Main" = "Gráfico";
+
+"Total" = "Total";
+
+"Add" = "Adicionar";
+"Delete" = "Eliminar";
+"Value" = "Valor";
+"Cancel" = "Cancelar";
+
+"Edit" = "Editar";
+"Done" = "Concluído";
+
+"sortEntry" = "Ordem predefinida";
+"sortDescending" = "Do maior";
+"sortAscending" = "Do menor";
+
+"Bar chart" = "Barras";
+"Pie chart" = "Circular";
+"Ranking" = "Classificação";
+
+"groups" = "Grupos";
+"newGroup" = "Novo grupo";
+"groupName" = "Nome do grupo";
+"assignItems" = "Atribuir itens";
+"noGroup" = "Sem grupo";
+"noGroupsYet" = "Crie um grupo e atribua itens no modo de edição.";
+
+"saveAsTemplate" = "Guardar nome como modelo";
+"templates" = "Modelos";
+"deleteTemplate" = "Eliminar";
+
+"Duplicate" = "Duplicar";
+
+"reviewTitle" = "Está a gostar da app?";
+"reviewMessage" = "A sua avaliação ajuda-nos muito. Obrigado!";
+"reviewRate" = "Avaliar";
+"reviewLater" = "Mais tarde";

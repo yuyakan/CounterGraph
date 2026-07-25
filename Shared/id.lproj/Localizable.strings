@@ -1,0 +1,71 @@
+/*
+  Localizable.strings
+  CounterGraph
+*/
+"Ann" = "Siti";
+"Tom" = "Budi";
+"Bob" = "Agus";
+"Casey" = "Dewi";
+"Brian" = "Rizki";
+"Jack" = "Putra";
+
+"Result" = "Hasil";
+"title" = "Judul";
+"color" = "Warna";
+"Text" = "Teks";
+"Graph" = "Grafik";
+"Background" = "Latar Belakang";
+"Button" = "Tombol";
+
+"1unit:" = "1 unit:";
+"countWidth" = "Lebar hitungan";
+
+"sameAlertText" = "Nama sudah digunakan";
+"sameAlertMessage" = "Silakan gunakan nama lain";
+
+"maxAlertText" = "Terlalu banyak data";
+"maxAlertMessage" = "Batasi jumlah data hingga 10 atau kurang.";
+
+"newData" = "Buat grafik baru";
+
+"blank" = "Tambahkan data ke grafik batang";
+"blankBar" = "Silakan tambahkan data Anda";
+
+"Menu" = "Menu";
+"Main" = "Bagan";
+
+"Total" = "Total";
+
+"Add" = "Tambah";
+"Delete" = "Hapus";
+"Value" = "Nilai";
+"Cancel" = "Batal";
+
+"Edit" = "Edit";
+"Done" = "Selesai";
+
+"sortEntry" = "Urutan default";
+"sortDescending" = "Tertinggi dulu";
+"sortAscending" = "Terendah dulu";
+
+"Bar chart" = "Batang";
+"Pie chart" = "Lingkaran";
+"Ranking" = "Peringkat";
+
+"groups" = "Grup";
+"newGroup" = "Grup baru";
+"groupName" = "Nama grup";
+"assignItems" = "Tetapkan item";
+"noGroup" = "Tanpa grup";
+"noGroupsYet" = "Buat grup dan tetapkan item dalam mode edit.";
+
+"saveAsTemplate" = "Simpan nama sebagai templat";
+"templates" = "Templat";
+"deleteTemplate" = "Hapus";
+
+"Duplicate" = "Duplikat";
+
+"reviewTitle" = "Menikmati aplikasinya?";
+"reviewMessage" = "Ulasan Anda sangat membantu kami. Terima kasih!";
+"reviewRate" = "Beri nilai";
+"reviewLater" = "Nanti";

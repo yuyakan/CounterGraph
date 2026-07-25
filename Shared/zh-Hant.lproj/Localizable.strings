@@ -1,0 +1,71 @@
+/*
+  Localizable.strings
+  CounterGraph
+*/
+"Ann" = "怡君";
+"Tom" = "家豪";
+"Bob" = "志明";
+"Casey" = "淑芬";
+"Brian" = "俊傑";
+"Jack" = "承翰";
+
+"Result" = "結果";
+"title" = "標題";
+"color" = "顏色";
+"Text" = "文字";
+"Graph" = "圖表";
+"Background" = "背景";
+"Button" = "按鈕";
+
+"1unit:" = "1 單位：";
+"countWidth" = "計數寬度";
+
+"sameAlertText" = "此名稱已被使用";
+"sameAlertMessage" = "請使用其他名稱";
+
+"maxAlertText" = "資料過多";
+"maxAlertMessage" = "請將資料數量限制在 10 筆以內。";
+
+"newData" = "建立新圖表";
+
+"blank" = "在長條圖中新增資料";
+"blankBar" = "請新增您的資料";
+
+"Menu" = "選單";
+"Main" = "圖表";
+
+"Total" = "合計";
+
+"Add" = "新增";
+"Delete" = "刪除";
+"Value" = "數值";
+"Cancel" = "取消";
+
+"Edit" = "編輯";
+"Done" = "完成";
+
+"sortEntry" = "預設順序";
+"sortDescending" = "由高至低";
+"sortAscending" = "由低至高";
+
+"Bar chart" = "長條";
+"Pie chart" = "圓餅";
+"Ranking" = "排名";
+
+"groups" = "群組";
+"newGroup" = "新增群組";
+"groupName" = "群組名稱";
+"assignItems" = "指派項目";
+"noGroup" = "無群組";
+"noGroupsYet" = "請在編輯模式下建立群組並指派項目。";
+
+"saveAsTemplate" = "將名稱儲存為範本";
+"templates" = "範本";
+"deleteTemplate" = "刪除";
+
+"Duplicate" = "複製";
+
+"reviewTitle" = "喜歡這款應用程式嗎？";
+"reviewMessage" = "您的評價對我們很有幫助。謝謝！";
+"reviewRate" = "評分";
+"reviewLater" = "稍後";

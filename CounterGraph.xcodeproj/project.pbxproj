@@ -95,6 +95,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0F36D6C5930C8AD120920213 /* zh-HK */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		217E3259F6EF218D61C4E900 /* id */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2F2271222D401FA8D7E848AC /* pt-PT */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		404C4FF249128552EF3B0E69 /* hi */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4B1A83C72AFCC536002F1BFE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4B1A83C92AFCC538002F1BFE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4B1A83CB2AFCE30F002F1BFE /* DataList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataList.swift; sourceTree = "<group>"; };
@@ -131,6 +135,10 @@
 		4BD213D827C0E484004280DA /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		4BD213DA27C0E484004280DA /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
 		4BD213FC27C1307B004280DA /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
+		52A9B4AA7DC53470CD2C72DE /* it */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
+		7AFFE2F946FBF4ED1E1CB0EB /* th */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Localizable.strings; sourceTree = "<group>"; };
+		93FE456991843B5F302B012C /* it */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		956AA0B7E48E47FB940516E5 /* hi */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AA0000000000000000000001 /* ChartSortOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSortOrder.swift; sourceTree = "<group>"; };
 		AA0000000000000000000011 /* CountUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountUnit.swift; sourceTree = "<group>"; };
 		AA0000000000000000000021 /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
@@ -155,6 +163,12 @@
 		AB0000000000000000000009 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AB000000000000000000000A /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		AB000000000000000000000B /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C9F6606AB396AB6790A9CF2A /* ar */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E37238E2D493667C366E3B7A /* pt-PT */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		E4A5447779D2815EFD44AE42 /* id */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E4B2305E6AEF393F0BD83F9F /* zh-Hant */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		F452EC26168084BD3695BC2D /* th */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F8A5AD60910A66F6E3B1AD9B /* zh-Hant */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -455,11 +469,17 @@
 				ko,
 				ar,
 				"zh-HK",
+				it,
+				"pt-PT",
+				"zh-Hant",
+				hi,
+				th,
+				id,
 			);
 			mainGroup = 4BD213AE27C0E482004280DA;
 			packageReferences = (
-				CBEE284797F9823335340BFF /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
-				CBEE284797F9823335340C00 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */,
+				CBEE284797F9823335340BFF /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads.git" */,
+				CBEE284797F9823335340C00 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform.git" */,
 			);
 			productRefGroup = 4BD213BC27C0E484004280DA /* Products */;
 			projectDirPath = "";
@@ -627,6 +647,14 @@
 				4BD17D962B038FCF00120E96 /* ru */,
 				4BD17D982B03958600120E96 /* de */,
 				4BD17D992B0395B200120E96 /* ko */,
+				C9F6606AB396AB6790A9CF2A /* ar */,
+				0F36D6C5930C8AD120920213 /* zh-HK */,
+				52A9B4AA7DC53470CD2C72DE /* it */,
+				E37238E2D493667C366E3B7A /* pt-PT */,
+				F8A5AD60910A66F6E3B1AD9B /* zh-Hant */,
+				404C4FF249128552EF3B0E69 /* hi */,
+				7AFFE2F946FBF4ED1E1CB0EB /* th */,
+				217E3259F6EF218D61C4E900 /* id */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -645,6 +673,12 @@
 				AB0000000000000000000009 /* ko */,
 				AB000000000000000000000A /* ar */,
 				AB000000000000000000000B /* zh-HK */,
+				93FE456991843B5F302B012C /* it */,
+				2F2271222D401FA8D7E848AC /* pt-PT */,
+				E4B2305E6AEF393F0BD83F9F /* zh-Hant */,
+				956AA0B7E48E47FB940516E5 /* hi */,
+				F452EC26168084BD3695BC2D /* th */,
+				E4A5447779D2815EFD44AE42 /* id */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1021,7 +1055,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		CBEE284797F9823335340BFF /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+		CBEE284797F9823335340BFF /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
 			requirement = {
@@ -1029,7 +1063,7 @@
 				minimumVersion = 13.0.0;
 			};
 		};
-		CBEE284797F9823335340C00 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */ = {
+		CBEE284797F9823335340C00 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git";
 			requirement = {
@@ -1042,12 +1076,12 @@
 /* Begin XCSwiftPackageProductDependency section */
 		742E18195C65E5F7F7167107 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CBEE284797F9823335340BFF /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			package = CBEE284797F9823335340BFF /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads.git" */;
 			productName = GoogleMobileAds;
 		};
 		742E18195C65E5F7F7167200 /* GoogleUserMessagingPlatform */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = CBEE284797F9823335340C00 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform" */;
+			package = CBEE284797F9823335340C00 /* XCRemoteSwiftPackageReference "swift-package-manager-google-user-messaging-platform.git" */;
 			productName = GoogleUserMessagingPlatform;
 		};
 /* End XCSwiftPackageProductDependency section */

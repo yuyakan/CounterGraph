@@ -1,0 +1,71 @@
+/*
+  Localizable.strings
+  CounterGraph
+*/
+"Ann" = "แนน";
+"Tom" = "โต้ง";
+"Bob" = "บอย";
+"Casey" = "ฝ้าย";
+"Brian" = "บีม";
+"Jack" = "แจ็ค";
+
+"Result" = "ผลลัพธ์";
+"title" = "ชื่อ";
+"color" = "สี";
+"Text" = "ข้อความ";
+"Graph" = "กราฟ";
+"Background" = "พื้นหลัง";
+"Button" = "ปุ่ม";
+
+"1unit:" = "1 หน่วย:";
+"countWidth" = "ความกว้างการนับ";
+
+"sameAlertText" = "ชื่อนี้ถูกใช้ไปแล้ว";
+"sameAlertMessage" = "โปรดตั้งชื่ออื่น";
+
+"maxAlertText" = "ข้อมูลมากเกินไป";
+"maxAlertMessage" = "โปรดจำกัดจำนวนข้อมูลไว้ที่ 10 รายการหรือน้อยกว่า";
+
+"newData" = "สร้างกราฟใหม่";
+
+"blank" = "เพิ่มข้อมูลในกราฟแท่ง";
+"blankBar" = "โปรดเพิ่มข้อมูลของคุณ";
+
+"Menu" = "เมนู";
+"Main" = "แผนภูมิ";
+
+"Total" = "รวม";
+
+"Add" = "เพิ่ม";
+"Delete" = "ลบ";
+"Value" = "ค่า";
+"Cancel" = "ยกเลิก";
+
+"Edit" = "แก้ไข";
+"Done" = "เสร็จ";
+
+"sortEntry" = "ลำดับเริ่มต้น";
+"sortDescending" = "มากไปน้อย";
+"sortAscending" = "น้อยไปมาก";
+
+"Bar chart" = "แท่ง";
+"Pie chart" = "วงกลม";
+"Ranking" = "อันดับ";
+
+"groups" = "กลุ่ม";
+"newGroup" = "กลุ่มใหม่";
+"groupName" = "ชื่อกลุ่ม";
+"assignItems" = "กำหนดรายการ";
+"noGroup" = "ไม่มีกลุ่ม";
+"noGroupsYet" = "สร้างกลุ่มและกำหนดรายการในโหมดแก้ไข";
+
+"saveAsTemplate" = "บันทึกชื่อเป็นเทมเพลต";
+"templates" = "เทมเพลต";
+"deleteTemplate" = "ลบ";
+
+"Duplicate" = "ทำสำเนา";
+
+"reviewTitle" = "ชอบแอปนี้ไหม?";
+"reviewMessage" = "รีวิวของคุณช่วยเราได้มาก ขอบคุณ!";
+"reviewRate" = "ให้คะแนน";
+"reviewLater" = "ภายหลัง";

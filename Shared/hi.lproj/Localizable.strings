@@ -1,0 +1,71 @@
+/*
+  Localizable.strings
+  CounterGraph
+*/
+"Ann" = "आन्या";
+"Tom" = "आरव";
+"Bob" = "विहान";
+"Casey" = "सान्या";
+"Brian" = "अर्जुन";
+"Jack" = "विवान";
+
+"Result" = "परिणाम";
+"title" = "शीर्षक";
+"color" = "रंग";
+"Text" = "टेक्स्ट";
+"Graph" = "ग्राफ़";
+"Background" = "पृष्ठभूमि";
+"Button" = "बटन";
+
+"1unit:" = "1 इकाई:";
+"countWidth" = "गणना चौड़ाई";
+
+"sameAlertText" = "यह नाम पहले से उपयोग में है";
+"sameAlertMessage" = "कृपया कोई दूसरा नाम दें";
+
+"maxAlertText" = "बहुत अधिक डेटा";
+"maxAlertMessage" = "कृपया डेटा की संख्या 10 या उससे कम रखें।";
+
+"newData" = "नया ग्राफ़ बनाएँ";
+
+"blank" = "बार ग्राफ़ में डेटा जोड़ें";
+"blankBar" = "कृपया अपना डेटा जोड़ें";
+
+"Menu" = "मेन्यू";
+"Main" = "चार्ट";
+
+"Total" = "कुल";
+
+"Add" = "जोड़ें";
+"Delete" = "हटाएँ";
+"Value" = "मान";
+"Cancel" = "रद्द करें";
+
+"Edit" = "संपादित करें";
+"Done" = "पूर्ण";
+
+"sortEntry" = "डिफ़ॉल्ट क्रम";
+"sortDescending" = "सबसे अधिक पहले";
+"sortAscending" = "सबसे कम पहले";
+
+"Bar chart" = "बार";
+"Pie chart" = "पाई";
+"Ranking" = "रैंकिंग";
+
+"groups" = "समूह";
+"newGroup" = "नया समूह";
+"groupName" = "समूह का नाम";
+"assignItems" = "आइटम असाइन करें";
+"noGroup" = "कोई समूह नहीं";
+"noGroupsYet" = "संपादन मोड में एक समूह बनाएँ और आइटम असाइन करें।";
+
+"saveAsTemplate" = "नाम को टेम्पलेट के रूप में सहेजें";
+"templates" = "टेम्पलेट";
+"deleteTemplate" = "हटाएँ";
+
+"Duplicate" = "डुप्लिकेट";
+
+"reviewTitle" = "क्या आपको ऐप पसंद आ रहा है?";
+"reviewMessage" = "आपकी समीक्षा हमारी बहुत मदद करती है। धन्यवाद!";
+"reviewRate" = "रेटिंग दें";
+"reviewLater" = "बाद में";
