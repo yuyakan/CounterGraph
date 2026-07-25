@@ -62,7 +62,7 @@ struct MenuView: View {
                     // 新規追加カード
                     Button(action: {
                         menu.add()
-                        adCounter.increment(by: 2)   // 追加は2回分
+                        adCounter.increment(by: 3)   // 追加は3回分
                     }, label: {
                         addCard
                     })
@@ -117,7 +117,7 @@ struct MenuView: View {
                 // 編集モード中はカードを複製できる。
                 Button {
                     menu.duplicate(file: file)
-                    adCounter.increment(by: 2)   // 複製は2回分
+                    adCounter.increment(by: 3)   // 複製は3回分
                 } label: {
                     Image(systemName: "plus.square.on.square")
                         .font(.system(size: 18, weight: .semibold))

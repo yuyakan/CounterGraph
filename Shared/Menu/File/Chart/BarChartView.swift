@@ -146,7 +146,7 @@ struct BarChartView: View {
                     let wasEditing = isEditing
                     withAnimation { isEditing.toggle() }
                     if wasEditing {
-                        adCounter.increment()
+                        adCounter.increment(by: 2)   // 編集完了は2回分
                         interstitial.presentIfReady(counter: adCounter, review: reviewManager)
                     }
                 }, label: {
