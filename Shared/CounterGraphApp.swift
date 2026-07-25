@@ -7,14 +7,18 @@
 
 import SwiftUI
 import UIKit
-import GoogleMobileAds
 
 
 // AppDelegateクラスを定義する
 class AppDelegate: NSObject, UIApplicationDelegate {
+    /// 広告の同意フロー（UMP + ATT）を管理する。
+    /// 起動中に解放されないよう AppDelegate が強参照で保持する。
+    private let consentManager = ConsentManager()
+
     func application(_ application: UIApplication,didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        // Mobile Ads SDKを初期化する
-        MobileAds.shared.start(completionHandler: nil)
+        // 同意を取得してから Mobile Ads SDK を初期化する。
+        // （UMP の同意 → ATT 要求 → SDK 初期化 の順は ConsentManager 内部で実施）
+        consentManager.gatherConsent()
         return true
     }
 }
