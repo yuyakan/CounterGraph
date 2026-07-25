@@ -13,11 +13,15 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
     var interstitialAd: InterstitialAd?
 
     /// テスト広告を使うかどうかの切替フラグ。
-    /// - false: 本番の広告ユニットIDを使う（デバッグ・リリースとも本番）。
-    /// - true : Google公式のテストIDを使う（開発時に切り替える）。
-    /// ⚠️ false のまま開発ビルドで自分の端末に広告を表示・タップすると無効トラフィックに
-    /// なる恐れがあるため、実機テスト時は true にするか AdMob でテストデバイス登録を行うこと。
+    /// - DEBUG ビルド  : true（Google公式のテストID）。開発中の無効トラフィックを防ぐ。
+    /// - Release ビルド: false（本番の広告ユニットID）。
+    /// ⚠️ 本番IDのまま自分の端末で広告を表示・タップすると無効トラフィックになる恐れがある。
+    /// リリース前の実機確認では AdMob でテストデバイス登録を行うこと。
+    #if DEBUG
     static let useTestAd = true
+    #else
+    static let useTestAd = false
+    #endif
 
     /// 実際に使う広告ユニットID。
     private var adUnitID: String {
