@@ -2,39 +2,63 @@
 //  ReviewManager.swift
 //  CounterGraph
 //
-//  カスタムのレビュー依頼ダイアログの表示制御。
-//  1回目の広告表示タイミングで、広告の代わりに一度だけレビュー依頼を表示する。
+//  標準のレビュー要求ダイアログの表示制御。
+//  広告表示とは独立したタイミングで、`SKStoreReviewController` を呼び出す。
 //
 
 import SwiftUI
+import StoreKit
+
+#if canImport(UIKit)
 import UIKit
+#endif
 
+@MainActor
 final class ReviewManager: ObservableObject {
-    private static let requestedKey = "reviewRequested"
-    /// App Store のアプリID。
-    private static let appStoreID = "1611172252"
+    private static let opportunityCountKey = "reviewOpportunityCount"
 
-    /// レビュー依頼ダイアログを表示すべきか（ビュー側が監視して表示する）。
-    @Published var showReviewDialog = false
+    private var defaults: UserDefaults { .standard }
 
-    /// これまでにレビュー依頼を表示したことがあるか。
-    private var hasRequested: Bool {
-        UserDefaults.standard.bool(forKey: ReviewManager.requestedKey)
-    }
+    /// 通常タイミングを記録し、必要なら標準レビュー要求を送信する。
+    /// 広告はメニュー画面では表示されない（詳細画面遷移時に表示される）ため、
+    /// ここでは広告との優先制御は行わず、機会カウントのみで判定する。
+    /// - Returns: システムのレビュー要求を送信したなら true。
+    @discardableResult
+    func recordOpportunityAndRequestReviewIfNeeded() -> Bool {
+        let opportunityCount = defaults.integer(forKey: Self.opportunityCountKey) + 1
+        print("[ReviewManager] opportunityCount=\(opportunityCount) shouldRequest=\(shouldRequestReview(at: opportunityCount))")
 
-    /// 広告表示の代わりにレビュー依頼を出すべきかを判定する。
-    /// まだ一度も出していなければ true を返し、以後は出さないよう記録する。
-    /// - Returns: レビュー依頼を出した（＝広告を出さない）なら true。
-    func requestReviewIfNeeded() -> Bool {
-        guard !hasRequested else { return false }
-        UserDefaults.standard.set(true, forKey: ReviewManager.requestedKey)
-        showReviewDialog = true
+        guard shouldRequestReview(at: opportunityCount) else {
+            defaults.set(opportunityCount, forKey: Self.opportunityCountKey)
+            return false
+        }
+        let requested = requestSystemReview()
+        print("[ReviewManager] requestSystemReview -> \(requested)")
+        guard requested else {
+            return false
+        }
+        defaults.set(opportunityCount, forKey: Self.opportunityCountKey)
         return true
     }
 
-    /// App Store のレビュー投稿ページを開く。
-    func openAppStoreReview() {
-        guard let url = URL(string: "https://apps.apple.com/app/id\(ReviewManager.appStoreID)?action=write-review") else { return }
-        UIApplication.shared.open(url)
+    private func shouldRequestReview(at opportunityCount: Int) -> Bool {
+        opportunityCount == 3 || (opportunityCount >= 10 && opportunityCount % 10 == 0)
+    }
+
+    private func requestSystemReview() -> Bool {
+#if canImport(UIKit)
+        guard let scene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive }) else {
+            return false
+        }
+        SKStoreReviewController.requestReview(in: scene)
+        return true
+#elseif os(macOS)
+        SKStoreReviewController.requestReview()
+        return true
+#else
+        return false
+#endif
     }
 }

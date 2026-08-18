@@ -44,8 +44,7 @@ struct MenuView: View {
                             NavigationLink(destination: FileView(fileId: file.id)
                                 .environmentObject(menu)
                                 .environmentObject(interstitial)
-                                .environmentObject(adCounter)
-                                .environmentObject(reviewManager)) {
+                                .environmentObject(adCounter)) {
                                 EmptyView()
                             }
                             .opacity(0)
@@ -73,30 +72,21 @@ struct MenuView: View {
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .environment(\.editMode, $editMode)
+                .onAppear {
+                    // メニュー画面が前面に来るたび（起動時・詳細画面から戻った時）に
+                    // レビュー要求の機会をカウントする。
+                    // 詳細画面遷移時にすぐ表示できるよう広告も先読みしておく。
+                    interstitial.loadInterstitial()
+                    Task { @MainActor in
+                        try? await Task.sleep(nanoseconds: 500_000_000)
+                        reviewManager.recordOpportunityAndRequestReviewIfNeeded()
+                    }
+                }
             }
             .navigationBarHidden(true)
             .tint(Color.brand)
         }.onChange(of: menu.refresh) { _ in
             menu.rebuildFiles()
-        }
-        .onAppear {
-            // 詳細画面遷移時にすぐ表示できるよう広告を先読みしておく。
-            interstitial.loadInterstitial()
-        }
-        // レビュー依頼ダイアログ（1回目の広告表示タイミングで表示）。
-        // NavigationStack 全体に重ねることで、詳細画面の上にも表示される。
-        .overlay {
-            if reviewManager.showReviewDialog {
-                ReviewDialogView(
-                    onRate: {
-                        reviewManager.openAppStoreReview()
-                        withAnimation { reviewManager.showReviewDialog = false }
-                    },
-                    onDismiss: {
-                        withAnimation { reviewManager.showReviewDialog = false }
-                    }
-                )
-            }
         }
     }
 

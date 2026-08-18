@@ -11,7 +11,6 @@ import GoogleMobileAds
 struct FileView: View {
     @EnvironmentObject var interstitial: Interstitial
     @EnvironmentObject var adCounter: AdCounter
-    @EnvironmentObject var reviewManager: ReviewManager
     @Environment(\.dismiss) var dismiss //iOS15
     @EnvironmentObject var menu: MenuViewModel
     @StateObject var setting: Setting
@@ -31,7 +30,6 @@ struct FileView: View {
                 .environmentObject(setting)
                 .environmentObject(interstitial)
                 .environmentObject(adCounter)
-                .environmentObject(reviewManager)
                 .tabItem {
                     Label(String(localized: "Bar chart"), systemImage: "chart.bar.fill")
                 }
@@ -39,6 +37,8 @@ struct FileView: View {
 
             PieChartView(fileId: fileId, goBack: { dismiss() })
                 .environmentObject(setting)
+                .environmentObject(interstitial)
+                .environmentObject(adCounter)
                 .tabItem {
                     Label(String(localized: "Pie chart"), systemImage: "chart.pie.fill")
                 }
@@ -65,7 +65,7 @@ struct FileView: View {
         .onAppear(perform: {
             setting.save()
             // メニューから詳細画面へ遷移した直後。条件を満たせば広告を表示する。
-            interstitial.presentIfReady(counter: adCounter, review: reviewManager)
+            interstitial.presentIfReady(counter: adCounter)
         })
         .navigationTitle(String(localized: "Main"))
         .navigationBarBackButtonHidden(true)
@@ -80,6 +80,5 @@ struct ContentView_Previews: PreviewProvider {
             .environmentObject(MenuViewModel())
             .environmentObject(Interstitial())
             .environmentObject(AdCounter())
-            .environmentObject(ReviewManager())
     }
 }

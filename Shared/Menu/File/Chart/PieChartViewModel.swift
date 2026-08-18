@@ -20,7 +20,16 @@ struct SectorEntry: Identifiable {
 class PieChartViewModel: ObservableObject {
     @Published var colors: [Color]
     private var dataList: DataList
-    
+
+    /// 項目追加シート用の入力値（棒グラフと同じ挙動）。
+    @Published var name: String = String(localized: "Jack")
+    @Published var value: Int = 100
+    @Published var isShowAlert: Bool = false
+
+    enum AlertType {
+        case maxData
+    }
+    private var alertType: AlertType = .maxData
 
     /// 凡例の既定色（データ件数の上限ぶん用意しておく）。
     static let defaultColors: [Color] = [.orange, .green, .blue, .red, .yellow, .pink, .purple, .mint, .indigo, .cyan]
@@ -85,6 +94,67 @@ class PieChartViewModel: ObservableObject {
         case .entry:      return base
         case .descending: return base.sorted { $0.value > $1.value }
         case .ascending:  return base.sorted { $0.value < $1.value }
+        }
+    }
+
+    func value(index: Int) -> CGFloat {
+        return CGFloat(dataList.value(index: index))
+    }
+
+    func name(index: Int) -> String {
+        return dataList.name(index: index)
+    }
+
+    func plus(index: Int, value: Int) {
+        dataList.plus(index: index, value: value)
+        objectWillChange.send()
+    }
+
+    func minus(index: Int, value: Int) {
+        dataList.minus(index: index, value: value)
+        objectWillChange.send()
+    }
+
+    func removeData(index: Int) {
+        dataList.removeData(index: index)
+        objectWillChange.send()
+    }
+
+    /// 指定indexの名前を変更する。空文字は無視する。
+    func updateName(index: Int, name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        dataList.updateName(index: index, name: trimmed)
+        objectWillChange.send()
+    }
+
+    /// 指定indexの値を変更する。
+    func updateValue(index: Int, value: Int) {
+        dataList.updateValue(index: index, value: value)
+        objectWillChange.send()
+    }
+
+    func addData() {
+        if dataList.count() >= DataList.maxDataCount {
+            maxDataAlert()
+            return
+        }
+        dataList.add(value: value, name: name)
+        ensureColorCount(dataList.count())
+        objectWillChange.send()
+    }
+
+    private func maxDataAlert() {
+        alertType = .maxData
+        isShowAlert = true
+    }
+
+    func alert() -> Alert {
+        switch alertType {
+        case .maxData:
+            return Alert(title: Text(LocalizedStringKey("maxAlertText")),
+                         message: Text(LocalizedStringKey("maxAlertMessage")),
+                         dismissButton: .default(Text("OK"), action: { self.isShowAlert = false }))
         }
     }
 }

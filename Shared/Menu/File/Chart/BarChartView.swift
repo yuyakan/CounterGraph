@@ -17,7 +17,6 @@ struct BarChartView: View {
     @StateObject private var nameTemplates = NameTemplateStore()
     @EnvironmentObject var interstitial: Interstitial
     @EnvironmentObject var adCounter: AdCounter
-    @EnvironmentObject var reviewManager: ReviewManager
     @Binding var orientation: BarOrientation
     @State private var sortOrder: ChartSortOrder = .entry
     @State private var isEditing = false
@@ -147,7 +146,7 @@ struct BarChartView: View {
                     withAnimation { isEditing.toggle() }
                     if wasEditing {
                         adCounter.increment(by: 2)   // 編集完了は2回分
-                        interstitial.presentIfReady(counter: adCounter, review: reviewManager)
+                        interstitial.presentIfReady(counter: adCounter)
                     }
                 }, label: {
                     Text(isEditing ? String(localized: "Done") : String(localized: "Edit"))
@@ -354,7 +353,11 @@ struct BarChartView: View {
             barChart.reload()
         }
         .sheet(isPresented: $showAddSheet) {
-            AddItemSheet(barChart: barChart, templates: nameTemplates, buttonColor: brandColor)
+            AddItemSheet(name: $barChart.name,
+                         value: $barChart.value,
+                         templates: nameTemplates,
+                         buttonColor: brandColor,
+                         onAdd: { barChart.addData() })
                 .presentationDetents([.medium])
         }
         // 名前・値の編集シート（キーボードはシート内に出るため隠れ問題が起きない）
@@ -381,140 +384,6 @@ struct BarChartView: View {
                 // 空タイトルも許容する（前後の空白は除去してから保存）。
                 setting.title = draftTitle.trimmingCharacters(in: .whitespacesAndNewlines)
                 setting.save()
-            }
-        }
-    }
-}
-
-/// 編集対象の項目（sheet(item:) 用の Identifiable ラッパ）。
-private struct EditTarget: Identifiable { let id: Int }
-
-/// 既存項目の名前・値を編集するシート。
-private struct ItemEditSheet: View {
-    @Environment(\.dismiss) var dismiss
-    let initialName: String
-    let initialValue: Int
-    let buttonColor: Color
-    let onSave: (String, Int) -> Void
-
-    @State private var name: String
-    @State private var value: Int
-    @FocusState private var nameFocused: Bool
-
-    init(initialName: String, initialValue: Int, buttonColor: Color, onSave: @escaping (String, Int) -> Void) {
-        self.initialName = initialName
-        self.initialValue = initialValue
-        self.buttonColor = buttonColor
-        self.onSave = onSave
-        _name = State(initialValue: initialName)
-        _value = State(initialValue: initialValue)
-    }
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                TextField(String(localized: "Jack"), text: $name)
-                    .focused($nameFocused)
-                TextField(String(localized: "Value"), value: $value, format: .number)
-                    .keyboardType(.numberPad)
-            }
-            .navigationTitle(String(localized: "Edit"))
-            .navigationBarTitleDisplayMode(.inline)
-            // シート表示時に名前フィールドへ自動でカーソルを当てキーボードを表示する
-            .task {
-                try? await Task.sleep(nanoseconds: 300_000_000)
-                nameFocused = true
-            }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Done")) {
-                        onSave(name, value)
-                        dismiss()
-                    }
-                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-            }
-        }
-    }
-}
-
-/// 新規項目を追加するためのシート。
-/// よく使う名前（テンプレート）をチップで呼び出せ、任意でこの名前をテンプレ登録できる。
-private struct AddItemSheet: View {
-    @Environment(\.dismiss) var dismiss
-    @ObservedObject var barChart: BarChartViewModel
-    @ObservedObject var templates: NameTemplateStore
-    let buttonColor: Color
-
-    /// Add 時にこの名前をテンプレートへ登録するか。既定でON。
-    @State private var saveAsTemplate = true
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    TextField(String(localized: "Jack"), text: $barChart.name)
-                    TextField(String(localized: "Value"), value: $barChart.value, format: .number)
-                        .keyboardType(.numberPad)
-                    Toggle(String(localized: "saveAsTemplate"), isOn: $saveAsTemplate)
-                        .tint(buttonColor)
-                }
-
-                // 登録済みテンプレート（よく使う名前）をワンタップで名前欄に入れる。
-                if !templates.names.isEmpty {
-                    Section(String(localized: "templates")) {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(templates.names, id: \.self) { name in
-                                    Button {
-                                        barChart.name = name
-                                    } label: {
-                                        Text(name)
-                                            .font(.subheadline.weight(.medium))
-                                            .foregroundColor(buttonColor)
-                                            .lineLimit(1)
-                                            .padding(.horizontal, 12)
-                                            .padding(.vertical, 7)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 8)
-                                                    .fill(buttonColor.opacity(0.12))
-                                            )
-                                    }
-                                    .buttonStyle(.plain)
-                                    .contextMenu {
-                                        Button(role: .destructive) {
-                                            templates.remove(name)
-                                        } label: {
-                                            Label(String(localized: "deleteTemplate"), systemImage: "trash")
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.vertical, 2)
-                        }
-                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-                    }
-                }
-            }
-            .navigationTitle(String(localized: "Add"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Add")) {
-                        if saveAsTemplate {
-                            templates.add(barChart.name)
-                        }
-                        barChart.addData()
-                        dismiss()
-                    }
-                    .disabled(barChart.name.isEmpty)
-                }
             }
         }
     }

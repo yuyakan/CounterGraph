@@ -99,22 +99,13 @@ class Interstitial: NSObject, FullScreenContentDelegate, ObservableObject {
 
     /// カウンターがしきい値に達していて、かつ広告が準備できていれば表示する。
     /// 広告が未ロードのときはカウントを消費せず、次の機会に持ち越して読み込みを仕込む。
-    /// review が未実施なら、1回目の表示タイミングでは広告の代わりにレビュー依頼を表示する。
-    func presentIfReady(counter: AdCounter, review: ReviewManager) {
+    func presentIfReady(counter: AdCounter) {
         // 前回表示から一定時間（cooldown）は次を出さない。
         // カウントは消費せず持ち越し、クールダウン明けの機会に表示できるようにする。
         guard !isInCooldown else { return }
 
         // 表示条件（カウントしきい値）を満たすか確認。満たさなければ何もしない。
-        // ここでは消費せず、「広告 or レビュー」を確定してから消費する。
         guard counter.count >= AdCounter.threshold else { return }
-
-        // 1回目の表示タイミングでは広告の代わりにレビュー依頼を出す。
-        if review.requestReviewIfNeeded() {
-            _ = counter.consumeIfReady()   // 表示機会を使ったのでカウントをリセット
-            lastPresentedAt = Date()       // レビューも全画面のためクールダウン対象にする
-            return
-        }
 
         // 通常の広告表示。未ロードならカウントは消費せず読み込みだけ促す。
         guard isReady else {
